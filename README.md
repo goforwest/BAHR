@@ -119,12 +119,13 @@ BAHR/
 ## 📖 Documentation
 
 ### 🎯 Getting Started
-- [📘 Quick Start Guide](QUICK_START_GUIDE.md)
-- [👨‍💻 Developer Guide](docs/START_HERE_DEVELOPER.md)
-- [🗺️ Project Overview](docs/START_HERE.md)
+- [📘 **Getting Started Guide**](GETTING_STARTED.md) - **START HERE!** Complete onboarding (5-min express or 30-min full setup)
+- [⚡ Critical Updates](GETTING_STARTED.md#-critical-updates---read-first) - Recent changes you must know
+- [🔧 Week 0 Setup](WEEK_0_CRITICAL_CHECKLIST.md) - Pre-development infrastructure tasks
 
 ### 🛠️ Technical
 - [🏛️ Architecture Overview](docs/technical/ARCHITECTURE_OVERVIEW.md)
+- [📐 Architecture Decisions](docs/ARCHITECTURE_DECISIONS.md) - ADRs for key technical choices
 - [🔌 API Specification](docs/technical/API_SPECIFICATION.yaml)
 - [🗄️ Database Schema](docs/technical/DATABASE_SCHEMA.md)
 - [🎯 Prosody Engine](docs/technical/PROSODY_ENGINE.md)
@@ -132,7 +133,12 @@ BAHR/
 ### 📋 Planning
 - [📅 Project Timeline](docs/planning/PROJECT_TIMELINE.md)
 - [✅ Week 1 Checklist](docs/WEEK_1_CRITICAL_CHECKLIST.md)
-- [🎯 Implementation Plan](IMPLEMENTATION_PLAN_FOR_CODEX.md)
+- [🎯 Implementation Plan](IMPLEMENTATION_PLAN_REVISED_FINAL.md) - **Current plan (v2.0)**
+- [🚫 Deferred Features](docs/planning/DEFERRED_FEATURES.md) - Prevent scope creep
+
+### 📚 Additional Resources
+- [📖 Complete Documentation Index](docs/README.md)
+- [🗂️ Historical Archive](archive/README.md) - Past milestones, reviews, and reports
 
 ---
 

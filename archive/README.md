@@ -1,0 +1,185 @@
+# BAHR Documentation Archive
+
+## Purpose
+
+This directory contains **historical documentation** that is no longer actively maintained but preserved for:
+- **Audit trail**: Tracking project evolution and decisions
+- **Retrospectives**: Learning from past milestones and blockers
+- **Reference**: Understanding context behind architectural decisions
+
+**Status:** All files in this archive are **READ-ONLY** and considered **completed/superseded**.
+
+---
+
+## Archive Organization
+
+### 📁 `/milestones/` - Completed Project Milestones
+Historical completion summaries for specific development milestones.
+
+| File | Date | Summary |
+|------|------|---------|
+| `WEEK_1_DAY_3_COMPLETION_SUMMARY.md` | Dec 2024 | Week 1 Day 3 completion: Database migrations, 72 tests (99% coverage), seed data |
+| `CI_CD_SETUP_COMPLETE.md` | Nov 9, 2025 | CI/CD pipeline setup completion: Backend/Frontend workflows, Railway deployment |
+
+**Current Tracking:** See [/PROGRESS_LOG.md](../PROGRESS_LOG.md) for ongoing daily progress.
+
+---
+
+### 🚧 `/blockers/` - Resolved Blockers
+Documentation of critical blockers and their resolutions.
+
+| File | Date | Summary |
+|------|------|---------|
+| `BLOCKER_3_COMPLETION_SUMMARY.md` | Nov 9, 2025 | Golden Set data collection: 20 verses, full prosodic annotations, 100% validation |
+
+**Current Blockers:** Track active blockers in [/PROJECT_TRACKER.md](../PROJECT_TRACKER.md).
+
+---
+
+### 📋 `/reviews/` - Completed Reviews & Revisions
+Technical reviews, audits, and revision reports that led to documentation improvements.
+
+| File | Date | Summary |
+|------|------|---------|
+| `TECHNICAL_ARCHITECTURE_REVIEW_REPORT.md` | Nov 9, 2025 | Original expert review identifying 10 critical issues |
+| `REVISION_SUMMARY_REPORT.md` | Nov 9, 2025 | Complete report of revisions made in response to review |
+| `DOCUMENTATION_REVIEW_FINAL_SUMMARY.md` | Nov 9, 2025 | Documentation completeness review (95% → 100% quality) |
+
+**Current Architecture:** See [/docs/ARCHITECTURE_DECISIONS.md](../docs/ARCHITECTURE_DECISIONS.md) for approved ADRs.
+
+---
+
+### 🔗 `/integration/` - Integration Completion Reports
+Reports documenting integration of review feedback into production documentation.
+
+| File | Date | Summary |
+|------|------|---------|
+| `INTEGRATION_COMPLETE_SUMMARY.md` | Nov 9, 2025 | Expert review integration changelog |
+
+**Current Integration Status:** See [/docs/REVIEW_INTEGRATION_CHANGELOG.md](../docs/REVIEW_INTEGRATION_CHANGELOG.md).
+
+---
+
+### 📊 `/dataset/` - Dataset Phase Completion Reports
+Historical reports for dataset preparation phases (superseded by consolidated reports).
+
+| File | Date | Summary |
+|------|------|---------|
+| `PHASE_A_COMPLETION_REPORT.md` | Nov 2025 | Phase A: Data enrichment (6/6 tasks) |
+| `PHASE_D_COMPLETION_REPORT.md` | Nov 2025 | Phase D completion |
+| `PHASE_E_COMPLETION_REPORT.md` | Nov 2025 | Phase E completion |
+
+**Current Dataset Status:** See [/dataset/evaluation/README.md](../dataset/evaluation/README.md) and `BLOCKER_3_COMPLETION_SUMMARY.md` in `/blockers/`.
+
+---
+
+### 📝 `/plans/v1/` - Superseded Implementation Plans
+Original implementation plans that have been revised and superseded.
+
+| File | Version | Date | Summary |
+|------|---------|------|---------|
+| `IMPLEMENTATION_PLAN_FOR_CODEX.md` | v1.0 | Nov 2025 | Original implementation plan (2,963 lines) - superseded by v2.0 after architecture review |
+
+**Current Plan:** See [/IMPLEMENTATION_PLAN_REVISED_FINAL.md](../IMPLEMENTATION_PLAN_REVISED_FINAL.md) (v2.0, approved Nov 9, 2025).
+
+**Deprecation Reason:** Architecture review identified 10 critical issues requiring comprehensive revision. See `archive/reviews/TECHNICAL_ARCHITECTURE_REVIEW_REPORT.md` for details.
+
+---
+
+### ✅ `/checklists/` - Completed or Superseded Checklists
+Historical checklists that have been completed or consolidated into other documents.
+
+| File | Date | Summary |
+|------|------|---------|
+| `WEEK_0_CRITICAL_CHECKLIST.md` | Nov 2025 | Week 0 pre-development checklist (586 lines) - superseded by PRE_WEEK_1_FINAL_CHECKLIST.md |
+
+**Current Checklist:** See [/docs/PRE_WEEK_1_FINAL_CHECKLIST.md](../docs/PRE_WEEK_1_FINAL_CHECKLIST.md) for consolidated pre-implementation validation.
+
+---
+
+## Why These Files Were Archived
+
+### Archival Criteria
+Files were archived if they met one or more of the following criteria:
+
+1. **Obsolete**: Describes completed one-time work (e.g., specific milestone completions)
+2. **Superseded**: Replaced by updated or consolidated documentation
+3. **Historical**: Valuable for context but not needed for active development
+4. **Redundant**: Content duplicated in active tracking systems (e.g., PROGRESS_LOG.md)
+
+### Not Deletion - Archival
+**Important:** No documentation was deleted. All files were **moved to this archive** to:
+- ✅ Preserve institutional knowledge
+- ✅ Maintain audit trail
+- ✅ Enable retrospectives and learning
+- ✅ Reduce clutter in active documentation
+
+---
+
+## How to Use This Archive
+
+### For New Developers
+- **Skip this directory** during onboarding
+- Focus on active documentation in `/docs/` and root-level guides
+- Refer to archive only when investigating historical decisions
+
+### For Project Managers
+- Use milestone summaries for retrospectives
+- Reference blocker resolutions for risk management
+- Review past completion reports for timeline estimation
+
+### For Architects
+- Review technical architecture review reports for lessons learned
+- Reference revision summaries to understand evolution of decisions
+- Check original implementation plan (v1.0) to understand initial vision
+
+### For Auditors
+- Complete audit trail of all project reviews and revisions
+- Verification of completed work and quality milestones
+- Historical context for architectural decisions
+
+---
+
+## Archive Maintenance
+
+### Adding New Files
+When archiving additional files:
+1. Move file to appropriate subdirectory
+2. Update this README with entry in relevant table
+3. Update any references in active documentation
+4. Commit with message: `docs: Archive [filename] - [reason]`
+
+### Archive Review Schedule
+- **Quarterly**: Review archive for additional consolidation opportunities
+- **Annually**: Assess if any archived docs should be permanently removed (unlikely)
+
+---
+
+## Related Documentation
+
+### Active Documentation
+- [/README.md](../README.md) - Project overview
+- [/PROGRESS_LOG.md](../PROGRESS_LOG.md) - Daily progress tracking
+- [/PROJECT_TRACKER.md](../PROJECT_TRACKER.md) - Active issues and milestones
+- [/IMPLEMENTATION_PLAN_REVISED_FINAL.md](../IMPLEMENTATION_PLAN_REVISED_FINAL.md) - Current implementation plan (v2.0)
+- [/docs/ARCHITECTURE_DECISIONS.md](../docs/ARCHITECTURE_DECISIONS.md) - Architecture Decision Records (ADRs)
+
+### Documentation Organization
+- [/docs/README.md](../docs/README.md) - Documentation index
+- [/implementation-guides/README.md](../implementation-guides/README.md) - Implementation guides index
+
+---
+
+## Questions?
+
+If you need information from archived documents or have questions about why something was archived, refer to:
+- **PROGRESS_LOG.md** for comprehensive timeline
+- **ARCHITECTURE_DECISIONS.md** for architectural rationale
+- **Git history** for complete evolution: `git log --follow <archived-file>`
+
+---
+
+**Archive Created:** November 9, 2025
+**Archive Curator:** Documentation Architecture Team
+**Status:** Active (files added as needed)
+**Last Updated:** November 9, 2025 (Documentation consolidation initiative)
