@@ -8,6 +8,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { LoadingSpinner } from './LoadingSpinner';
 
 // Validation schema with Zod
 const analyzeSchema = z.object({
@@ -23,9 +24,37 @@ type AnalyzeFormData = z.infer<typeof analyzeSchema>;
 interface AnalyzeFormProps {
   onSubmit: (text: string) => void;
   isLoading?: boolean;
+  error?: Error | null;
 }
 
-export function AnalyzeForm({ onSubmit, isLoading = false }: AnalyzeFormProps) {
+/**
+ * Get user-friendly error message in Arabic
+ */
+function getErrorMessage(error: Error | null): string {
+  if (!error) return '';
+  
+  const message = error.message.toLowerCase();
+  
+  // Network errors
+  if (message.includes('network') || message.includes('fetch')) {
+    return 'خطأ في الاتصال، يرجى المحاولة مرة أخرى';
+  }
+  
+  // Server errors
+  if (message.includes('500') || message.includes('server')) {
+    return 'حدث خطأ في الخادم، يرجى المحاولة لاحقاً';
+  }
+  
+  // Validation errors
+  if (message.includes('invalid') || message.includes('validation')) {
+    return 'يرجى إدخال بيت شعري صحيح';
+  }
+  
+  // Default error message
+  return error.message || 'حدث خطأ غير متوقع';
+}
+
+export function AnalyzeForm({ onSubmit, isLoading = false, error = null }: AnalyzeFormProps) {
   const {
     register,
     handleSubmit,
@@ -41,6 +70,28 @@ export function AnalyzeForm({ onSubmit, isLoading = false }: AnalyzeFormProps) {
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-3xl mx-auto">
       <div className="space-y-4">
+        {/* API Error Message */}
+        {error && (
+          <div 
+            className="bg-red-50 border-2 border-red-200 rounded-lg p-4 flex items-start gap-3"
+            role="alert"
+          >
+            <svg
+              className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <p className="text-sm text-red-800 font-medium">{getErrorMessage(error)}</p>
+          </div>
+        )}
+
         {/* Verse Input Textarea */}
         <div>
           <label htmlFor="verse" className="block text-lg font-medium text-gray-700 mb-2">
@@ -92,26 +143,7 @@ export function AnalyzeForm({ onSubmit, isLoading = false }: AnalyzeFormProps) {
           >
             {isLoading ? (
               <>
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
+                <LoadingSpinner size="sm" className="text-white" />
                 <span>جارٍ التحليل...</span>
               </>
             ) : (
