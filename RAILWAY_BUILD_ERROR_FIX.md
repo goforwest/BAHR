@@ -465,6 +465,42 @@ backend/
 
 ---
 
+## Issue 13: SQLite Used Instead of PostgreSQL for Migrations
+
+**Error Message:**
+```
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "TYPE": syntax error
+[SQL: CREATE TYPE userrole AS ENUM ('student', 'poet', 'teacher', 'moderator', 'admin')]
+```
+
+**Why This Happens:**
+1. Alembic tried to run migrations during the **build phase** (from Procfile `release:` command)
+2. During build, environment variables (like `DATABASE_URL`) aren't available yet
+3. Alembic fell back to the default in `alembic.ini`: `sqlite:///./dummy.db`
+4. Migration tried to run PostgreSQL-specific commands on SQLite
+
+**The Fix:**
+Migrations should run at **startup** (when DATABASE_URL is set), not during **build**:
+
+```bash
+# backend/Procfile
+web: /opt/venv/bin/alembic upgrade head && /opt/venv/bin/python scripts/seed_database.py && /opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+```
+
+**Remove the release command** - it was being executed during build without DATABASE_URL.
+
+**Key Points:**
+- ✅ Migrations now run during container startup (when DATABASE_URL exists)
+- ✅ Seed script runs after migrations complete
+- ✅ Server starts only after database is ready
+- ✅ If migrations fail, container won't start (safe failure mode)
+
+**Why This Works:**
+Railway makes environment variables available at **runtime**, not **build time**. By running migrations in the `web` command (startup), we ensure DATABASE_URL points to the real PostgreSQL database, not the dummy SQLite file.
+
+---
+
 ## Need More Help?
 
 - **Root Directory Guide:** See RAILWAY_VISUAL_SETUP_GUIDE.md
