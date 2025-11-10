@@ -1,21 +1,23 @@
 # Nixpacks configuration for Railway
-# This tells Railway/Nixpacks how to build the Python backend
+# Optimized for fast builds with caching
 
 [phases.setup]
 nixPkgs = ["python311", "postgresql"]
-aptPkgs = ["build-essential", "libpq-dev"]
+aptPkgs = ["libpq-dev"]
 
 [phases.install]
 cmds = [
-  "pip install --upgrade pip",
+  "pip install --upgrade pip setuptools wheel",
   "pip install -r requirements.txt"
 ]
+cacheDirectories = ["/root/.cache/pip"]
 
 [phases.build]
-cmds = ["echo 'Build phase complete'"]
+cmds = ["echo 'Build complete - BAHR Backend'"]
 
 [start]
 cmd = "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
 
 [variables]
 PYTHONUNBUFFERED = "1"
+PIP_NO_CACHE_DIR = "0"
