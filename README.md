@@ -8,6 +8,10 @@
 *Intelligent Arabic Poetry Analysis System*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Backend CI](https://github.com/goforwest/BAHR/actions/workflows/backend.yml/badge.svg)](https://github.com/goforwest/BAHR/actions/workflows/backend.yml)
+[![Frontend CI](https://github.com/goforwest/BAHR/actions/workflows/frontend.yml/badge.svg)](https://github.com/goforwest/BAHR/actions/workflows/frontend.yml)
+[![Deploy](https://github.com/goforwest/BAHR/actions/workflows/deploy.yml/badge.svg)](https://github.com/goforwest/BAHR/actions/workflows/deploy.yml)
+
 [![Next.js](https://img.shields.io/badge/Next.js-16.0-black?logo=next.js)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)

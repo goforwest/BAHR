@@ -1,0 +1,26 @@
+# Railway deployment configuration for BAHR
+
+# Backend Service
+backend:
+  buildCommand: pip install -r requirements.txt
+  startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+  healthcheckPath: /health
+  healthcheckTimeout: 300
+  
+# Frontend Service  
+frontend:
+  buildCommand: npm install && npm run build
+  startCommand: npm start
+  healthcheckPath: /
+  healthcheckTimeout: 300
+
+# Environment Variables (set in Railway dashboard)
+# Backend:
+# - DATABASE_URL
+# - REDIS_URL
+# - JWT_SECRET_KEY
+# - ENVIRONMENT=production
+#
+# Frontend:
+# - NEXT_PUBLIC_API_URL
+# - NODE_ENV=production
