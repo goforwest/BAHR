@@ -23,16 +23,18 @@ if database_url:
 # -------------------------------------------------------------------
 # ✅ 2. Import your Base metadata for AUTOGENERATE
 # -------------------------------------------------------------------
-# Example path — adjust to your project structure:
-#
-# from app.db.base import Base
-# target_metadata = Base.metadata
-#
-# If you haven't created your Base yet, keep this as None for now.
-# But autogenerate will NOT work until Base is set.
-# -------------------------------------------------------------------
+# Import all models so Alembic can detect them
+import sys
+from pathlib import Path
 
-target_metadata = None   # ← replace with Base.metadata when ready
+# Add backend directory to path
+backend_dir = Path(__file__).resolve().parent.parent / "backend"
+sys.path.insert(0, str(backend_dir))
+
+# Import Base and all models
+from app.models import Base
+
+target_metadata = Base.metadata
 
 # Offline migrations
 def run_migrations_offline() -> None:
