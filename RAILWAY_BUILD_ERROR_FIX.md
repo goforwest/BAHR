@@ -181,25 +181,36 @@ You are using Node.js 18.x. For Next.js, Node.js version ">=20.9.0" is required.
 - Redeploy frontend service
 - Verify in build logs: Should show "nodejs_20" in setup phase
 
-**2. Missing Dependencies:**
+**2. Python Package Compatibility Error:**
+```
+ERROR: Could not find a version that satisfies the requirement camel-tools==1.5.2
+ERROR: Ignored the following versions that require a different python version
+```
+**Fix:** 
+- ✅ Already fixed: `camel-tools` updated to 1.5.7 (supports Python 3.11)
+- Some packages have Python version requirements
+- Check PyPI for compatible versions
+- Update version in `requirements.txt`
+
+**3. Missing Dependencies:**
 ```
 Error: Could not find module 'X'
 ```
 **Fix:** Add to `requirements.txt` or `package.json`
 
-**3. Wrong Python Version:**
+**4. Wrong Python Version:**
 ```
 Error: Python 3.11 required
 ```
 **Fix:** Check `backend/runtime.txt` has `python-3.11.*`
 
-**4. Database Connection Error:**
+**5. Database Connection Error:**
 ```
 Error: Cannot connect to database
 ```
 **Fix:** Verify `DATABASE_URL=${{Postgres.DATABASE_URL}}` in variables
 
-**5. Port Binding Error:**
+**6. Port Binding Error:**
 ```
 Error: Address already in use
 ```
