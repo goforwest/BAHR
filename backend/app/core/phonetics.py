@@ -1,5 +1,8 @@
 """
 Arabic phonetic analysis for prosody.
+
+This module provides functions to convert Arabic text into phonetic representations
+suitable for prosodic analysis. It handles diacritics, long vowels, and shadda.
 """
 
 from typing import List, Tuple
@@ -8,38 +11,86 @@ from dataclasses import dataclass
 
 @dataclass
 class Phoneme:
-    """Represents a phonetic unit."""
+    """
+    Represents a phonetic unit in Arabic text.
+    
+    A phoneme consists of a consonant, a vowel (or absence thereof), and optionally
+    a shadda (gemination marker).
+    
+    Attributes:
+        consonant: The consonant character
+        vowel: The vowel type. Can be:
+            - 'a', 'u', 'i': short vowels (fatha, damma, kasra)
+            - 'aa', 'uu', 'ii': long vowels (madd)
+            - '': sukun (no vowel)
+        has_shadda: Whether the consonant has shadda (gemination)
+    
+    Example:
+        >>> p = Phoneme('ك', 'a', False)
+        >>> str(p)
+        'كa'
+    """
     consonant: str
     vowel: str  # 'a', 'u', 'i', 'aa', 'uu', 'ii', '' (sukun)
     has_shadda: bool = False
 
     def __str__(self):
+        """Return string representation of phoneme."""
         shadda_mark = "ّ" if self.has_shadda else ""
         return f"{self.consonant}{shadda_mark}{self.vowel}"
 
     def is_long_vowel(self) -> bool:
-        """Check if phoneme has long vowel (madd)."""
+        """
+        Check if phoneme has a long vowel (madd).
+        
+        Returns:
+            True if vowel is 'aa', 'uu', or 'ii', False otherwise
+        
+        Example:
+            >>> Phoneme('ك', 'aa').is_long_vowel()
+            True
+            >>> Phoneme('ك', 'a').is_long_vowel()
+            False
+        """
         return self.vowel in ['aa', 'uu', 'ii']
 
     def is_sukun(self) -> bool:
-        """Check if phoneme has sukun (no vowel)."""
+        """
+        Check if phoneme has sukun (no vowel).
+        
+        Returns:
+            True if vowel is empty string, False otherwise
+        
+        Example:
+            >>> Phoneme('ك', '').is_sukun()
+            True
+            >>> Phoneme('ك', 'a').is_sukun()
+            False
+        """
         return self.vowel == ''
 
 
 def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
     """
     Extract phonemes from Arabic text.
-
+    
+    This function parses Arabic text and converts it into a list of phonemes,
+    which represent the phonetic units needed for prosodic analysis.
+    
     Args:
-        text: Arabic text (normalized)
-        has_tashkeel: Whether text has diacritics
-
+        text: Arabic text (should be normalized)
+        has_tashkeel: Whether the text contains diacritical marks (tashkeel).
+                     If False, vowels will be inferred using heuristics.
+    
     Returns:
-        List of Phoneme objects
-
+        List of Phoneme objects representing the phonetic structure
+    
     Example:
         >>> extract_phonemes("كَتَبَ", has_tashkeel=True)
         [Phoneme('ك', 'a'), Phoneme('ت', 'a'), Phoneme('ب', 'a')]
+        
+        >>> extract_phonemes("كِتَاب", has_tashkeel=True)
+        [Phoneme('ك', 'i'), Phoneme('ت', 'aa'), Phoneme('ب', 'a')]
     """
     phonemes = []
 
@@ -107,21 +158,30 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
 def phonemes_to_pattern(phonemes: List[Phoneme]) -> str:
     """
     Convert phonemes to prosodic pattern string.
-
-    Pattern symbols:
-    - / = haraka (moving, CV)
-    - o = sukun (still, CVC or CVV)
-
+    
+    This converts a list of phonemes into the classical Arabic prosody notation:
+    - '/' represents haraka (moving syllable): consonant + short vowel
+    - 'o' represents sukun (still syllable): consonant without vowel or with long vowel
+    
+    Pattern rules:
+    - Short vowel (a, u, i) → '/'
+    - Long vowel (aa, uu, ii) → '/o' (haraka + sukun)
+    - Sukun (no vowel) → 'o'
+    
     Args:
         phonemes: List of Phoneme objects
-
+    
     Returns:
         Pattern string like "/o//o/o"
-
+    
     Example:
         >>> phonemes = [Phoneme('k', 'a'), Phoneme('t', 'a'), Phoneme('b', '')]
         >>> phonemes_to_pattern(phonemes)
         "//o"
+        
+        >>> phonemes = [Phoneme('k', 'aa'), Phoneme('t', 'a')]
+        >>> phonemes_to_pattern(phonemes)
+        "/o/"
     """
     pattern = ""
 
@@ -139,17 +199,24 @@ def phonemes_to_pattern(phonemes: List[Phoneme]) -> str:
 def text_to_phonetic_pattern(text: str, has_tashkeel: bool = None) -> str:
     """
     Convert Arabic text directly to phonetic pattern.
-
+    
+    This is a convenience function that combines phoneme extraction and pattern
+    conversion in a single call. It automatically detects whether the text has
+    tashkeel if not specified.
+    
     Args:
         text: Normalized Arabic text
-        has_tashkeel: Auto-detect if None
-
+        has_tashkeel: Whether text has diacritical marks. If None, will auto-detect.
+    
     Returns:
         Phonetic pattern string
-
+    
     Example:
         >>> text_to_phonetic_pattern("كَتَبَ")
         "///"
+        
+        >>> text_to_phonetic_pattern("كِتَاب")
+        "/o//"
     """
     from app.core.normalization import has_diacritics
 
