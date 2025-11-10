@@ -133,85 +133,30 @@ async def handle_unknown_exception(request: Request, exc: Exception):
     return JSONResponse(env, status_code=500, headers=headers)
 
 
-# --------- Example Analyze Endpoint (Stub) ---------
-from pydantic import BaseModel, Field
-from .nlp.normalizer import basic_normalize
-from .prosody.segmenter import segment
-from .prosody.engine import build_pattern, detect_meter
-
-
-class AnalysisOptions(BaseModel):
-    remove_diacritics: bool = True
-    analysis_mode: str = Field(default="accurate", pattern="^(fast|accurate|detailed)$")
-    return_alternatives: bool = True
-    include_suggestions: bool = True
-
-
-class AnalysisRequest(BaseModel):
-    text: str = Field(min_length=5, max_length=2000)
-    options: Optional[AnalysisOptions] = None
-
-
-@app.post("/api/v1/analyze")
-async def analyze(
-    request: Request,
-    payload: AnalysisRequest,
-    accept_language: Optional[str] = Header(default=None, alias="Accept-Language"),
-):
-    start = time.perf_counter()
-    # Minimal validation example: ensure contains some Arabic letters
-    if not any("\u0600" <= ch <= "\u06FF" for ch in payload.text):
-        lang = "en" if (accept_language or "").lower().startswith("en") else "ar"
-        elapsed = time.perf_counter() - start
-        env = failure(
-            code="ERR_INPUT_001",
-            severity="warning",
-            can_retry=False,
-            request_id=getattr(request.state, "request_id", None),
-            lang=lang,
-            meta_extra={"processing_time_ms": int(elapsed * 1000), "cached": False},
-        )
-        headers = {REQUEST_ID_HEADER: request.state.request_id, "Content-Language": lang}
-        return JSONResponse(env, status_code=422, headers=headers)
-
-    # Normalization (MVP)
-    normalized = basic_normalize(payload.text, remove_diacritics=payload.options.remove_diacritics if payload.options else True)
-    syllables = segment(normalized)
-    prosody_pattern = build_pattern(syllables)
-    meter_name, meter_conf, alternatives = detect_meter(prosody_pattern.pattern)
-
-    result = {
-        "analysis_id": "00000000-0000-0000-0000-000000000000",
-        "input_text": payload.text,
-        "normalized_text": normalized,
-        "prosodic_analysis": {
-            "taqti3": prosody_pattern.taqti3,
-            "pattern": prosody_pattern.pattern,
-            "syllable_count": prosody_pattern.syllable_count,
-            "stress_pattern": prosody_pattern.stress_pattern,
-        },
-        "meter_detection": {
-            "detected_meter": meter_name,
-            "confidence": meter_conf,
-            "alternatives": alternatives,
-        },
-        "quality_score": round(min(1.0, (meter_conf * 0.7) + (prosody_pattern.syllable_count / 100)), 2),
-        "suggestions": [
-            "التقطيع دقيق ومتسق",
-        ],
-        "created_at": "2025-01-01T00:00:00Z",
-    }
-
-    elapsed = time.perf_counter() - start
-    record_latency(elapsed)
-    env = success(
-        data=result,
-        request_id=getattr(request.state, "request_id", None),
-        meta_extra={"cached": False, "processing_time_ms": int(elapsed * 1000)},
-    )
-    lang = "en" if (accept_language or "").lower().startswith("en") else "ar"
-    headers = {REQUEST_ID_HEADER: request.state.request_id, "Content-Language": lang}
-    return JSONResponse(env, headers=headers)
+# --------- Example Analyze Endpoint (Stub) - DISABLED ---------
+# NOTE: The actual /api/v1/analyze endpoint with Redis caching is in
+# backend/app/api/v1/endpoints/analyze.py and is included via api_router
+# This stub endpoint has been commented out to avoid conflicts
+#
+# from pydantic import BaseModel, Field
+# from .nlp.normalizer import basic_normalize
+# from .prosody.segmenter import segment
+# from .prosody.engine import build_pattern, detect_meter
+#
+# class AnalysisOptions(BaseModel):
+#     remove_diacritics: bool = True
+#     analysis_mode: str = Field(default="accurate", pattern="^(fast|accurate|detailed)$")
+#     return_alternatives: bool = True
+#     include_suggestions: bool = True
+#
+# class AnalysisRequest(BaseModel):
+#     text: str = Field(min_length=5, max_length=2000)
+#     options: Optional[AnalysisOptions] = None
+#
+# @app.post("/api/v1/analyze")
+# async def analyze(...):
+#     ... (endpoint implementation removed - see endpoints/analyze.py instead)
+# --------- End of disabled stub ---------
 
 
 @app.get("/")
