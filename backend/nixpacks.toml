@@ -2,13 +2,14 @@
 # Optimized for fast builds with caching
 
 [phases.setup]
-nixPkgs = ["python311", "python311Packages.pip", "postgresql"]
+nixPkgs = ["python311", "python311Packages.pip", "python311Packages.virtualenv", "postgresql"]
 aptPkgs = ["libpq-dev"]
 
 [phases.install]
 cmds = [
-  "pip install --upgrade pip setuptools wheel",
-  "pip install -r requirements.txt"
+  "python -m venv /opt/venv",
+  "/opt/venv/bin/pip install --upgrade pip setuptools wheel",
+  "/opt/venv/bin/pip install -r requirements.txt"
 ]
 cacheDirectories = ["/root/.cache/pip"]
 
@@ -16,7 +17,7 @@ cacheDirectories = ["/root/.cache/pip"]
 cmds = ["echo 'Build complete - BAHR Backend'"]
 
 [start]
-cmd = "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+cmd = "/opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
 
 [variables]
 PYTHONUNBUFFERED = "1"

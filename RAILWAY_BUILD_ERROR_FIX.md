@@ -349,27 +349,66 @@ ERROR: failed to build: failed to solve: process "/bin/bash -ol pipefail -c pyth
 **Why This Happens:**
 The Nix-provided Python 3.11 doesn't include pip as a built-in module. When using `python -m pip`, Python can't find the pip module.
 
+**Initial Fix Attempt:**
+Added `python311Packages.pip` to nixPkgs, but this led to Issue 11.
+
+---
+
+## Issue 11: Externally Managed Environment (PEP 668)
+
+**Error Message:**
+```
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─> This command has been disabled as it tries to modify the immutable
+    `/nix/store` filesystem.
+
+× This command has been disabled as it tries to modify the immutable `/nix/store` filesystem.
+note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. 
+You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
+hint: See PEP 668 for the detailed specification.
+```
+
+**Why This Happens:**
+Nix-managed Python environments are immutable and don't allow direct package installation to prevent breaking the system. This is PEP 668 compliance - externally managed environments must use virtual environments.
+
 **The Fix:**
-Add `python311Packages.pip` to nixPkgs and use `pip` directly (not `python -m pip`):
+Use a Python virtual environment (`venv`) for all package installations:
 
 ```toml
 # backend/nixpacks.toml
 [phases.setup]
-nixPkgs = ["python311", "python311Packages.pip", "postgresql"]
+nixPkgs = ["python311", "python311Packages.pip", "python311Packages.virtualenv", "postgresql"]
 aptPkgs = ["libpq-dev"]
 
 [phases.install]
 cmds = [
-  "pip install --upgrade pip setuptools wheel",
-  "pip install -r requirements.txt"
+  "python -m venv /opt/venv",
+  "/opt/venv/bin/pip install --upgrade pip setuptools wheel",
+  "/opt/venv/bin/pip install -r requirements.txt"
 ]
 cacheDirectories = ["/root/.cache/pip"]
+
+[start]
+cmd = "/opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
 ```
 
-**Key Change:**
-- ✅ Added `python311Packages.pip` to nixPkgs
-- ✅ Changed from `python -m pip` to just `pip`
-- ✅ Pip is now properly installed and available in PATH
+**Also update backend/Procfile:**
+```
+web: /opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+release: /opt/venv/bin/alembic upgrade head && /opt/venv/bin/python scripts/seed_database.py
+```
+
+**Key Changes:**
+- ✅ Added `python311Packages.virtualenv` to nixPkgs
+- ✅ Create virtual environment at `/opt/venv`
+- ✅ Use `/opt/venv/bin/pip` for all installations
+- ✅ Use `/opt/venv/bin/python` and `/opt/venv/bin/uvicorn` for execution
+- ✅ Virtual environment is mutable and can install packages
+
+**Why This Works:**
+Virtual environments create an isolated, mutable Python environment that doesn't conflict with the Nix-managed system Python. This is the recommended approach for Nix-based deployments.
 
 ---
 
