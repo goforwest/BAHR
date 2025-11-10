@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, Header
 from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import time
 
@@ -20,6 +21,15 @@ except Exception:
 
 
 app = FastAPI(title=settings.project_name, version=settings.version)
+
+# CORS middleware (ADR-003: Explicit CORS configuration)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Register middleware early to ensure request id propagation
 app.add_middleware(RequestIDMiddleware)

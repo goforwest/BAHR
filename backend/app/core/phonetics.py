@@ -1,5 +1,5 @@
 """
-Arabic phonetic analysis for prosody.
+Arabic phonetic analysis for prosody using CAMeL Tools.
 
 This module provides functions to convert Arabic text into phonetic representations
 suitable for prosodic analysis. It handles diacritics, long vowels, and shadda.
@@ -7,6 +7,7 @@ suitable for prosodic analysis. It handles diacritics, long vowels, and shadda.
 
 from typing import List, Tuple
 from dataclasses import dataclass
+from camel_tools.utils.normalize import normalize_unicode, normalize_alef_maksura_ar
 
 
 @dataclass
@@ -92,6 +93,12 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
         >>> extract_phonemes("كِتَاب", has_tashkeel=True)
         [Phoneme('ك', 'i'), Phoneme('ت', 'aa'), Phoneme('ب', 'a')]
     """
+    # Normalize using CAMeL Tools
+    try:
+        text = normalize_unicode(text)
+    except:
+        pass  # Fallback to original text if CAMeL Tools fails
+    
     phonemes = []
 
     # Diacritic mappings

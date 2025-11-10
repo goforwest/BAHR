@@ -25,6 +25,16 @@ class Settings:
     analysis_engine_version: str = _get("ANALYSIS_ENGINE_VERSION", "1.0.0")
     log_level: str = _get("LOG_LEVEL", "INFO")
     secret_key: str = _get("SECRET_KEY", "dev-insecure-key", required=False)
+    
+    # CORS configuration (ADR-003: Explicit CORS origins)
+    cors_origins: list[str] = None
+    
+    def __post_init__(self):
+        """Initialize CORS origins from environment or defaults."""
+        if self.cors_origins is None:
+            cors_str = _get("CORS_ORIGINS", "http://localhost:3000,http://localhost:8000")
+            self.cors_origins = [origin.strip() for origin in cors_str.split(",")]
+    
     # Future (placeholders, not yet wired in code):
     database_url: str = _get("DATABASE_URL", "")
     redis_url: str = _get("REDIS_URL", "")
