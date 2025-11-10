@@ -11,6 +11,8 @@ from .response_envelope import success, failure
 from .exceptions import BahrException
 from .config import settings
 from .metrics.analysis_metrics import record_latency
+from .api.v1.router import api_router
+from .db.redis import get_redis, close_redis
 
 try:
     from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
@@ -21,6 +23,9 @@ except Exception:
 
 
 app = FastAPI(title=settings.project_name, version=settings.version)
+
+# Include API v1 router
+app.include_router(api_router, prefix="/api/v1")
 
 # CORS middleware (ADR-003: Explicit CORS configuration)
 app.add_middleware(
@@ -33,6 +38,24 @@ app.add_middleware(
 
 # Register middleware early to ensure request id propagation
 app.add_middleware(RequestIDMiddleware)
+
+
+# Startup and shutdown events
+@app.on_event("startup")
+async def startup_event():
+    """Initialize Redis connection on startup."""
+    try:
+        await get_redis()
+        print("✓ Redis connection initialized")
+    except Exception as e:
+        print(f"✗ Redis connection failed: {e}")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Close Redis connection on shutdown."""
+    await close_redis()
+    print("✓ Redis connection closed")
 
 
 @app.get("/health")
