@@ -20,7 +20,7 @@ ENV/
 *.swo
 *~
 
-# Testing
+# Testing (keep test files for now)
 .pytest_cache/
 .coverage
 htmlcov/
@@ -51,9 +51,7 @@ Thumbs.db
 .git/
 .gitignore
 
-# Unnecessary for production
-tests/
+# Unnecessary for production (but keep for build compatibility)
+# tests/  # Commented out - may be needed for Dockerfile builds
 *.md
-Dockerfile
-Dockerfile.*
 docker-compose.yml
