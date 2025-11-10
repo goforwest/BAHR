@@ -327,7 +327,7 @@ Railway Build Process (Backend):
 - `backend/runtime.txt` (Python version)
 - `backend/railway.json` (Railway config)
 - `frontend/railway.json` (Railway config)
-- Updated `backend/nixpacks.toml` (better build config)
+- Updated `backend/nixpacks.toml` (better build config with pip package)
 
 **Next Steps:**
 1. Set Root Directory (if not already done)
@@ -335,6 +335,41 @@ Railway Build Process (Backend):
 3. Watch build logs
 4. Test endpoints
 5. Celebrate! 🎉
+
+---
+
+## Issue 10: Python Module pip Not Found
+
+**Error Message:**
+```
+/root/.nix-profile/bin/python: No module named pip
+ERROR: failed to build: failed to solve: process "/bin/bash -ol pipefail -c python -m pip install --upgrade pip setuptools wheel" did not complete successfully: exit code: 1
+```
+
+**Why This Happens:**
+The Nix-provided Python 3.11 doesn't include pip as a built-in module. When using `python -m pip`, Python can't find the pip module.
+
+**The Fix:**
+Add `python311Packages.pip` to nixPkgs and use `pip` directly (not `python -m pip`):
+
+```toml
+# backend/nixpacks.toml
+[phases.setup]
+nixPkgs = ["python311", "python311Packages.pip", "postgresql"]
+aptPkgs = ["libpq-dev"]
+
+[phases.install]
+cmds = [
+  "pip install --upgrade pip setuptools wheel",
+  "pip install -r requirements.txt"
+]
+cacheDirectories = ["/root/.cache/pip"]
+```
+
+**Key Change:**
+- ✅ Added `python311Packages.pip` to nixPkgs
+- ✅ Changed from `python -m pip` to just `pip`
+- ✅ Pip is now properly installed and available in PATH
 
 ---
 
@@ -350,3 +385,4 @@ Railway Build Process (Backend):
 **Remember:** The most common mistake is forgetting to set Root Directory.
 
 **Set it to `backend` or `frontend` and 99% of build errors disappear!** ✨
+
