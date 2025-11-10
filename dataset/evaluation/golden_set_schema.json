@@ -1,0 +1,238 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/bahr-project/schemas/golden-set-verse.json",
+  "title": "BAHR Golden Set Verse",
+  "description": "Schema for a single verse in the BAHR Arabic Poetry Prosody Golden Set",
+  "type": "object",
+  "required": [
+    "verse_id",
+    "text",
+    "normalized_text",
+    "meter",
+    "era",
+    "confidence",
+    "notes",
+    "taqti3",
+    "expected_tafail",
+    "syllable_pattern",
+    "syllable_count",
+    "edge_case_type",
+    "difficulty_level",
+    "validation",
+    "metadata"
+  ],
+  "properties": {
+    "verse_id": {
+      "type": "string",
+      "description": "Unique identifier for the verse",
+      "pattern": "^(golden|train|test|dev)_[0-9]{3,}$",
+      "examples": ["golden_001", "train_042", "test_010"]
+    },
+    "text": {
+      "type": "string",
+      "description": "Original verse text with full diacritics (tashkīl)",
+      "minLength": 10,
+      "examples": ["قِفا نَبْكِ مِن ذِكرى حَبيبٍ ومَنْزِلِ"]
+    },
+    "normalized_text": {
+      "type": "string",
+      "description": "Normalized text without diacritics, unified hamza/alif",
+      "minLength": 10,
+      "examples": ["قفا نبك من ذكري حبيب ومنزل"]
+    },
+    "meter": {
+      "type": "string",
+      "description": "Classical Arabic meter (baḥr) name",
+      "enum": [
+        "الطويل",
+        "المديد",
+        "البسيط",
+        "الوافر",
+        "الكامل",
+        "الهزج",
+        "الرجز",
+        "الرمل",
+        "السريع",
+        "المنسرح",
+        "الخفيف",
+        "المضارع",
+        "المقتضب",
+        "المجتث",
+        "المتقارب",
+        "المتدارك"
+      ]
+    },
+    "poet": {
+      "type": ["string", "null"],
+      "description": "Poet name (if known)",
+      "examples": ["امرؤ القيس", "أبو تمام", null]
+    },
+    "source": {
+      "type": ["string", "null"],
+      "description": "Literary source (dīwān, muʿallaqa, anthology, etc.)",
+      "examples": ["المعلقة", "ديوان الحماسة", null]
+    },
+    "era": {
+      "type": "string",
+      "description": "Historical era of the poem",
+      "enum": ["classical", "modern", "contemporary", "unknown"]
+    },
+    "confidence": {
+      "type": "number",
+      "description": "Annotation confidence level (0.0 to 1.0)",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "examples": [0.98, 0.92, 0.85]
+    },
+    "notes": {
+      "type": "string",
+      "description": "Prosodic or linguistic notes about the verse",
+      "examples": ["بيت قياسي واضح التفعيلات", "زحاف الخبن في التفعيلة الثانية"]
+    },
+    "taqti3": {
+      "type": "string",
+      "description": "Prosodic scansion showing tafāʿīl with diacritics",
+      "pattern": "^[\\u0600-\\u06FF\\s]+$",
+      "examples": ["فَعُولُنْ مَفَاعِيلُنْ فَعُولُنْ مَفَاعِيلُنْ"]
+    },
+    "expected_tafail": {
+      "type": "array",
+      "description": "Array of expected tafāʿīl (prosodic feet) in order",
+      "minItems": 2,
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "pattern": "^[\\u0600-\\u06FF]+$"
+      },
+      "examples": [
+        ["فعولن", "مفاعيلن", "فعولن", "مفاعيلن"],
+        ["متفاعلن", "متفاعلن", "متفاعلن"]
+      ]
+    },
+    "syllable_pattern": {
+      "type": "string",
+      "description": "Syllable pattern using - (long), u (short), | (separator)",
+      "pattern": "^[\\-u \\|]+$",
+      "examples": ["- u - - | - u u - | - u - - | - u u -"]
+    },
+    "syllable_count": {
+      "type": "integer",
+      "description": "Total number of syllables in the verse",
+      "minimum": 6,
+      "maximum": 32,
+      "examples": [16, 14, 12]
+    },
+    "edge_case_type": {
+      "type": "string",
+      "description": "Classification of verse type for testing purposes",
+      "enum": [
+        "perfect_match",
+        "common_variations",
+        "rare_variations",
+        "diacritics_test",
+        "ambiguous"
+      ]
+    },
+    "difficulty_level": {
+      "type": "string",
+      "description": "Difficulty level for prosodic analysis",
+      "enum": ["easy", "medium", "hard"]
+    },
+    "validation": {
+      "type": "object",
+      "description": "Verification and validation metadata",
+      "required": ["verified_by", "verified_date", "reference_sources"],
+      "properties": {
+        "verified_by": {
+          "type": "string",
+          "description": "Verification method or expert identifier",
+          "examples": ["manual_expert_review", "automated_check", "expert_001"]
+        },
+        "verified_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of verification (ISO 8601)",
+          "examples": ["2025-11-09"]
+        },
+        "reference_sources": {
+          "type": "array",
+          "description": "Classical reference sources used for verification",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "examples": [
+            ["كتاب العروض للخليل", "الكافي في العروض والقوافي"]
+          ]
+        },
+        "iaa_score": {
+          "type": ["number", "null"],
+          "description": "Inter-annotator agreement score (if available)",
+          "minimum": 0.0,
+          "maximum": 1.0
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Administrative metadata",
+      "required": ["created_at", "updated_at", "version"],
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of initial creation (ISO 8601)",
+          "examples": ["2025-11-09"]
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of last update (ISO 8601)",
+          "examples": ["2025-11-09"]
+        },
+        "version": {
+          "type": "string",
+          "description": "Dataset version number",
+          "pattern": "^\\d+\\.\\d+$",
+          "examples": ["0.20", "1.0"]
+        },
+        "annotator_id": {
+          "type": ["string", "null"],
+          "description": "Identifier of the human annotator (if applicable)"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "verse_id": "golden_001",
+      "text": "قِفا نَبْكِ مِن ذِكرى حَبيبٍ ومَنْزِلِ",
+      "normalized_text": "قفا نبك من ذكري حبيب ومنزل",
+      "meter": "الطويل",
+      "poet": "امرؤ القيس",
+      "source": "المعلقة",
+      "era": "classical",
+      "confidence": 0.98,
+      "notes": "بيت افتتاحي قياسي واضح التفعيلات",
+      "taqti3": "فَعُولُنْ مَفَاعِيلُنْ فَعُولُنْ مَفَاعِيلُنْ",
+      "expected_tafail": ["فعولن", "مفاعيلن", "فعولن", "مفاعيلن"],
+      "syllable_pattern": "- u - - | - u u - | - u - - | - u u -",
+      "syllable_count": 16,
+      "edge_case_type": "perfect_match",
+      "difficulty_level": "easy",
+      "validation": {
+        "verified_by": "manual_expert_review",
+        "verified_date": "2025-11-09",
+        "reference_sources": [
+          "كتاب العروض للخليل",
+          "الكافي في العروض والقوافي"
+        ]
+      },
+      "metadata": {
+        "created_at": "2025-11-09",
+        "updated_at": "2025-11-09",
+        "version": "0.20"
+      }
+    }
+  ]
+}

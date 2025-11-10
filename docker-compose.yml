@@ -1,0 +1,354 @@
+version: '3.8'
+
+# =============================================================================
+# BAHR - Arabic Poetry Analysis Platform
+# Docker Compose Configuration for Local Development
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # PostgreSQL Database
+  # ===========================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: bahr_postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: bahr
+      POSTGRES_PASSWORD: bahr_dev_password
+      POSTGRES_DB: bahr_dev
+      # Performance tuning for development
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.UTF-8"
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      # Persistent data storage
+      - postgres_data:/var/lib/postgresql/data
+      # Optional: Custom init scripts
+      # - ./backend/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bahr -d bahr_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    networks:
+      - bahr_network
+
+  # ===========================================================================
+  # Redis Cache & Task Queue
+  # ===========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: bahr_redis
+    restart: unless-stopped
+
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      # Persistent cache storage (optional for development)
+      - redis_data:/data
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+    networks:
+      - bahr_network
+
+  # ===========================================================================
+  # Backend API (FastAPI)
+  # ===========================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+
+    container_name: bahr_backend
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    environment:
+      # Database
+      DATABASE_URL: postgresql://bahr:bahr_dev_password@postgres:5432/bahr_dev
+
+      # Redis
+      REDIS_URL: redis://redis:6379/0
+
+      # Security (CHANGE IN PRODUCTION!)
+      SECRET_KEY: dev-secret-key-CHANGE-IN-PRODUCTION
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      BCRYPT_COST_FACTOR: 12
+
+      # API Configuration
+      API_VERSION: v1
+      RATE_LIMIT_REQUESTS: 100
+      RATE_LIMIT_PERIOD: 3600
+
+      # Application
+      ENVIRONMENT: development
+      DEBUG: "true"
+      LOG_LEVEL: INFO
+      APP_NAME: BAHR
+
+      # CORS
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:3001
+
+      # Features
+      FEATURE_USER_REGISTRATION: "true"
+      FEATURE_BATCH_ANALYSIS: "true"
+
+      # Monitoring
+      ENABLE_METRICS: "true"
+      SENTRY_DSN: ""
+
+    ports:
+      - "8000:8000"  # API & /metrics exposed on same port in MVP
+
+    volumes:
+      # Mount source code for hot-reload
+      - ./backend:/app
+      # Prevent overwriting node_modules/venv
+      - backend_cache:/app/__pycache__
+      - backend_venv:/app/.venv
+
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --log-level info
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    networks:
+      - bahr_network
+
+  # ===========================================================================
+  # Frontend (Next.js) - Optional, uncomment when ready
+  # ===========================================================================
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #     target: development
+  #
+  #   container_name: bahr_frontend
+  #   restart: unless-stopped
+  #
+  #   depends_on:
+  #     - backend
+  #
+  #   environment:
+  #     NODE_ENV: development
+  #     NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+  #
+  #   ports:
+  #     - "3000:3000"
+  #
+  #   volumes:
+  #     - ./frontend:/app
+  #     - frontend_node_modules:/app/node_modules
+  #
+  #   command: npm run dev
+  #
+  #   networks:
+  #     - bahr_network
+
+  # ===========================================================================
+  # Adminer - Database Management UI (Optional)
+  # ===========================================================================
+  adminer:
+    image: adminer:latest
+    container_name: bahr_adminer
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: dracula
+
+    networks:
+      - bahr_network
+
+  # ===========================================================================
+  # Redis Commander - Redis Management UI (Optional)
+  # ===========================================================================
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: bahr_redis_commander
+    restart: unless-stopped
+
+    depends_on:
+      - redis
+
+    environment:
+      REDIS_HOSTS: local:redis:6379
+
+    ports:
+      - "8081:8081"
+
+    networks:
+      - bahr_network
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+networks:
+  bahr_network:
+    name: bahr_network
+    driver: bridge
+
+# =============================================================================
+# VOLUMES (Persistent Storage)
+# =============================================================================
+volumes:
+  # PostgreSQL data
+  postgres_data:
+    name: bahr_postgres_data
+    driver: local
+
+  # Redis data
+  redis_data:
+    name: bahr_redis_data
+    driver: local
+
+  # Backend cache (Python bytecode)
+  backend_cache:
+    name: bahr_backend_cache
+    driver: local
+
+  # Backend virtual environment
+  backend_venv:
+    name: bahr_backend_venv
+    driver: local
+
+  # Frontend node_modules
+  # frontend_node_modules:
+  #   name: bahr_frontend_node_modules
+  #   driver: local
+
+# =============================================================================
+# USAGE INSTRUCTIONS
+# =============================================================================
+#
+# Start all services:
+#   docker-compose up -d
+#
+# Start specific service:
+#   docker-compose up -d postgres redis
+#
+# View logs:
+#   docker-compose logs -f backend
+#   docker-compose logs -f postgres
+#
+# Stop all services:
+#   docker-compose down
+#
+# Stop and remove volumes (CAUTION: deletes data):
+#   docker-compose down -v
+#
+# Rebuild services:
+#   docker-compose build
+#   docker-compose up -d --build
+#
+# Execute command in running container:
+#   docker-compose exec backend bash
+#   docker-compose exec postgres psql -U bahr -d bahr_dev
+#
+# Check service health:
+#   docker-compose ps
+#
+# Database migrations:
+#   docker-compose exec backend alembic upgrade head
+#   docker-compose exec backend alembic revision --autogenerate -m "message"
+#
+# Run tests:
+#   docker-compose exec backend pytest
+#
+# Access services:
+#   - Backend API: http://localhost:8000
+#   - API Docs: http://localhost:8000/docs
+#   - Adminer (DB UI): http://localhost:8080
+#   - Redis Commander: http://localhost:8081
+#   - Prometheus Metrics (MVP served by backend): http://localhost:8000/metrics
+#
+# Database connection (from host):
+#   psql postgresql://bahr:bahr_dev_password@localhost:5432/bahr_dev
+#
+# Redis connection (from host):
+#   redis-cli -h localhost -p 6379
+
+# NOTE: Dedicated Prometheus server not included yet. To add later, extend this
+# compose file with a prometheus service scraping http://backend:8000/metrics.
+#
+# =============================================================================
+# TROUBLESHOOTING
+# =============================================================================
+#
+# Port already in use:
+#   - Check what's using the port: lsof -i :5432
+#   - Stop the process or change the port in this file
+#
+# Container won't start:
+#   - Check logs: docker-compose logs <service-name>
+#   - Rebuild: docker-compose build <service-name>
+#
+# Database connection refused:
+#   - Wait for health check: docker-compose ps
+#   - Check network: docker network inspect bahr_network
+#
+# Permission issues (macOS/Linux):
+#   - Ensure Docker has proper permissions
+#   - Check volume ownership: docker-compose exec backend ls -la
+#
+# M1/M2 Mac issues:
+#   - Some images might need platform specification
+#   - Add: platform: linux/amd64 to service definition
+#
+# Clean slate (remove everything):
+#   docker-compose down -v --rmi all
+#   docker system prune -a
+#
+# =============================================================================
+# PRODUCTION NOTES
+# =============================================================================
+#
+# This docker-compose.yml is for LOCAL DEVELOPMENT ONLY!
+#
+# For production:
+# 1. Use managed databases (Railway, Supabase, AWS RDS)
+# 2. Use managed Redis (Railway, Upstash, AWS ElastiCache)
+# 3. Use environment-specific compose files (docker-compose.prod.yml)
+# 4. Use secrets management (Docker secrets, AWS Secrets Manager)
+# 5. Use orchestration (Kubernetes, Docker Swarm)
+# 6. Enable SSL/TLS
+# 7. Configure proper logging and monitoring
+# 8. Set resource limits (memory, CPU)
+# 9. Use read replicas for database
+# 10. Implement proper backup strategies
+#
+# =============================================================================

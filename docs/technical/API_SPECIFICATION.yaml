@@ -1,0 +1,1052 @@
+openapi: 3.0.3
+info:
+  title: بَحْر - Arabic Poetry Analysis API
+  version: 1.0.0
+  description: |
+    Complete API specification for the BAHR Arabic Poetry Analysis Platform.
+
+    Features:
+    - Prosodic meter detection (16 classical meters)
+    - Text normalization and segmentation
+    - Confidence scoring and alternatives
+    - User authentication (JWT)
+    - Analysis history
+
+    Base URL (Development): http://localhost:8000
+    Base URL (Production): https://api.bahr.app
+
+  contact:
+    name: BAHR Development Team
+    email: dev@bahr.app
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.bahr.app
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User registration, login, and token management
+  - name: Analysis
+    description: Poetry prosody analysis endpoints
+  - name: Meters
+    description: Arabic prosodic meters information
+  - name: Users
+    description: User profile and history management
+  - name: Health
+    description: System health and monitoring
+
+paths:
+  # ==================== Authentication ====================
+  /api/v1/auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register a new user
+      description: Create a new user account with email and password
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, email, password, full_name]
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  pattern: '^[a-zA-Z0-9_\u0600-\u06FF]+$'
+                  example: "احمد_الشاعر"
+                email:
+                  type: string
+                  format: email
+                  example: "ahmad@example.com"
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  example: "SecurePass123"
+                full_name:
+                  type: string
+                  minLength: 2
+                  maxLength: 100
+                  example: "أحمد محمد"
+                role:
+                  type: string
+                  enum: [student, poet, teacher]
+                  default: student
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          user_id:
+                            type: integer
+                          username:
+                            type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/auth/login:
+    post:
+      tags: [Authentication]
+      summary: User login
+      description: Authenticate user and receive access token
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "ahmad@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "SecurePass123"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          access_token:
+                            type: string
+                            description: JWT access token (valid for 30 minutes)
+                          refresh_token:
+                            type: string
+                            description: JWT refresh token (valid for 7 days)
+                          token_type:
+                            type: string
+                            example: "bearer"
+                          expires_in:
+                            type: integer
+                            description: Token expiration in seconds
+                            example: 1800
+                          user:
+                            $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      description: Get a new access token using refresh token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          access_token:
+                            type: string
+                          token_type:
+                            type: string
+                            example: "bearer"
+                          expires_in:
+                            type: integer
+                            example: 1800
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/auth/me:
+    get:
+      tags: [Authentication]
+      summary: Get current user info
+      description: Retrieve authenticated user's profile
+      operationId: getCurrentUser
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ==================== Analysis ====================
+  /api/v1/analyze:
+    post:
+      tags: [Analysis]
+      summary: Analyze Arabic poetry verse
+      description: |
+        Perform prosodic analysis on an Arabic verse to detect:
+        - Meter (بحر)
+        - Prosodic pattern (تقطيع)
+        - Quality score
+        - Suggestions for improvement
+
+        Note: Analysis may be cached for identical requests.
+      operationId: analyzePoetry
+      security:
+        - BearerAuth: []
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalysisRequest'
+      responses:
+        '200':
+          description: Analysis completed successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AnalysisResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/TooLarge'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+
+  /api/v1/analyze/batch:
+    post:
+      tags: [Analysis]
+      summary: Batch analyze multiple verses
+      description: Analyze up to 10 verses in a single request
+      operationId: batchAnalyze
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [texts]
+              properties:
+                texts:
+                  type: array
+                  minItems: 1
+                  maxItems: 10
+                  items:
+                    type: string
+                  example:
+                    - "قفا نبك من ذكرى حبيب ومنزل"
+                    - "ألا في سبيل المجد ما أنا فاعل"
+                options:
+                  $ref: '#/components/schemas/AnalysisOptions'
+      responses:
+        '200':
+          description: Batch analysis completed
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AnalysisResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v1/analyze/history:
+    get:
+      tags: [Analysis]
+      summary: Get user's analysis history
+      description: Retrieve paginated list of previous analyses
+      operationId: getAnalysisHistory
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - name: meter
+          in: query
+          description: Filter by meter
+          schema:
+            type: string
+            enum: ['الطويل', 'المديد', 'البسيط', 'الوافر', 'الكامل', 'الهزج', 'الرجز', 'الرمل', 'السريع', 'المنسرح', 'الخفيف', 'المضارع', 'المقتضب', 'المجتث', 'المتقارب', 'المحدث']
+      responses:
+        '200':
+          description: History retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AnalysisResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/analyze/history/{analysis_id}:
+    get:
+      tags: [Analysis]
+      summary: Get specific analysis by ID
+      operationId: getAnalysisById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: analysis_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Analysis retrieved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AnalysisResult'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Analysis]
+      summary: Delete analysis from history
+      operationId: deleteAnalysis
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: analysis_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Analysis deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== Meters ====================
+  /api/v1/meters:
+    get:
+      tags: [Meters]
+      summary: List all prosodic meters
+      description: Get information about all 16 classical Arabic meters
+      operationId: listMeters
+      responses:
+        '200':
+          description: Meters retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Meter'
+
+  /api/v1/meters/{meter_name}:
+    get:
+      tags: [Meters]
+      summary: Get detailed meter information
+      operationId: getMeterDetails
+      parameters:
+        - name: meter_name
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "الطويل"
+      responses:
+        '200':
+          description: Meter details retrieved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/MeterDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== Users ====================
+  /api/v1/users/me:
+    get:
+      tags: [Users]
+      summary: Get current user profile
+      operationId: getUserProfile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Profile retrieved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserProfile'
+    patch:
+      tags: [Users]
+      summary: Update user profile
+      operationId: updateUserProfile
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name:
+                  type: string
+                bio:
+                  type: string
+                  maxLength: 500
+                avatar_url:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+
+  /api/v1/users/me/stats:
+    get:
+      tags: [Users]
+      summary: Get user statistics
+      operationId: getUserStats
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Statistics retrieved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total_analyses:
+                            type: integer
+                          favorite_meter:
+                            type: string
+                          accuracy_rate:
+                            type: number
+                            format: float
+                          meters_analyzed:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                meter:
+                                  type: string
+                                count:
+                                  type: integer
+
+  # ==================== Health ====================
+  /health:
+    get:
+      tags: [Health]
+      summary: Basic health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  timestamp:
+                    type: number
+                    format: double
+                  version:
+                    type: string
+                    example: "1.0.0"
+
+  /health/detailed:
+    get:
+      tags: [Health]
+      summary: Detailed health check
+      description: Includes status of dependencies (DB, Redis, etc.)
+      operationId: detailedHealthCheck
+      responses:
+        '200':
+          description: Detailed health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, unhealthy]
+                  checks:
+                    type: object
+                    properties:
+                      database:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            enum: [unknown, ok, degraded, down]
+                          message:
+                            type: string
+                            nullable: true
+                      redis:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            enum: [unknown, ok, degraded, down]
+                          message:
+                            type: string
+                            nullable: true
+                      system:
+                        type: object
+                        properties:
+                          cpu_percent:
+                            type: number
+                            format: float
+                          memory_percent:
+                            type: number
+                            format: float
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: Page number (1-indexed)
+      schema:
+        type: integer
+        minimum: 1
+    PerPage:
+      name: per_page
+      in: query
+      description: Items per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  schemas:
+    Meta:
+      type: object
+      properties:
+        request_id:
+          type: string
+        timestamp:
+          type: number
+          format: double
+        version:
+          type: string
+        analysis_engine_version:
+          type: string
+          description: Analysis engine version
+        cached:
+          type: boolean
+          nullable: true
+        cache_ttl:
+          type: integer
+          nullable: true
+        processing_time_ms:
+          type: integer
+          nullable: true
+        pagination:
+          type: object
+          nullable: true
+          properties:
+            total:
+              type: integer
+            page:
+              type: integer
+            per_page:
+              type: integer
+            total_pages:
+              type: integer
+            has_next:
+              type: boolean
+            has_prev:
+              type: boolean
+
+    ErrorObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        severity:
+          type: string
+          enum: [info, warning, error, critical]
+        can_retry:
+          type: boolean
+        retry_after:
+          type: integer
+          nullable: true
+        details:
+          type: array
+          nullable: true
+          items:
+            type: object
+            additionalProperties: true
+
+    Envelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          nullable: true
+          description: Response payload; shape varies per endpoint
+        error:
+          nullable: true
+          $ref: '#/components/schemas/ErrorObject'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    # ==================== Request Schemas ====================
+    AnalysisRequest:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          minLength: 5
+          maxLength: 2000
+          description: Arabic verse to analyze (preferably with diacritics)
+          example: "قفا نبك من ذكرى حبيب ومنزل"
+        options:
+          $ref: '#/components/schemas/AnalysisOptions'
+
+    AnalysisOptions:
+      type: object
+      properties:
+        remove_diacritics:
+          type: boolean
+          default: true
+          description: Whether to remove diacritics before analysis
+        analysis_mode:
+          type: string
+          enum: [fast, accurate, detailed]
+          default: accurate
+          description: Analysis depth/quality trade-off
+        return_alternatives:
+          type: boolean
+          default: true
+          description: Return alternative meter suggestions
+        include_suggestions:
+          type: boolean
+          default: true
+          description: Include improvement suggestions
+
+    # ==================== Response Schemas ====================
+    AnalysisResult:
+      type: object
+      properties:
+        analysis_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this analysis
+        input_text:
+          type: string
+          description: Original input text
+        normalized_text:
+          type: string
+          description: Text after normalization
+        prosodic_analysis:
+          $ref: '#/components/schemas/ProsodyPattern'
+        meter_detection:
+          $ref: '#/components/schemas/MeterDetection'
+        quality_score:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: Overall quality score (0-1)
+        suggestions:
+          type: array
+          items:
+            type: string
+          description: Improvement suggestions
+          example:
+            - "النص يتبع بحر الطويل بشكل صحيح"
+            - "التقطيع دقيق ومتسق"
+        created_at:
+          type: string
+          format: date-time
+
+    ProsodyPattern:
+      type: object
+      properties:
+        taqti3:
+          type: string
+          description: Prosodic scansion
+          example: "فَعُولُنْ مَفَاعِيلُنْ فَعُولُنْ مَفَاعِلُنْ"
+        pattern:
+          type: string
+          description: Syllable pattern
+          example: "- u - - | - u u - | - u - - | - u -"
+        syllable_count:
+          type: integer
+        stress_pattern:
+          type: string
+          nullable: true
+
+    MeterDetection:
+      type: object
+      properties:
+        detected_meter:
+          type: string
+          nullable: true
+          description: Detected meter name (null if unmetered)
+          example: "الطويل"
+        confidence:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: Confidence in detection (0-1)
+        alternatives:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeterAlternative'
+          description: Alternative meter suggestions
+
+    MeterAlternative:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "البسيط"
+        confidence:
+          type: number
+          format: float
+        reason:
+          type: string
+          nullable: true
+          description: Explanation for suggestion
+
+    Meter:
+      type: object
+      properties:
+        id:
+          type: integer
+        name_ar:
+          type: string
+          example: "الطويل"
+        name_en:
+          type: string
+          example: "Al-Tawil"
+        pattern:
+          type: string
+          description: Taf'ilah pattern
+        description:
+          type: string
+        example_verse:
+          type: string
+
+    MeterDetail:
+      allOf:
+        - $ref: '#/components/schemas/Meter'
+        - type: object
+          properties:
+            tafail:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  pattern:
+                    type: string
+                  variations:
+                    type: array
+                    items:
+                      type: string
+            usage_frequency:
+              type: string
+              enum: [very_common, common, rare, very_rare]
+            difficulty:
+              type: string
+              enum: [easy, medium, hard, very_hard]
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+        role:
+          type: string
+          enum: [student, poet, teacher, moderator, admin]
+        level:
+          type: integer
+          minimum: 1
+        xp:
+          type: integer
+          minimum: 0
+        created_at:
+          type: string
+          format: date-time
+
+    UserProfile:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            bio:
+              type: string
+              nullable: true
+            avatar_url:
+              type: string
+              format: uri
+              nullable: true
+            total_analyses:
+              type: integer
+            favorite_meter:
+              type: string
+              nullable: true
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Envelope'
+          example:
+            success: false
+            data: null
+            error:
+              code: "BAD_REQUEST"
+              message: "طلب غير صالح"
+              severity: "error"
+              can_retry: false
+            meta:
+              request_id: "{generated}"
+              timestamp: 1731043200
+              version: "1.0.0"
+
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Envelope'
+          example:
+            success: false
+            data: null
+            error:
+              code: "UNAUTHORIZED"
+              message: "مطلوب تسجيل الدخول للوصول لهذه الخدمة"
+              severity: "error"
+              can_retry: false
+            meta:
+              request_id: "{generated}"
+              timestamp: 1731043200
+              version: "1.0.0"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Envelope'
+          example:
+            success: false
+            data: null
+            error:
+              code: "NOT_FOUND"
+              message: "المورد المطلوب غير موجود"
+              severity: "error"
+              can_retry: false
+            meta:
+              request_id: "{generated}"
+              timestamp: 1731043200
+              version: "1.0.0"
+
+    Conflict:
+      description: Conflict - resource already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Envelope'
+          example:
+            success: false
+            data: null
+            error:
+              code: "USER_EXISTS"
+              message: "اسم المستخدم أو البريد الإلكتروني مستخدم بالفعل"
+              severity: "error"
+              can_retry: false
+            meta:
+              request_id: "{generated}"
+              timestamp: 1731043200
+              version: "1.0.0"
+
+    RateLimitExceeded:
+      description: Rate limit exceeded
+      headers:
+        Retry-After:
+          description: Seconds until rate limit resets
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Envelope'
+          example:
+            success: false
+            data: null
+            error:
+              code: "RATE_LIMIT_EXCEEDED"
+              message: "تجاوزت الحد المسموح من الطلبات. حاول مرة أخرى بعد قليل"
+              severity: "error"
+              can_retry: true
+              retry_after: 3600
+            meta:
+              request_id: "{generated}"
+              timestamp: 1731043200
+              version: "1.0.0"
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Envelope'
+          example:
+            success: false
+            data: null
+            error:
+              code: "VALIDATION_ERROR"
+              message: "بيانات الإدخال غير صالحة"
+              severity: "warning"
+              can_retry: false
+              details:
+                - field: "text"
+                  message: "النص يجب أن يحتوي على أحرف عربية"
+            meta:
+              request_id: "{generated}"
+              timestamp: 1731043200
+              version: "1.0.0"
+
+    TooLarge:
+      description: Request entity too large
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Envelope'
+          example:
+            success: false
+            data: null
+            error:
+              code: "ERR_INPUT_003"
+              message: "النص يتجاوز الحد المسموح (2000 حرف)"
+              severity: "error"
+              can_retry: false
+            meta:
+              request_id: "{generated}"
+              timestamp: 1731043200
+              version: "1.0.0"

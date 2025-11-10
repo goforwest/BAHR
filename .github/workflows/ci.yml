@@ -1,0 +1,158 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop]
+
+jobs:
+  # ==========================================================================
+  # Linting & Code Quality
+  # ==========================================================================
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install linting tools
+        run: |
+          pip install black==24.0.0 flake8==7.0.0 isort==5.13.0 mypy==1.8.0
+      
+      - name: Check code formatting with Black
+        run: |
+          black --check backend/app
+      
+      - name: Check import sorting with isort
+        run: |
+          isort --check-only backend/app
+      
+      - name: Lint with flake8
+        run: |
+          flake8 backend/app --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 backend/app --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      
+      - name: Type check with mypy
+        run: |
+          mypy backend/app --ignore-missing-imports
+        continue-on-error: true  # Don't fail build on type errors initially
+
+  # ==========================================================================
+  # Unit & Integration Tests
+  # ==========================================================================
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: bahr_test
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: bahr_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r backend/requirements/base.txt
+          pip install pytest==8.3.3 pytest-cov==5.0.0 pytest-asyncio==0.23.0
+      
+      - name: Run tests with coverage
+        env:
+          DATABASE_URL: postgresql://bahr_test:test_password@localhost:5432/bahr_test
+          REDIS_URL: redis://localhost:6379/0
+          SECRET_KEY: test-secret-key
+          LOG_LEVEL: ERROR
+        run: |
+          cd backend
+          pytest tests/ \
+            --cov=app \
+            --cov-report=term \
+            --cov-report=xml \
+            --cov-fail-under=50 \
+            -v
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./backend/coverage.xml
+          fail_ci_if_error: false
+
+  # ==========================================================================
+  # Security Scanning (Optional - Week 2+)
+  # ==========================================================================
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Run Bandit security linter
+        uses: tj-actions/bandit@v5.5
+        with:
+          targets: backend/app
+          options: "-ll -r"
+        continue-on-error: true  # Don't block on security warnings initially
+  
+  # ==========================================================================
+  # Build Check (Ensure Docker builds successfully)
+  # ==========================================================================
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Build backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: false
+          tags: bahr-api:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
