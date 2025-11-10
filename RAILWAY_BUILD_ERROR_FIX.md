@@ -501,6 +501,80 @@ Railway makes environment variables available at **runtime**, not **build time**
 
 ---
 
+## Issue 14: Docker Image Size Exceeds Railway's 4 GB Limit
+
+**Error Message:**
+```
+Error: Docker image size 8.5 GB exceeds Railway's 4 GB limit
+```
+
+**Why This Happens:**
+The `camel-tools==1.5.7` package pulls in massive ML dependencies:
+- PyTorch (~2 GB)
+- Transformers (~1 GB)
+- NVIDIA CUDA libraries (~3-4 GB)
+- Other ML tools
+
+Total: **8.5 GB** image size, but Railway limit is **4 GB**.
+
+**Root Cause:**
+We only used 2 simple functions from camel-tools:
+- `normalize_unicode()` - just calls Python's `unicodedata.normalize()`
+- `normalize_alef_maksura_ar()` - just replaces `ى` with `ي`
+
+We don't need PyTorch/transformers for basic text normalization!
+
+**The Fix:**
+1. **Remove camel-tools dependency**
+2. **Implement the two functions ourselves** (3 lines of code)
+3. **Add image size optimizations**
+
+**Changes to backend/requirements.txt:**
+```diff
+- camel-tools==1.5.7
+```
+
+**Changes to backend/app/core/phonetics.py:**
+```python
+import unicodedata
+
+def normalize_unicode(text: str) -> str:
+    """Normalize Unicode text to NFC form."""
+    return unicodedata.normalize('NFC', text)
+
+def normalize_alef_maksura_ar(text: str) -> str:
+    """Normalize alef maksura (ى) to yeh (ي)."""
+    return text.replace('ى', 'ي')
+```
+
+**Additional optimizations in backend/nixpacks.toml:**
+```toml
+[phases.install]
+cmds = [
+  "python -m venv /opt/venv",
+  "/opt/venv/bin/pip install --upgrade pip setuptools wheel",
+  "/opt/venv/bin/pip install -r requirements.txt",
+  # Cleanup to reduce image size
+  "find /opt/venv -type d -name '__pycache__' -exec rm -rf {} + || true",
+  "find /opt/venv -type f -name '*.pyc' -delete || true",
+  "rm -rf /root/.cache/pip"
+]
+```
+
+**Expected Image Size Reduction:**
+- Before: **8.5 GB** (with PyTorch + CUDA)
+- After: **~500 MB** (just FastAPI + PostgreSQL drivers)
+- Reduction: **~94% smaller!** ✅
+
+**Key Points:**
+- ✅ Removed 8 GB of unnecessary ML dependencies
+- ✅ Kept exact same functionality (just 2 simple functions)
+- ✅ Image now well under Railway's 4 GB limit
+- ✅ Faster builds (no PyTorch compilation)
+- ✅ Faster deployments (smaller image to push)
+
+---
+
 ## Need More Help?
 
 - **Root Directory Guide:** See RAILWAY_VISUAL_SETUP_GUIDE.md

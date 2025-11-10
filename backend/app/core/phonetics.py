@@ -1,5 +1,5 @@
 """
-Arabic phonetic analysis for prosody using CAMeL Tools.
+Arabic phonetic analysis for prosody.
 
 This module provides functions to convert Arabic text into phonetic representations
 suitable for prosodic analysis. It handles diacritics, long vowels, and shadda.
@@ -7,7 +7,17 @@ suitable for prosodic analysis. It handles diacritics, long vowels, and shadda.
 
 from typing import List, Tuple
 from dataclasses import dataclass
-from camel_tools.utils.normalize import normalize_unicode, normalize_alef_maksura_ar
+import unicodedata
+
+
+def normalize_unicode(text: str) -> str:
+    """Normalize Unicode text to NFC form."""
+    return unicodedata.normalize('NFC', text)
+
+
+def normalize_alef_maksura_ar(text: str) -> str:
+    """Normalize alef maksura (ى) to yeh (ي)."""
+    return text.replace('ى', 'ي')
 
 
 @dataclass

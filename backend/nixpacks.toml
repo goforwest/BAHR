@@ -1,5 +1,5 @@
 # Nixpacks configuration for Railway
-# Optimized for fast builds with caching
+# Optimized for fast builds with caching and small image size
 
 [phases.setup]
 nixPkgs = ["python311", "python311Packages.pip", "python311Packages.virtualenv", "postgresql"]
@@ -9,7 +9,13 @@ aptPkgs = ["libpq-dev"]
 cmds = [
   "python -m venv /opt/venv",
   "/opt/venv/bin/pip install --upgrade pip setuptools wheel",
-  "/opt/venv/bin/pip install -r requirements.txt"
+  "/opt/venv/bin/pip install -r requirements.txt",
+  # Cleanup to reduce image size
+  "find /opt/venv -type d -name '__pycache__' -exec rm -rf {} + || true",
+  "find /opt/venv -type d -name '*.dist-info' -exec rm -rf {}/RECORD {} + || true",
+  "find /opt/venv -type f -name '*.pyc' -delete || true",
+  "find /opt/venv -type f -name '*.pyo' -delete || true",
+  "rm -rf /root/.cache/pip"
 ]
 cacheDirectories = ["/root/.cache/pip"]
 
