@@ -412,6 +412,59 @@ Virtual environments create an isolated, mutable Python environment that doesn't
 
 ---
 
+## Issue 12: Alembic Config File Not Found
+
+**Error Message:**
+```
+FAILED: No config file 'alembic.ini' found, or file has no '[alembic]' section
+ERROR: failed to build: failed to solve: process "/bin/bash -ol pipefail -c /opt/venv/bin/alembic upgrade head && /opt/venv/bin/python scripts/seed_database.py" did not complete successfully: exit code: 255
+```
+
+**Why This Happens:**
+Railway's Root Directory is set to `backend`, so the build context only includes files from the `backend/` directory. The `alembic.ini` and `alembic/` directory were in the repository root, not in `backend/`, so alembic couldn't find its configuration.
+
+**The Fix:**
+Copy alembic configuration to the backend directory:
+
+```bash
+# From repository root
+cp alembic.ini backend/
+cp -r alembic backend/
+```
+
+**Also update backend/alembic/env.py** to handle both local and Railway paths:
+
+```python
+# Add parent directory to path (should be backend/ or repo root)
+current_dir = Path(__file__).resolve().parent.parent
+if current_dir.name == "backend":
+    # Already in backend directory (Railway deployment)
+    sys.path.insert(0, str(current_dir))
+else:
+    # In repository root (local development)
+    backend_dir = current_dir / "backend"
+    sys.path.insert(0, str(backend_dir))
+```
+
+**Key Points:**
+- ✅ `backend/alembic.ini` now exists in the build context
+- ✅ `backend/alembic/` directory contains all migrations
+- ✅ `alembic/env.py` works from both backend/ and root directories
+- ✅ Railway can now run migrations during deployment
+
+**File Structure:**
+```
+backend/
+├── alembic.ini          # ← Copied from root
+├── alembic/             # ← Copied from root
+│   ├── env.py           # ← Updated for flexible paths
+│   └── versions/
+├── app/
+└── scripts/
+```
+
+---
+
 ## Need More Help?
 
 - **Root Directory Guide:** See RAILWAY_VISUAL_SETUP_GUIDE.md
