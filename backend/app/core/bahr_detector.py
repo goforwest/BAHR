@@ -56,30 +56,50 @@ class BahrInfo:
 
 
 # Hardcoded bahrs for initial implementation (TODO: load from database)
+# Patterns include common variations (zihafat) using '|' for alternates
 BAHRS_DATA = [
     {
         "id": 1,
         "name_ar": "الطويل",
         "name_en": "at-Tawil",
-        "pattern": "فعولن مفاعيلن فعولن مفاعيلن"
+        "pattern": "فعولن مفاعيلن فعولن مفاعيلن",
+        "variations": [
+            "فعولن مفاعيلن فعولن مفاعلن",  # Common variation with قبض
+            "فعولن مفاعلن فعولن مفاعيلن",
+            "فعولن مفاعلن فعولن مفاعلن",
+        ]
     },
     {
         "id": 2,
         "name_ar": "الكامل",
         "name_en": "al-Kamil",
-        "pattern": "متفاعلن متفاعلن متفاعلن"
+        "pattern": "متفاعلن متفاعلن متفاعلن",
+        "variations": [
+            "متفاعلن متفاعلن متفاعل",  # Common tail variation
+            "متفعلن متفاعلن متفاعلن",   # إضمار
+        ]
     },
     {
         "id": 3,
         "name_ar": "الوافر",
         "name_en": "al-Wafir",
-        "pattern": "مفاعلتن مفاعلتن فعولن"
+        "pattern": "مفاعلتن مفاعلتن فعولن",
+        "variations": [
+            "مفاعلتن مفاعلتن مفاعلن",  # Variation with different ending
+            "مفاعيلن مفاعلتن فعولن",   # خبن in first taf'ila
+        ]
     },
     {
         "id": 4,
         "name_ar": "الرمل",
         "name_en": "ar-Ramal",
-        "pattern": "فاعلاتن فاعلاتن فاعلاتن"
+        "pattern": "فاعلاتن فاعلاتن فاعلاتن",
+        "variations": [
+            "فاعلاتن فاعلاتن فاعلن",   # محذوف (common ending)
+            "فاعلاتن فاعلن فاعلاتن",
+            "فاعلن فاعلاتن فاعلاتن",
+            "فاعلن فاعلاتن فاعلن",      # Double variation
+        ]
     },
     # TODO: Add remaining 12 bahrs when expanding the system
 ]
@@ -171,17 +191,28 @@ class BahrDetector:
 
         # Compare against all known bahrs
         for bahr in self.bahrs:
+            # Check main pattern
             similarity = self.calculate_similarity(
                 tafail_pattern,
                 bahr["pattern"]
             )
+
+            # Also check variations if they exist
+            if "variations" in bahr:
+                for variation in bahr["variations"]:
+                    var_similarity = self.calculate_similarity(
+                        tafail_pattern,
+                        variation
+                    )
+                    similarity = max(similarity, var_similarity)
 
             if similarity > best_similarity:
                 best_similarity = similarity
                 best_match = bahr
 
         # Only return if confidence meets minimum threshold
-        if best_match and best_similarity >= 0.7:
+        # Lowered from 0.7 to 0.6 to allow more prosodic variation
+        if best_match and best_similarity >= 0.6:
             return BahrInfo(
                 id=best_match["id"],
                 name_ar=best_match["name_ar"],

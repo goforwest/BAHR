@@ -107,18 +107,48 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
 
     LONG_VOWEL_MAP = {
         'ا': 'aa',  # Alef (after fatha)
-        'و': 'uu',  # Waw (after damma)
+        'و': 'uu',  # Waw (after damma)  
         'ي': 'ii',  # Ya (after kasra)
+        'ى': 'aa',  # Alef maqsurah (also forms aa after fatha)
     }
+    
+    # Special madd letters that should NOT be treated as regular consonants
+    MADD_LETTERS = {'ا', 'و', 'ي', 'ى'}
 
     i = 0
+    just_skipped_space = False  # Track if we just crossed a word boundary
+    
     while i < len(text):
         char = text[i]
 
         # Skip whitespace
         if char.isspace():
             i += 1
+            just_skipped_space = True
             continue
+
+        # Check if this is a madd letter that should extend the previous vowel
+        # BUT ONLY if we haven't just crossed a word boundary
+        if char in MADD_LETTERS and phonemes and not just_skipped_space:
+            last_phoneme = phonemes[-1]
+            
+            # If the last phoneme has a compatible short vowel (or no vowel), convert to long
+            if char in ['ا', 'ى'] and last_phoneme.vowel in ['a', 'an', '']:
+                last_phoneme.vowel = 'aa'
+                i += 1
+                continue
+            elif char == 'و' and last_phoneme.vowel in ['u', 'un', '']:
+                last_phoneme.vowel = 'uu'
+                i += 1
+                continue
+            elif char == 'ي' and last_phoneme.vowel in ['i', 'in', '']:
+                last_phoneme.vowel = 'ii'
+                i += 1
+                continue
+            # If not compatible, treat as consonant (fall through)
+
+        # Reset the space flag when processing a real character
+        just_skipped_space = False
 
         # Check if Arabic letter
         if '\u0621' <= char <= '\u064A':
@@ -135,19 +165,57 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
                     vowel = VOWEL_MAP[text[j]]
                 j += 1
 
-            # Check for long vowel (madd letter after short vowel)
+            # Check for long vowel (madd letter immediately after short vowel with tashkeel)
             if j < len(text) and text[j] in LONG_VOWEL_MAP:
-                if vowel in ['a', 'u', 'i']:
-                    vowel = LONG_VOWEL_MAP[text[j]]
+                madd_char = text[j]
+                # Check vowel compatibility
+                if (madd_char in ['ا', 'ى'] and vowel in ['a', 'an']) or \
+                   (madd_char == 'و' and vowel in ['u', 'un']) or \
+                   (madd_char == 'ي' and vowel in ['i', 'in']):
+                    # Convert to long vowel, strip the 'n' from tanween
+                    vowel = LONG_VOWEL_MAP[madd_char]
                     j += 1
+
+            # Handle shadda: consonant gemination (doubling)
+            # Shadda means the consonant is pronounced twice
+            # First occurrence has sukun, second has the vowel
+            if has_shadda:
+                # Handle tanween with shadda (rare but possible)
+                if vowel in ['an', 'un', 'in']:
+                    base_vowel = vowel[0]  # 'a', 'u', or 'i'
+                    # First consonant (with sukun - geminated part)
+                    phonemes.append(Phoneme(consonant, '', False))
+                    # Second consonant (with short vowel)
+                    phonemes.append(Phoneme(consonant, base_vowel, False))
+                    # Add separate phoneme for 'n' (noon sakinah from tanween)
+                    phonemes.append(Phoneme('ن', '', False))
+                else:
+                    # First consonant (with sukun - geminated part)
+                    phonemes.append(Phoneme(consonant, '', False))
+                    # Second consonant (with the vowel or sukun)
+                    phonemes.append(Phoneme(consonant, vowel, False))
+                i = j
+                continue
+            
+            # Handle tanween: creates an extra 'n' phoneme
+            if vowel in ['an', 'un', 'in']:
+                # Add phoneme with short vowel
+                base_vowel = vowel[0]  # 'a', 'u', or 'i'
+                phonemes.append(Phoneme(consonant, base_vowel, False))
+                # Add separate phoneme for 'n' (noon sakinah)
+                phonemes.append(Phoneme('ن', '', False))
+                i = j
+                continue
 
             # If no tashkeel, infer vowel (heuristic: assume 'a')
             if not has_tashkeel and vowel == '':
                 # Simple heuristic: assume fatha unless it's end of word
-                if i < len(text) - 1 and text[i+1] not in [' ', '.', '،']:
-                    vowel = 'a'
+                if j < len(text) and text[j] not in [' ', '.', '،', '\u060c', '\u061f']:
+                    # Check if next char is a madd letter - if so, don't add vowel yet
+                    if text[j] not in MADD_LETTERS:
+                        vowel = 'a'
 
-            phonemes.append(Phoneme(consonant, vowel, has_shadda))
+            phonemes.append(Phoneme(consonant, vowel, False))
             i = j
         else:
             i += 1

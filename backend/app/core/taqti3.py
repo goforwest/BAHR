@@ -18,16 +18,63 @@ class Taf3ila:
         return self.name
 
 
-# The 8 basic tafa'il
+# Comprehensive Tafa'il Dictionary with Zihafat (Prosodic Variations)
+# Pattern notation: '/' = haraka (short vowel), 'o' = sakin (sukun or long vowel continuation)
+# '/o' represents a long vowel (haraka + sakin)
+#
+# Strategy: Include only patterns >= 4 units to avoid over-matching
+# Sorted by length (longest first) for proper greedy matching
+
 BASIC_TAFAIL = {
-    "/o//o": "فعولن",      # fa'uulun
-    "//o/o": "مفاعيلن",    # mafaa'iilun
-    "///o": "مفاعلتن",     # mafaa'alatun
-    "/o/o//o": "مستفعلن",  # mustaf'ilun
-    "//o//o": "فاعلاتن",   # faa'ilaatun
-    "/o/o/o": "فاعلن",     # faa'ilun
-    "///": "فعلن",         # fa'lan
-    "/o//": "مفعولات",     # maf'uulaatu
+    # ============ 8-UNIT PATTERNS ============
+    "/o/o//o": "مستفعلن",       # mus-taf-'i-lun (Basit, Rajaz) - PRIMARY
+    
+    # ============ 7-UNIT PATTERNS ============
+    "///o//o": "متفاعلن",       # mu-ta-faa-'i-lun (Kamil) *** CRITICAL ***
+    "/o//o/o": "فاعلاتن",       # faa-'i-laa-tun (Ramal) - PRIMARY
+    "//o///o": "مفاعلتن",       # ma-faa-'a-la-tun (Wafir) - PRIMARY
+    "//o/o/o": "مفاعيلن",       # ma-faa-'ii-lun (Tawil) - PRIMARY
+    
+    # ============ 6-UNIT PATTERNS ============
+    "//o/o": "فعولن",           # fa-'uu-lun (Tawil, Mutaqarib) - PRIMARY
+    "///o/o": "مفاعلن",         # ma-faa-'i-lun (Wafir خبن variation)
+    "/o///o": "فاعلتن",         # faa-'i-la-tun (variation)
+    "//o//o": "مفعولن",         # maf-'uu-lun (variation)
+    "/o/o//": "مستفعل",         # mus-taf-'il (مستفعلن with حذف)
+    
+    # ============ 5-UNIT PATTERNS ============
+    "/o//o": "فاعلن",           # faa-'i-lun (Ramal ending, Mutaqarib) - IMPORTANT
+    "///o": "فعلن",             # fa-'i-lun (common ending)
+    "/o/o/o": "مستعلن",         # mus-ta-'i-lun (مستفعلن with طي)
+    "//o//": "فعولُ",           # fa-'uu-lu (فعولن without final sukun)
+    "/o//": "فاعل",             # faa-'il (فاعلن with حذف)
+    "///o/": "متفاعل",          # mu-ta-faa-'il (Kamil without final sukun)
+    "//o/o": "مفعول",           # maf-'uul (variation)
+    
+    # ============ 4-UNIT PATTERNS ============
+    "//o": "فعو",               # fa-'u (shortened - for fragments)
+    "/o/o": "فعول",             # fa-'uul (variation)
+    "///": "فعل",               # fa-'al (short form)
+    "/o/": "فاع",               # faa-' (shortened form)
+    "//o/": "مفاعيل",          # ma-faa-'iil (truncated)
+    "/o//": "فاعلُ",           # faa-'ilu (truncated)
+    
+    # Additional important variations for each bahr
+    # Tawil variations
+    "//o/": "فعولُ",            # fa-'uu-lu (no final sukun)
+    "//oo": "فعولان",           # Variant
+    
+    # Kamil variations  
+    "///o//": "متفاعلُ",        # mu-ta-faa-'ilu (no final sukun)
+    "///o": "متفاع",            # mu-ta-faa-' (truncated)
+    
+    # Ramal variations
+    "/o//o/": "فاعلات",         # faa-'i-laat (no final sukun)
+    "/o/": "فاعُ",              # faa-'u (minimal)
+    
+    # Wafir variations
+    "//o///": "مفاعلت",         # ma-faa-'a-lat (no final sukun)
+    "///o/": "مفاعل",           # ma-faa-'il (truncated)
 }
 
 
@@ -49,19 +96,25 @@ def pattern_to_tafail(pattern: str) -> List[str]:
     """
     tafail = []
     i = 0
+    
+    # Sort patterns by length (longest first) for greedy matching
+    sorted_patterns = sorted(BASIC_TAFAIL.items(), key=lambda x: len(x[0]), reverse=True)
 
     while i < len(pattern):
         matched = False
 
         # Try to match longest pattern first (greedy)
-        for length in range(min(8, len(pattern) - i), 0, -1):
-            substring = pattern[i:i+length]
-
-            if substring in BASIC_TAFAIL:
-                tafail.append(BASIC_TAFAIL[substring])
-                i += length
-                matched = True
-                break
+        for tafila_pattern, tafila_name in sorted_patterns:
+            pattern_len = len(tafila_pattern)
+            
+            if i + pattern_len <= len(pattern):
+                substring = pattern[i:i+pattern_len]
+                
+                if substring == tafila_pattern:
+                    tafail.append(tafila_name)
+                    i += pattern_len
+                    matched = True
+                    break
 
         if not matched:
             # No match found, skip one character
