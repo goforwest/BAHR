@@ -36,8 +36,10 @@ class Settings:
             self.cors_origins = [origin.strip() for origin in cors_str.split(",")]
     
     # Future (placeholders, not yet wired in code):
-    database_url: str = _get("DATABASE_URL", "")
-    redis_url: str = _get("REDIS_URL", "")
+    database_url: str = _get("DATABASE_URL", "postgresql://bahr_user:bahr_password@localhost:5432/bahr_db")
+    database_echo: bool = _get("DATABASE_ECHO", "false").lower() == "true"
+    redis_url: str = _get("REDIS_URL", "redis://localhost:6379/0")
+    cache_ttl: int = int(_get("CACHE_TTL", "86400"))  # 24 hours in seconds
     rate_limit_requests: int = int(_get("RATE_LIMIT_REQUESTS", "100"))
     rate_limit_period: int = int(_get("RATE_LIMIT_PERIOD", "3600"))
     maintenance_mode: bool = _get("MAINTENANCE_MODE", "false").lower() == "true"
