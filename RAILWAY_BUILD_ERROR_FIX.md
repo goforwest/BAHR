@@ -216,6 +216,18 @@ Error: Address already in use
 ```
 **Fix:** Verify start command uses `--port $PORT` (Railway provides this variable)
 
+**7. Build Timeout During "importing to docker":**
+```
+importing to docker: 1m 13s
+Build timed out
+```
+**Fix:** 
+- ✅ Already optimized: Added `.dockerignore` to exclude unnecessary files
+- ✅ Enabled pip caching in `nixpacks.toml`
+- ✅ Reduced dependencies (removed build-essential)
+- Push latest code and retry deployment
+- Build should complete faster now (30-60s instead of 1m+)
+
 ---
 
 ## Alternative: Manual Configuration
