@@ -228,6 +228,18 @@ Build timed out
 - Push latest code and retry deployment
 - Build should complete faster now (30-60s instead of 1m+)
 
+**8. Dockerfile Detected But Failing:**
+```
+ERROR: failed to compute cache key: "/tests": not found
+Using Detected Dockerfile
+```
+**Fix:**
+- ✅ Already fixed: Renamed `backend/Dockerfile` to `Dockerfile.dev`
+- Railway will now use Nixpacks instead of Dockerfile
+- Nixpacks is faster and better optimized for Railway
+- Automatically detects Python via `requirements.txt`
+- Uses `nixpacks.toml` and `Procfile` for configuration
+
 ---
 
 ## Alternative: Manual Configuration
