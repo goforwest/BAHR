@@ -25,7 +25,7 @@ cmds = [
 # No release phase - migrations run at startup when DATABASE_URL is available
 
 [start]
-cmd = "/opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+cmd = "/opt/venv/bin/alembic upgrade head && /opt/venv/bin/python scripts/seed_database.py && /opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
 
 [variables]
 PYTHONUNBUFFERED = "1"
