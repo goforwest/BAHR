@@ -1120,6 +1120,12 @@ If you see "Nixpacks was unable to generate a build plan":
 - Fix: Settings → Root Directory → "backend" or "frontend"
 - See: RAILWAY_FIX_ROOT_DIRECTORY.md for detailed solution
 
+If you see "Node.js version >= 20.9.0 is required":
+- Railway is using Node.js 18 instead of Node.js 20
+- Fixed by frontend/nixpacks.toml (specifies nodejs_20)
+- Make sure latest code is pushed to GitHub
+- Redeploy the frontend service
+
 **Reference Guides:**
 - Complete Guide: RAILWAY_DEPLOYMENT_GUIDE.md
 - Quick Fix: RAILWAY_FIX_ROOT_DIRECTORY.md  

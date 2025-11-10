@@ -171,25 +171,35 @@ curl https://your-frontend-url.railway.app/
 
 ### Check Build Logs for:
 
-**1. Missing Dependencies:**
+**1. Node.js Version Error (Frontend):**
+```
+You are using Node.js 18.x. For Next.js, Node.js version ">=20.9.0" is required.
+```
+**Fix:** 
+- ✅ Already fixed in `frontend/nixpacks.toml` (specifies nodejs_20)
+- Push latest code to GitHub
+- Redeploy frontend service
+- Verify in build logs: Should show "nodejs_20" in setup phase
+
+**2. Missing Dependencies:**
 ```
 Error: Could not find module 'X'
 ```
 **Fix:** Add to `requirements.txt` or `package.json`
 
-**2. Wrong Python Version:**
+**3. Wrong Python Version:**
 ```
 Error: Python 3.11 required
 ```
 **Fix:** Check `backend/runtime.txt` has `python-3.11.*`
 
-**3. Database Connection Error:**
+**4. Database Connection Error:**
 ```
 Error: Cannot connect to database
 ```
 **Fix:** Verify `DATABASE_URL=${{Postgres.DATABASE_URL}}` in variables
 
-**4. Port Binding Error:**
+**5. Port Binding Error:**
 ```
 Error: Address already in use
 ```
