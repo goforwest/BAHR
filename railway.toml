@@ -1,30 +1,13 @@
 # Railway deployment configuration for BAHR Platform
-# This file configures deployment settings for both backend and frontend services
-
-[build]
-builder = "NIXPACKS"
-
-# Backend Service Configuration
-[backend.build]
-buildCommand = "cd backend && pip install --upgrade pip && pip install -r requirements.txt"
-
-[backend.deploy]
-startCommand = "cd backend && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
-healthcheckPath = "/health"
-healthcheckTimeout = 300
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
-
-# Frontend Service Configuration  
-[frontend.build]
-buildCommand = "cd frontend && npm ci && npm run build"
-
-[frontend.deploy]
-startCommand = "cd frontend && npm start"
-healthcheckPath = "/"
-healthcheckTimeout = 300
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
+# 
+# IMPORTANT: Railway deploys each service separately from its root directory.
+# This file is for reference only. Configure each service in Railway dashboard:
+#
+# 1. Create TWO separate services in your Railway project
+# 2. Both services should use the SAME GitHub repository
+# 3. Configure Root Directory for each service:
+#    - Backend service: Set Root Directory = "backend"
+#    - Frontend service: Set Root Directory = "frontend"
 
 # Environment Variables Configuration
 # Set these in Railway dashboard for each service:
@@ -33,12 +16,16 @@ restartPolicyMaxRetries = 10
 # - PROJECT_NAME=BAHR API
 # - API_VERSION=1.0.0
 # - SECRET_KEY=<generate-with-openssl-rand-hex-32>
-# - DATABASE_URL=<railway-postgres-url>
-# - REDIS_URL=<railway-redis-url>
+# - DATABASE_URL=${{Postgres.DATABASE_URL}}
+# - REDIS_URL=${{Redis.REDIS_URL}}
 # - CACHE_TTL=86400
 # - CORS_ORIGINS=<frontend-url>,<backend-url>
 # - ENVIRONMENT=staging
 # - LOG_LEVEL=INFO
+# - DATABASE_ECHO=false
+# - RATE_LIMIT_REQUESTS=100
+# - RATE_LIMIT_PERIOD=3600
+# - MAINTENANCE_MODE=false
 #
 # Frontend Service Environment Variables:
 # - NEXT_PUBLIC_API_URL=<backend-url>/api/v1

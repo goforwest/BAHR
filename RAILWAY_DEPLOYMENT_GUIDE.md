@@ -24,9 +24,8 @@ This guide provides detailed instructions for deploying the BAHR platform to Rai
 
 1. Log in to [Railway Dashboard](https://railway.app/dashboard)
 2. Click **"New Project"**
-3. Select **"Deploy from GitHub repo"**
-4. Choose your BAHR repository
-5. Railway will detect the project automatically
+3. Select **"Empty Project"** (not "Deploy from GitHub repo" - we'll add services manually)
+4. Name your project: "BAHR Staging" or similar
 
 ### Step 2: Add PostgreSQL Database
 
@@ -42,21 +41,26 @@ This guide provides detailed instructions for deploying the BAHR platform to Rai
 3. Railway will provision a Redis instance
 4. The `REDIS_URL` environment variable will be automatically added
 
-### Step 4: Configure Backend Service
+### Step 4: Add Backend Service
 
-1. Click on your backend service (or create new service if needed)
+1. In your Railway project, click **"+ New"**
+2. Select **"GitHub Repo"**
+3. Choose your BAHR repository
+4. Railway will create a service
+
+### Step 5: Configure Backend Service
+
+1. Click on the backend service you just created
 2. Go to **"Settings"** tab
-3. Set **Root Directory**: `backend`
-4. Set **Build Command**: 
-   ```bash
-   pip install --upgrade pip && pip install -r requirements.txt
-   ```
-5. Set **Start Command**:
-   ```bash
-   alembic upgrade head && python scripts/seed_database.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT
-   ```
+3. **IMPORTANT:** Set **Root Directory** = `backend`
+   - This tells Railway to build from the backend folder
+4. Railway will auto-detect Python and use Nixpacks
+5. The `Procfile` in `backend/` will be used automatically:
+   - Build: Dependencies from `requirements.txt`
+   - Release: `alembic upgrade head && python scripts/seed_database.py`
+   - Start: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 
-### Step 5: Set Backend Environment Variables
+### Step 6: Set Backend Environment Variables
 
 Go to **"Variables"** tab and add:
 
@@ -96,23 +100,24 @@ MAINTENANCE_MODE=false
 openssl rand -hex 32
 ```
 
-### Step 6: Deploy Backend
+### Step 7: Deploy Backend
 
-1. Click **"Deploy"** or commit/push changes to trigger deployment
+1. After setting environment variables, Railway will automatically deploy
+2. Or click **"Deploy"** to manually trigger deployment
 2. Railway will:
    - Build the backend
    - Run `alembic upgrade head` (create database schema)
    - Run `python scripts/seed_database.py` (seed 16 meters)
    - Start the FastAPI server
 
-### Step 7: Get Backend URL
+### Step 8: Get Backend URL
 
 1. Go to **"Settings" → "Networking"**
 2. Click **"Generate Domain"**
 3. Copy the generated URL (e.g., `https://bahr-backend-production.up.railway.app`)
 4. Save this for frontend configuration
 
-### Step 8: Verify Backend Deployment
+### Step 9: Verify Backend Deployment
 
 ```bash
 # Health check
@@ -145,17 +150,13 @@ curl -X POST https://your-backend-url.railway.app/api/v1/analyze \
 
 ### Step 2: Configure Frontend Service
 
-1. Click on the frontend service
+1. Click on the frontend service you just created
 2. Go to **"Settings"** tab
-3. Set **Root Directory**: `frontend`
-4. Set **Build Command**:
-   ```bash
-   npm ci && npm run build
-   ```
-5. Set **Start Command**:
-   ```bash
-   npm start
-   ```
+3. **IMPORTANT:** Set **Root Directory** = `frontend`
+   - This tells Railway to build from the frontend folder
+4. Railway will auto-detect Next.js and configure automatically:
+   - Build: `npm ci && npm run build`
+   - Start: `npm start`
 
 ### Step 3: Set Frontend Environment Variables
 

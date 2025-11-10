@@ -1047,38 +1047,84 @@ pytest tests/api/v1/test_analyze.py -v
 ### Conversation 21: Deploy to Staging
 
 ```
-I need to deploy the BAHR platform to a staging environment for beta testing.
+I need to deploy the BAHR platform to Railway staging environment for beta testing.
 
-Platform choice: [Railway / Render / DigitalOcean]
+IMPORTANT: Railway deployment requires setting Root Directory for each service.
 
 Steps needed:
 
-Backend deployment:
-1. Create Procfile or equivalent for FastAPI
-2. Configure environment variables:
-   - DATABASE_URL (managed PostgreSQL)
-   - REDIS_URL (managed Redis)
-   - JWT_SECRET_KEY (generate secure random)
-3. Setup database migrations (run alembic upgrade head)
-4. Seed meter data (python scripts/seed_database.py)
+1. Create Empty Railway Project:
+   - Go to railway.app/dashboard
+   - Click "New Project" → "Empty Project"
+   - Name: "BAHR Staging"
 
-Frontend deployment:
-1. Set NEXT_PUBLIC_API_URL to staging backend URL
-2. Build Next.js app: npm run build
-3. Deploy static/server files
+2. Backend Deployment:
+   a. Click "+ New" → "GitHub Repo" → Select BAHR repository
+   b. Configure service:
+      - Settings → Root Directory → Set to "backend" (critical!)
+      - Railway will auto-detect Python and use backend/Procfile
+   c. Add PostgreSQL: "+ New" → Database → PostgreSQL
+   d. Add Redis: "+ New" → Database → Redis
+   e. Set environment variables:
+      - PROJECT_NAME=BAHR API
+      - SECRET_KEY=<generate with: openssl rand -hex 32>
+      - DATABASE_URL=${{Postgres.DATABASE_URL}}
+      - REDIS_URL=${{Redis.REDIS_URL}}
+      - CORS_ORIGINS=<backend-url>
+      - ENVIRONMENT=staging
+      - LOG_LEVEL=INFO
+      - CACHE_TTL=86400
+   f. Railway auto-deploys and runs:
+      - alembic upgrade head (migrations)
+      - python scripts/seed_database.py (seed 16 meters)
+      - uvicorn app.main:app (start server)
+   g. Settings → Networking → Generate Domain
+   h. Copy backend URL
 
-Provide step-by-step instructions for deploying on [chosen platform].
+3. Frontend Deployment:
+   a. Click "+ New" → "GitHub Repo" → Select SAME BAHR repository
+   b. Configure service:
+      - Settings → Root Directory → Set to "frontend" (critical!)
+      - Railway will auto-detect Next.js
+   c. Set environment variables:
+      - NEXT_PUBLIC_API_URL=<backend-url>/api/v1
+      - NODE_ENV=production
+   d. Railway auto-deploys: npm ci && npm run build && npm start
+   e. Settings → Networking → Generate Domain
+   f. Copy frontend URL
+
+4. Update Backend CORS:
+   - Go back to Backend Service → Variables
+   - Update CORS_ORIGINS=<backend-url>,<frontend-url>
+   - Backend redeploys automatically
+
+5. Verify Deployment:
+   - Run: ./scripts/health_check.sh <backend-url> <frontend-url>
+   - Or: BACKEND_URL=<url> FRONTEND_URL=<url> ./scripts/verify_deployment.sh
 
 After deployment, provide:
 - Staging backend URL
 - Staging frontend URL
-- Health check command to verify deployment
+- Health check results
 ```
 
 **Expected Output:**
-- Deployment instructions
-- Configuration files (Procfile, railway.json, etc.)
-- Staging URLs
+- Two deployed services with correct Root Directories
+- Backend URL: https://bahr-backend-production-xxx.up.railway.app
+- Frontend URL: https://bahr-frontend-production-xxx.up.railway.app
+- All health checks passing
+
+**Common Issue:**
+If you see "Nixpacks was unable to generate a build plan":
+- You forgot to set Root Directory!
+- Fix: Settings → Root Directory → "backend" or "frontend"
+- See: RAILWAY_FIX_ROOT_DIRECTORY.md for detailed solution
+
+**Reference Guides:**
+- Complete Guide: RAILWAY_DEPLOYMENT_GUIDE.md
+- Quick Fix: RAILWAY_FIX_ROOT_DIRECTORY.md  
+- Visual Guide: RAILWAY_VISUAL_SETUP_GUIDE.md
+- Env Vars: RAILWAY_ENV_VARIABLES_GUIDE.md
 
 ---
 

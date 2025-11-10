@@ -4,6 +4,17 @@
 
 Your BAHR platform is now ready for deployment to Railway staging environment.
 
+### ⚠️ IMPORTANT: Root Directory Configuration
+
+**Railway requires setting Root Directory for each service:**
+- Backend Service → Root Directory = `backend`
+- Frontend Service → Root Directory = `frontend`
+
+**Without this, deployment will fail with:**  
+`"Nixpacks was unable to generate a build plan"`
+
+See `RAILWAY_FIX_ROOT_DIRECTORY.md` for detailed fix.
+
 ---
 
 ## 📦 What Was Created
@@ -23,6 +34,10 @@ Your BAHR platform is now ready for deployment to Railway staging environment.
 
 ### Documentation
 - ✅ **`RAILWAY_DEPLOYMENT_GUIDE.md`** - Complete 8-part deployment guide (20+ pages)
+- ✅ **`RAILWAY_FIX_ROOT_DIRECTORY.md`** - Fix for "Nixpacks build failed" error
+- ✅ **`RAILWAY_VISUAL_SETUP_GUIDE.md`** - Visual step-by-step guide with diagrams
+- ✅ **`RAILWAY_QUICK_START_CHECKLIST.md`** - Quick checklist for deployment
+- ✅ **`RAILWAY_ENV_VARIABLES_GUIDE.md`** - Environment variables setup
 - ✅ **`DEPLOYMENT_QUICK_REFERENCE.md`** - Quick reference with common commands
 
 ### Deployment Scripts
@@ -44,6 +59,11 @@ Your BAHR platform is now ready for deployment to Railway staging environment.
 ---
 
 ## 📋 Deployment Steps Overview
+
+### CRITICAL FIRST STEP ⚠️
+**Set Root Directory for each service!**
+- Backend: Settings → Root Directory = `backend`
+- Frontend: Settings → Root Directory = `frontend`
 
 ### 1. Backend Deployment
 ```bash
