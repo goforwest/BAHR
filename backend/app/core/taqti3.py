@@ -49,7 +49,7 @@ BASIC_TAFAIL = {
     "//o//": "فعولُ",           # fa-'uu-lu (فعولن without final sukun)
     "/o//": "فاعل",             # faa-'il (فاعلن with حذف)
     "///o/": "متفاعل",          # mu-ta-faa-'il (Kamil without final sukun)
-    "//o/o": "مفعول",           # maf-'uul (variation)
+    # NOTE: Removed duplicate "//o/o": "مفعول" - conflicts with "//o/o": "فعولن" above
     
     # ============ 4-UNIT PATTERNS ============
     "//o": "فعو",               # fa-'u (shortened - for fragments)
@@ -82,7 +82,8 @@ def pattern_to_tafail(pattern: str) -> List[str]:
     """
     Convert phonetic pattern to list of tafa'il.
 
-    Uses greedy matching (longest match first).
+    Uses greedy matching with proper alignment. Tries all possible pattern lengths
+    at each position, preferring longer matches.
 
     Args:
         pattern: Phonetic pattern string (e.g., "/o//o/o//o")
@@ -91,8 +92,8 @@ def pattern_to_tafail(pattern: str) -> List[str]:
         List of taf'ila names
 
     Example:
-        >>> pattern_to_tafail("/o//o/o//o")
-        ["فعولن", "مفاعيلن"]  # (simplified)
+        >>> pattern_to_tafail("//o/o//o/o/o")
+        ["فعولن", "مفاعيلن"]
     """
     tafail = []
     i = 0
@@ -103,7 +104,7 @@ def pattern_to_tafail(pattern: str) -> List[str]:
     while i < len(pattern):
         matched = False
 
-        # Try to match longest pattern first (greedy)
+        # Try to match patterns at current position (longest first)
         for tafila_pattern, tafila_name in sorted_patterns:
             pattern_len = len(tafila_pattern)
             
@@ -117,8 +118,29 @@ def pattern_to_tafail(pattern: str) -> List[str]:
                     break
 
         if not matched:
-            # No match found, skip one character
-            i += 1
+            # No exact match found at this position
+            # This could mean: (1) incomplete vocalization, (2) unknown variation, or (3) error
+            # For now, try to match smaller fragments or skip
+            # As a fallback, try matching just 2-3 character patterns
+            for min_len in [3, 2]:
+                for tafila_pattern, tafila_name in sorted_patterns:
+                    if len(tafila_pattern) == min_len:
+                        pattern_len = len(tafila_pattern)
+                        
+                        if i + pattern_len <= len(pattern):
+                            substring = pattern[i:i+pattern_len]
+                            
+                            if substring == tafila_pattern:
+                                tafail.append(tafila_name)
+                                i += pattern_len
+                                matched = True
+                                break
+                if matched:
+                    break
+            
+            # If still no match, skip one character (likely noise or error)
+            if not matched:
+                i += 1
 
     return tafail
 

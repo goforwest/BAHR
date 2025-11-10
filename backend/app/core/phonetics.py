@@ -112,11 +112,11 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
         'ى': 'aa',  # Alef maqsurah (also forms aa after fatha)
     }
     
-    # Special madd letters that should NOT be treated as regular consonants
+    # Special madd letters that can extend vowels
     MADD_LETTERS = {'ا', 'و', 'ي', 'ى'}
 
     i = 0
-    just_skipped_space = False  # Track if we just crossed a word boundary
+    pending_vowel = None  # Track vowel waiting for next consonant
     
     while i < len(text):
         char = text[i]
@@ -124,57 +124,56 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
         # Skip whitespace
         if char.isspace():
             i += 1
-            just_skipped_space = True
             continue
 
-        # Check if this is a madd letter that should extend the previous vowel
-        # BUT ONLY if we haven't just crossed a word boundary
-        if char in MADD_LETTERS and phonemes and not just_skipped_space:
-            last_phoneme = phonemes[-1]
-            
-            # If the last phoneme has a compatible short vowel (or no vowel), convert to long
-            if char in ['ا', 'ى'] and last_phoneme.vowel in ['a', 'an', '']:
-                last_phoneme.vowel = 'aa'
-                i += 1
-                continue
-            elif char == 'و' and last_phoneme.vowel in ['u', 'un', '']:
-                last_phoneme.vowel = 'uu'
-                i += 1
-                continue
-            elif char == 'ي' and last_phoneme.vowel in ['i', 'in', '']:
-                last_phoneme.vowel = 'ii'
-                i += 1
-                continue
-            # If not compatible, treat as consonant (fall through)
-
-        # Reset the space flag when processing a real character
-        just_skipped_space = False
-
-        # Check if Arabic letter
+        # Check if Arabic letter (consonants and madd letters)
         if '\u0621' <= char <= '\u064A':
-            consonant = char
-            vowel = ''
-            has_shadda = False
-
-            # Look ahead for diacritics
+            # Look ahead for diacritics on this character
             j = i + 1
+            vowel_on_this_char = None  # None = no diacritic, '' = explicit sukun
+            has_shadda = False
+            
             while j < len(text) and (text[j] in VOWEL_MAP.keys() or text[j] == '\u0651'):
                 if text[j] == '\u0651':  # Shadda
                     has_shadda = True
                 else:
-                    vowel = VOWEL_MAP[text[j]]
+                    vowel_on_this_char = VOWEL_MAP[text[j]]
                 j += 1
 
-            # Check for long vowel (madd letter immediately after short vowel with tashkeel)
-            if j < len(text) and text[j] in LONG_VOWEL_MAP:
-                madd_char = text[j]
-                # Check vowel compatibility
-                if (madd_char in ['ا', 'ى'] and vowel in ['a', 'an']) or \
-                   (madd_char == 'و' and vowel in ['u', 'un']) or \
-                   (madd_char == 'ي' and vowel in ['i', 'in']):
-                    # Convert to long vowel, strip the 'n' from tanween
-                    vowel = LONG_VOWEL_MAP[madd_char]
-                    j += 1
+            # CRITICAL: Check if this is a madd letter used for vowel extension
+            # A madd letter is used for extension if:
+            # 1. It's one of the madd letters (ا و ي ى)
+            # 2. It has NO diacritic mark on it (vowel_on_this_char is None, not '')
+            # 3. There's a previous phoneme to extend
+            if char in MADD_LETTERS and vowel_on_this_char is None and not has_shadda and phonemes:
+                last_phoneme = phonemes[-1]
+                
+                # Check vowel compatibility for madd
+                extended = False
+                if char in ['ا', 'ى']:
+                    # Alef and alef maqsurah extend fatha (a) to aa
+                    if last_phoneme.vowel in ['a', 'an']:
+                        last_phoneme.vowel = 'aa'
+                        extended = True
+                elif char == 'و':
+                    # Waw extends damma (u) to uu
+                    if last_phoneme.vowel in ['u', 'un']:
+                        last_phoneme.vowel = 'uu'
+                        extended = True
+                elif char == 'ي':
+                    # Ya extends kasra (i) to ii
+                    if last_phoneme.vowel in ['i', 'in']:
+                        last_phoneme.vowel = 'ii'
+                        extended = True
+                
+                if extended:
+                    i = j
+                    continue
+                # If not extended, fall through and treat as consonant
+            
+            # This is a regular consonant (or a madd letter being used as consonant)
+            consonant = char
+            vowel = vowel_on_this_char if vowel_on_this_char is not None else ''  # Convert None to ''
 
             # Handle shadda: consonant gemination (doubling)
             # Shadda means the consonant is pronounced twice
@@ -207,13 +206,34 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
                 i = j
                 continue
 
-            # If no tashkeel, infer vowel (heuristic: assume 'a')
-            if not has_tashkeel and vowel == '':
-                # Simple heuristic: assume fatha unless it's end of word
-                if j < len(text) and text[j] not in [' ', '.', '،', '\u060c', '\u061f']:
-                    # Check if next char is a madd letter - if so, don't add vowel yet
-                    if text[j] not in MADD_LETTERS:
-                        vowel = 'a'
+            # CRITICAL FIX: Infer vowels for consonants without explicit diacritics  
+            # vowel is None = no diacritic found, '' = explicit sukun
+            # Only apply heuristics if vowel is None (no marking)
+            if vowel == '' and vowel_on_this_char is None:  # Explicitly check: was there no diacritic?
+                # HEURISTIC 1: Check if next character is a madd letter
+                if j < len(text) and text[j] in MADD_LETTERS:
+                    # Infer compatible short vowel before madd letter
+                    if text[j] in ['ا', 'ى']:
+                        vowel = 'a'  # Will be extended to 'aa' by madd letter
+                    elif text[j] == 'و':
+                        vowel = 'u'  # Will be extended to 'uu' by madd letter  
+                    elif text[j] == 'ي':
+                        vowel = 'i'  # Will be extended to 'ii' by madd letter
+                # HEURISTIC 2: Check if this is end of word (followed by space or end of text)
+                elif j >= len(text) or text[j].isspace():
+                    # End of word - likely has sukun (leave as '')
+                    pass
+                # HEURISTIC 3: Check if next char is a consonant with vowel
+                # (meaning this consonant is in middle of word)
+                elif j < len(text):
+                    # Look ahead to see if next char has a vowel or is a consonant
+                    next_char = text[j]
+                    # If next is Arabic letter (not madd), assume this has fatha
+                    if '\u0621' <= next_char <= '\u064A' and next_char not in MADD_LETTERS:
+                        vowel = 'a'  # Default to fatha for mid-word consonants
+                    # If next is a diacritic on next consonant, current one likely has sukun
+                    # (but this is already handled - vowel stays '')
+                # else: leave as '' (sukun)
 
             phonemes.append(Phoneme(consonant, vowel, False))
             i = j
@@ -231,10 +251,19 @@ def phonemes_to_pattern(phonemes: List[Phoneme]) -> str:
     - '/' represents haraka (moving syllable): consonant + short vowel
     - 'o' represents sukun (still syllable): consonant without vowel or with long vowel
     
+    CRITICAL: In Arabic prosody, syllables are the unit of measurement, not phonemes.
+    A syllable ending with a sakin (sukun or long vowel continuation) forms a "heavy" syllable.
+    
+    Syllable types:
+    - Light (open): CV = consonant + short vowel = `/` 
+    - Heavy (closed): CVC = consonant + short vowel + sakin consonant = `/o`
+    - Heavy (long): CVV = consonant + long vowel = `/o`
+    
     Pattern rules:
-    - Short vowel (a, u, i) → '/'
-    - Long vowel (aa, uu, ii) → '/o' (haraka + sukun)
-    - Sukun (no vowel) → 'o'
+    - Short vowel followed by sakin → `/o` (combine into one heavy syllable)
+    - Short vowel followed by vowel → `/` (light syllable)
+    - Long vowel → `/o` (heavy syllable)
+    - Sakin alone → `o` (continuation of previous syllable)
     
     Args:
         phonemes: List of Phoneme objects
@@ -243,23 +272,38 @@ def phonemes_to_pattern(phonemes: List[Phoneme]) -> str:
         Pattern string like "/o//o/o"
     
     Example:
-        >>> phonemes = [Phoneme('k', 'a'), Phoneme('t', 'a'), Phoneme('b', '')]
+        >>> phonemes = [Phoneme('م', 'a'), Phoneme('ر', ''), Phoneme('ت', 'a')]
         >>> phonemes_to_pattern(phonemes)
-        "//o"
+        "/o/"  # مَرْتَ = heavy + light
         
-        >>> phonemes = [Phoneme('k', 'aa'), Phoneme('t', 'a')]
+        >>> phonemes = [Phoneme('ك', 'aa'), Phoneme('ت', 'a')]
         >>> phonemes_to_pattern(phonemes)
-        "/o/"
+        "/o/"  # كَاتَ = heavy + light
     """
     pattern = ""
-
-    for phoneme in phonemes:
-        if phoneme.is_sukun():
+    i = 0
+    
+    while i < len(phonemes):
+        phoneme = phonemes[i]
+        
+        if phoneme.is_long_vowel():
+            # Long vowel = heavy syllable
+            pattern += "/o"
+            i += 1
+        elif phoneme.is_sukun():
+            # Sakin alone (shouldn't happen at start, but handle it)
             pattern += "o"
-        elif phoneme.is_long_vowel():
-            pattern += "/o"  # Long vowel = haraka + sukun
+            i += 1
         else:
-            pattern += "/"   # Short vowel = haraka
+            # Short vowel - check if next phoneme is sakin
+            if i + 1 < len(phonemes) and phonemes[i + 1].is_sukun():
+                # Short vowel + sakin = heavy syllable (closed)
+                pattern += "/o"
+                i += 2  # Skip the sakin phoneme since we consumed it
+            else:
+                # Short vowel alone = light syllable (open)
+                pattern += "/"
+                i += 1
 
     return pattern
 
