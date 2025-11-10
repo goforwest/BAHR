@@ -1,17 +1,3 @@
-# ⚠️ DEPRECATED - DO NOT USE
-
-**This implementation plan has been superseded by [IMPLEMENTATION_PLAN_REVISED_FINAL.md](./IMPLEMENTATION_PLAN_REVISED_FINAL.md)**
-
-This file is kept for historical reference only. All development should follow the revised final plan (v2.0).
-
-**Deprecated:** November 9, 2025
-**Reason:** Architecture review identified 10 critical issues requiring comprehensive revision
-**Review Report:** See [archive/reviews/TECHNICAL_ARCHITECTURE_REVIEW_REPORT.md](./archive/reviews/TECHNICAL_ARCHITECTURE_REVIEW_REPORT.md)
-**Revision Summary:** See [archive/reviews/REVISION_SUMMARY_REPORT.md](./archive/reviews/REVISION_SUMMARY_REPORT.md)
-
-**Current Plan (v2.0):** [IMPLEMENTATION_PLAN_REVISED_FINAL.md](./IMPLEMENTATION_PLAN_REVISED_FINAL.md) ✅
-
----
 
 # BAHR - AI Poetry Platform Implementation Plan (v1.0 - DEPRECATED)
 ## For AI Code Assistants (ChatGPT Codex / Claude)
