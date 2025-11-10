@@ -9,18 +9,18 @@ aptPkgs = ["libpq-dev"]
 cmds = [
   "python -m venv /opt/venv",
   "/opt/venv/bin/pip install --upgrade pip setuptools wheel",
-  "/opt/venv/bin/pip install -r requirements.txt",
-  # Cleanup to reduce image size
-  "find /opt/venv -type d -name '__pycache__' -exec rm -rf {} + || true",
-  "find /opt/venv -type d -name '*.dist-info' -exec rm -rf {}/RECORD {} + || true",
-  "find /opt/venv -type f -name '*.pyc' -delete || true",
-  "find /opt/venv -type f -name '*.pyo' -delete || true",
-  "rm -rf /root/.cache/pip"
+  "/opt/venv/bin/pip install -r requirements.txt"
 ]
 cacheDirectories = ["/root/.cache/pip"]
 
 [phases.build]
-cmds = ["echo 'Build complete - BAHR Backend'"]
+cmds = [
+  "echo 'Build complete - BAHR Backend'",
+  # Cleanup to reduce image size (remove cache files and bytecode)
+  "find /opt/venv -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true",
+  "find /opt/venv -type f -name '*.pyc' -delete 2>/dev/null || true",
+  "find /opt/venv -type f -name '*.pyo' -delete 2>/dev/null || true"
+]
 
 # No release phase - migrations run at startup when DATABASE_URL is available
 
