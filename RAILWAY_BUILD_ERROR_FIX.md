@@ -240,6 +240,17 @@ Using Detected Dockerfile
 - Automatically detects Python via `requirements.txt`
 - Uses `nixpacks.toml` and `Procfile` for configuration
 
+**9. Pip Command Not Found with Nixpacks:**
+```
+/bin/bash: line 1: pip: command not found
+RUN pip install --upgrade pip setuptools wheel
+```
+**Fix:**
+- ✅ Already fixed: Use `python -m pip` instead of `pip`
+- Nix-provided Python requires module invocation
+- Updated `nixpacks.toml` to use `python -m pip install`
+- This ensures pip uses the correct Python interpreter
+
 ---
 
 ## Alternative: Manual Configuration
