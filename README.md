@@ -118,27 +118,34 @@ BAHR/
 
 ## 📖 Documentation
 
-### 🎯 Getting Started
-- [📘 **Getting Started Guide**](GETTING_STARTED.md) - **START HERE!** Complete onboarding (5-min express or 30-min full setup)
-- [⚡ Critical Updates](GETTING_STARTED.md#-critical-updates---read-first) - Recent changes you must know
-- [🔧 Week 0 Setup](WEEK_0_CRITICAL_CHECKLIST.md) - Pre-development infrastructure tasks
+> **Note:** Documentation was reorganized on November 10, 2025 for better organization. See [Documentation Guide](docs/README.md) for the complete structure.
 
-### 🛠️ Technical
-- [🏛️ Architecture Overview](docs/technical/ARCHITECTURE_OVERVIEW.md)
-- [📐 Architecture Decisions](docs/ARCHITECTURE_DECISIONS.md) - ADRs for key technical choices
-- [🔌 API Specification](docs/technical/API_SPECIFICATION.yaml)
-- [🗄️ Database Schema](docs/technical/DATABASE_SCHEMA.md)
-- [🎯 Prosody Engine](docs/technical/PROSODY_ENGINE.md)
+### 🎯 Quick Links
+- 🌟 **Vision & Strategy:** [Master Plan](docs/vision/MASTER_PLAN.md) - Long-term vision and product roadmap
+- 🚀 **Get Started:** [Developer Onboarding](docs/onboarding/docs/onboarding/GETTING_STARTED.md) - **START HERE!** Complete setup guide
+- 📋 **Current Progress:** [Progress Log](docs/project-management/PROGRESS_LOG_CURRENT.md) - Recent updates and achievements
+- 🎯 **Implementation Plan:** [Roadmap](docs/planning/IMPLEMENTATION_ROADMAP.md) - Current implementation plan (v2.0)
+- �️ **Architecture:** [Technical Docs](docs/technical/) - API specs, database schema, architecture decisions
+- 📖 **Feature Guides:** [Implementation Guides](implementation-guides/) - Step-by-step feature implementation
 
-### 📋 Planning
-- [📅 Project Timeline](docs/planning/PROJECT_TIMELINE.md)
-- [✅ Week 1 Checklist](docs/WEEK_1_CRITICAL_CHECKLIST.md)
-- [🎯 Implementation Plan](IMPLEMENTATION_PLAN_REVISED_FINAL.md) - **Current plan (v2.0)**
-- [🚫 Deferred Features](docs/planning/DEFERRED_FEATURES.md) - Prevent scope creep
+### 📂 Documentation Categories
+- **Vision:** Long-term goals, product strategy ([/docs/vision/](docs/vision/))
+- **Onboarding:** Getting started, development setup ([/docs/onboarding/](docs/onboarding/))
+- **Guides:** Quick reference, how-to guides ([/docs/guides/](docs/guides/))
+- **Planning:** Timeline, roadmap, assumptions ([/docs/planning/](docs/planning/))
+- **Technical:** Architecture, API, database ([/docs/technical/](docs/technical/))
+- **Checklists:** Week/phase task lists ([/docs/checklists/](docs/checklists/))
+- **DevOps:** CI/CD, deployment guides ([/docs/devops/](docs/devops/))
+- **Archive:** Historical milestones, reviews ([/archive/](archive/))
 
-### 📚 Additional Resources
-- [📖 Complete Documentation Index](docs/README.md)
-- [🗂️ Historical Archive](archive/README.md) - Past milestones, reviews, and reports
+> **📋 November 10, 2025 Update:** Documentation reorganized for better structure.  
+> See [DOCUMENTATION_REORGANIZATION_CHANGELOG.md](docs/DOCUMENTATION_REORGANIZATION_CHANGELOG.md) for file migration map.
+
+### 📚 Key Resources
+- [📖 Complete Documentation Index](docs/README.md) - Full navigation guide
+- [🔍 Quick Start: Analyze Endpoint](docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md) - API usage guide
+- [✅ Week 1 Critical Checklist](docs/checklists/WEEK_1_CRITICAL.md) - Week 1 tasks
+- [🗂️ Historical Archive](archive/README.md) - Past milestones and reports
 
 ---
 
