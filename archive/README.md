@@ -74,6 +74,22 @@ Technical reviews, audits, and revision reports that led to documentation improv
 
 ---
 
+### 🚀 `/deployment/` - Historical Deployment Guides
+Archived deployment troubleshooting and setup guides superseded by consolidated documentation.
+
+| File | Date | Summary |
+|------|------|---------|
+| `RAILWAY_BUILD_ERROR_FIX.md` | Nov 10, 2025 | 14 historical build errors and fixes (camel-tools, pip, venv, migrations, etc.) |
+| `RAILWAY_FIX_ROOT_DIRECTORY.md` | Nov 10, 2025 | Root directory configuration troubleshooting |
+| `RAILWAY_NEXT_STEPS.md` | Nov 10, 2025 | Post-deployment next steps (superseded) |
+| `RAILWAY_ENV_VARIABLES_GUIDE.md` | Nov 10, 2025 | Environment variables setup guide |
+
+**Current Deployment Guide:** See [/docs/deployment/RAILWAY_COMPLETE_GUIDE.md](../docs/deployment/RAILWAY_COMPLETE_GUIDE.md) - Consolidates all 7 Railway guides.
+
+**Rationale:** These files documented specific troubleshooting scenarios during initial deployment. Most issues are now fixed in codebase. Consolidated guide provides cleaner, up-to-date deployment instructions.
+
+---
+
 ### 🔗 `/integration/` - Integration Completion Reports
 Reports documenting integration of review feedback into production documentation.
 
@@ -207,4 +223,4 @@ If you need information from archived documents or have questions about why some
 **Archive Created:** November 9, 2025
 **Archive Curator:** Documentation Architecture Team
 **Status:** Active (files added as needed)
-**Last Updated:** November 10, 2025 (Phase 1 consolidation: 15 files archived)
+**Last Updated:** November 10, 2025 (Phase 2 consolidation: 19 total files archived)
