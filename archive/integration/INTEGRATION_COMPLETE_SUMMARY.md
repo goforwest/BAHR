@@ -261,7 +261,7 @@ GREEN LIGHT CONDITIONS MET:
 
 **All details are documented in:**
 - [REVIEW_INTEGRATION_CHANGELOG.md](./REVIEW_INTEGRATION_CHANGELOG.md) - Full integration record
-- [PROGRESS_LOG.md](../PROGRESS_LOG.md) - Updated with review summary
+- [docs/project-management/PROGRESS_LOG_CURRENT.md](../docs/project-management/PROGRESS_LOG_CURRENT.md) - Updated with review summary
 
 **You're ready. The documentation is exceptional. Week 1 awaits.** 💪
 

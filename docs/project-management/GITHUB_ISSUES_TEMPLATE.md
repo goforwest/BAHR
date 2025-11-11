@@ -1,6 +1,14 @@
 # BAHR Platform - Project Management Tracker
 ## GitHub Issues & Milestones Template
 
+**Category:** Project Management  
+**Status:** 🎯 Active  
+**Version:** 1.1  
+**Last Updated:** 2025-11-10  
+**Audience:** Project Managers, Team Leads  
+**Purpose:** GitHub Issues and Milestones creation templates  
+**Related Docs:** [Progress Log](PROGRESS_LOG_CURRENT.md), [Implementation Roadmap](../planning/IMPLEMENTATION_ROADMAP.md)
+
 ---
 
 ## How to Use This Tracker
@@ -252,7 +260,7 @@ Initialize Next.js frontend project with all required configurations.
 
 **References:**
 - PROJECT_STARTER_TEMPLATE.md, Section 8-9
-- PROGRESS_LOG.md (November 9, 2025 entry)
+- docs/project-management/PROGRESS_LOG_CURRENT.md (November 9, 2025 entry)
 - frontend/README_AR.md
 ```
 

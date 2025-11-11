@@ -942,10 +942,10 @@ Week 8:
 ## 📚 Updated Documentation Index
 
 ### Core Planning
-- ✅ [BAHR_AI_POET_MASTER_PLAN.md](./BAHR_AI_POET_MASTER_PLAN.md) - Grand vision
-- ✅ [IMPLEMENTATION_PLAN_REVISED_FINAL.md](./IMPLEMENTATION_PLAN_REVISED_FINAL.md) - This document
+- ✅ [docs/vision/MASTER_PLAN.md](./docs/vision/MASTER_PLAN.md) - Grand vision
+- ✅ [docs/planning/IMPLEMENTATION_ROADMAP.md](./docs/planning/IMPLEMENTATION_ROADMAP.md) - This document
 - ✅ [PHASE_1_WEEK_1-2_SPEC.md](./PHASE_1_WEEK_1-2_SPEC.md) - Detailed prosody engine spec
-- ✅ [PROJECT_TRACKER.md](./PROJECT_TRACKER.md) - Progress tracking
+- ✅ [docs/project-management/GITHUB_ISSUES_TEMPLATE.md](./docs/project-management/GITHUB_ISSUES_TEMPLATE.md) - Progress tracking
 
 ### NEW: Critical Fixes
 - ✅ [docs/technical/SECRETS_MANAGEMENT.md](./docs/technical/SECRETS_MANAGEMENT.md) - Production secrets

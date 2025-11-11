@@ -1391,7 +1391,7 @@ if percentage < 0.7:
    - Performance benchmarks
    - M1/M2 Mac compatibility notes
 
-8. **docs/WEEK_1_CRITICAL_CHECKLIST.md:237-285**
+8. **docs/checklists/WEEK_1_CRITICAL.md:237-285**
    - Diacritics handling scenarios
    - Input validation requirements
 

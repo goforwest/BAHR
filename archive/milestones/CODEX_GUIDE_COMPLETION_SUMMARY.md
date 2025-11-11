@@ -444,8 +444,8 @@ During this implementation, you've created exceptional documentation:
    - `RAILWAY_ENV_VARIABLES_GUIDE.md`
 
 3. **Progress Tracking**
-   - `PROGRESS_LOG.md`
-   - `PROJECT_TRACKER.md`
+   - `docs/project-management/PROGRESS_LOG_CURRENT.md`
+   - `docs/project-management/GITHUB_ISSUES_TEMPLATE.md`
    - `IMPLEMENTATION_VERIFICATION_REPORT.md`
    - `CODEX_GUIDE_COMPLETION_SUMMARY.md` (this document!)
 

@@ -36,7 +36,7 @@
 **Purpose:** Long-term vision, product roadmap, strategic goals
 
 **Current Files:**
-- ✅ `BAHR_AI_POET_MASTER_PLAN.md` (root) - 1,676 lines, comprehensive vision
+- ✅ `docs/vision/MASTER_PLAN.md` (root) - 1,676 lines, comprehensive vision
 
 **Assessment:**
 - **Status:** Essential, comprehensive, well-maintained
@@ -51,24 +51,24 @@
 **Purpose:** Current progress, sprint tracking, milestone completion
 
 **Current Files:**
-1. `PROJECT_TRACKER.md` (root) - 1,122 lines, GitHub issues template
-2. `PROGRESS_LOG.md` (root) - 3,116 lines, detailed daily progress
-3. `IMPLEMENTATION_PLAN_REVISED_FINAL.md` (root) - 1,076 lines, approved implementation plan
+1. `docs/project-management/GITHUB_ISSUES_TEMPLATE.md` (root) - 1,122 lines, GitHub issues template
+2. `docs/project-management/PROGRESS_LOG_CURRENT.md` (root) - 3,116 lines, detailed daily progress
+3. `docs/planning/IMPLEMENTATION_ROADMAP.md` (root) - 1,076 lines, approved implementation plan
 
 **Assessment:**
-- **PROJECT_TRACKER.md:**
+- **docs/project-management/GITHUB_ISSUES_TEMPLATE.md:**
   - Purpose: GitHub issues/milestones template
   - Status: Moderately useful for issue creation
   - Action: MOVE to `/docs/project-management/GITHUB_ISSUES_TEMPLATE.md`
   
-- **PROGRESS_LOG.md:**
+- **docs/project-management/PROGRESS_LOG_CURRENT.md:**
   - Purpose: Chronological activity log
   - Issues: 3,116 lines (too large!), mixes completed/current work
   - Action: SPLIT into:
     - `/docs/project-management/PROGRESS_LOG_CURRENT.md` (last 30 days only)
     - `/archive/progress/PROGRESS_LOG_2024-2025.md` (historical)
   
-- **IMPLEMENTATION_PLAN_REVISED_FINAL.md:**
+- **docs/planning/IMPLEMENTATION_ROADMAP.md:**
   - Purpose: Production-ready implementation roadmap
   - Status: Current, actively referenced
   - Action: MOVE to `/docs/planning/IMPLEMENTATION_ROADMAP.md`
@@ -79,15 +79,15 @@
 **Purpose:** Get developers productive quickly
 
 **Current Files:**
-1. `GETTING_STARTED.md` (root) - 1,202 lines, consolidated setup guide
-2. `docs/QUICK_START_ANALYZE.md` - Specific endpoint guide
+1. `docs/onboarding/GETTING_STARTED.md` (root) - 1,202 lines, consolidated setup guide
+2. `docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md` - Specific endpoint guide
 
 **Assessment:**
-- **GETTING_STARTED.md:**
+- **docs/onboarding/GETTING_STARTED.md:**
   - Purpose: Main onboarding document
   - Status: Well-structured, consolidates 3 previous guides
   - Overlap: Some Railway deployment content duplicates `/docs/deployment/`
-  - Action: MOVE to `/docs/onboarding/GETTING_STARTED.md` + trim Railway duplication
+  - Action: MOVE to `/docs/onboarding/docs/onboarding/GETTING_STARTED.md` + trim Railway duplication
 
 - **QUICK_START_ANALYZE.md:**
   - Purpose: API endpoint usage guide
@@ -140,8 +140,8 @@
 **Current Files:**
 - `docs/phases/` - PHASE_0_SETUP.md, PHASE_1_MVP.md, etc.
 - `docs/planning/PROJECT_TIMELINE.md`
-- `docs/PRE_WEEK_1_FINAL_CHECKLIST.md`
-- `docs/WEEK_1_CRITICAL_CHECKLIST.md`
+- `docs/checklists/PRE_WEEK_1_FINAL.md`
+- `docs/checklists/WEEK_1_CRITICAL.md`
 
 **Assessment:**
 - **Status:** Well-organized
@@ -156,7 +156,7 @@
 **Purpose:** Deployment guides, CI/CD, Railway setup
 
 **Current Files:**
-- `docs/CI_CD_COMPLETE_GUIDE.md` - Consolidated CI/CD guide
+- `docs/devops/CI_CD_COMPLETE_GUIDE.md` - Consolidated CI/CD guide
 - `docs/deployment/` - 5 Railway-related guides
 
 **Assessment:**
@@ -207,7 +207,7 @@
 │   │   └── PRODUCT_ROADMAP.md        [Future: extract from MASTER_PLAN]
 │   │
 │   ├── onboarding/                    [NEW - Developer onboarding]
-│   │   ├── GETTING_STARTED.md        [MOVED from root]
+│   │   ├── docs/onboarding/GETTING_STARTED.md        [MOVED from root]
 │   │   └── DEVELOPMENT_SETUP.md      [Future: extract from GETTING_STARTED]
 │   │
 │   ├── guides/                        [NEW - How-to guides]
@@ -316,7 +316,7 @@
 
 #### Issue #2: Progress Tracking Duplication
 **Files:**
-- `PROGRESS_LOG.md` (3,116 lines!) - Everything since project start
+- `docs/project-management/PROGRESS_LOG_CURRENT.md` (3,116 lines!) - Everything since project start
 - `archive/milestones/` - 7+ completion summaries
 
 **Analysis:**
@@ -337,7 +337,7 @@
 
 #### Issue #3: Implementation Planning Documents
 **Files:**
-- `IMPLEMENTATION_PLAN_REVISED_FINAL.md` (root)
+- `docs/planning/IMPLEMENTATION_ROADMAP.md` (root)
 - `/docs/planning/PROJECT_TIMELINE.md`
 - `/docs/phases/PHASE_1_WEEK_1-2_SPEC.md`
 
@@ -362,8 +362,8 @@
 
 #### Issue #4: Getting Started vs Quick Start Guides
 **Files:**
-- `GETTING_STARTED.md` (root) - 1,202 lines
-- `docs/QUICK_START_ANALYZE.md` - Specific endpoint
+- `docs/onboarding/GETTING_STARTED.md` (root) - 1,202 lines
+- `docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md` - Specific endpoint
 - Multiple "quick start" sections in other docs
 
 **Analysis:**
@@ -374,7 +374,7 @@
 **Action Plan:**
 1. ✅ Keep both (different purposes)
 2. ✅ Rename for clarity:
-   - `GETTING_STARTED.md` → `/docs/onboarding/GETTING_STARTED.md`
+   - `docs/onboarding/GETTING_STARTED.md` → `/docs/onboarding/docs/onboarding/GETTING_STARTED.md`
    - `QUICK_START_ANALYZE.md` → `/docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md`
 
 ---
@@ -421,7 +421,7 @@ These files MUST stay in root for GitHub/OSS conventions:
 
 **Categories:**
 - Vision docs: No prefix (e.g., `MASTER_PLAN.md`)
-- Onboarding: No prefix (e.g., `GETTING_STARTED.md`)
+- Onboarding: No prefix (e.g., `docs/onboarding/GETTING_STARTED.md`)
 - Technical specs: No prefix (e.g., `BACKEND_API.md`)
 - Guides: No prefix (e.g., `ANALYZE_ENDPOINT_QUICKSTART.md`)
 - Checklists: `WEEK_X_` or `PHASE_X_` prefix (e.g., `WEEK_1_CRITICAL.md`)
@@ -471,7 +471,7 @@ These files MUST stay in root for GitHub/OSS conventions:
 **Link Format:**
 ```markdown
 📖 **See also:** [Document Name](../category/DOCUMENT_NAME.md)
-📋 **Prerequisites:** [Setup Guide](../onboarding/GETTING_STARTED.md)
+📋 **Prerequisites:** [Setup Guide](../onboarding/docs/onboarding/GETTING_STARTED.md)
 🔗 **Related:** [API Spec](../technical/BACKEND_API.md), [Testing](../testing/TESTING_CHECKLIST.md)
 ```
 
@@ -713,21 +713,21 @@ Jump to: [Section Name](#section-name)
 
 2. ✅ Create backup of root-level docs:
    ```bash
-   cp BAHR_AI_POET_MASTER_PLAN.md BAHR_AI_POET_MASTER_PLAN.md.bak
-   cp PROJECT_TRACKER.md PROJECT_TRACKER.md.bak
-   cp PROGRESS_LOG.md PROGRESS_LOG.md.bak
-   cp IMPLEMENTATION_PLAN_REVISED_FINAL.md IMPLEMENTATION_PLAN_REVISED_FINAL.md.bak
-   cp GETTING_STARTED.md GETTING_STARTED.md.bak
+   cp docs/vision/MASTER_PLAN.md docs/vision/MASTER_PLAN.md.bak
+   cp docs/project-management/GITHUB_ISSUES_TEMPLATE.md docs/project-management/GITHUB_ISSUES_TEMPLATE.md.bak
+   cp docs/project-management/PROGRESS_LOG_CURRENT.md docs/project-management/PROGRESS_LOG_CURRENT.md.bak
+   cp docs/planning/IMPLEMENTATION_ROADMAP.md docs/planning/IMPLEMENTATION_ROADMAP.md.bak
+   cp docs/onboarding/GETTING_STARTED.md docs/onboarding/GETTING_STARTED.md.bak
    ```
 
 3. ✅ Document current link references:
    ```bash
    # Find all references to docs we're moving
-   grep -r "BAHR_AI_POET_MASTER_PLAN.md" . --include="*.md" > link_audit.txt
-   grep -r "PROJECT_TRACKER.md" . --include="*.md" >> link_audit.txt
-   grep -r "PROGRESS_LOG.md" . --include="*.md" >> link_audit.txt
-   grep -r "IMPLEMENTATION_PLAN_REVISED_FINAL.md" . --include="*.md" >> link_audit.txt
-   grep -r "GETTING_STARTED.md" . --include="*.md" >> link_audit.txt
+   grep -r "docs/vision/MASTER_PLAN.md" . --include="*.md" > link_audit.txt
+   grep -r "docs/project-management/GITHUB_ISSUES_TEMPLATE.md" . --include="*.md" >> link_audit.txt
+   grep -r "docs/project-management/PROGRESS_LOG_CURRENT.md" . --include="*.md" >> link_audit.txt
+   grep -r "docs/planning/IMPLEMENTATION_ROADMAP.md" . --include="*.md" >> link_audit.txt
+   grep -r "docs/onboarding/GETTING_STARTED.md" . --include="*.md" >> link_audit.txt
    ```
 
 ---
@@ -739,32 +739,32 @@ Jump to: [Section Name](#section-name)
 
 **Step 1: Move vision documents**
 ```bash
-git mv BAHR_AI_POET_MASTER_PLAN.md docs/vision/MASTER_PLAN.md
+git mv docs/vision/MASTER_PLAN.md docs/vision/MASTER_PLAN.md
 ```
 
 **Step 2: Split and move progress tracking**
 1. Create current progress log (last 30 days only):
-   - Extract from PROGRESS_LOG.md → `docs/project-management/PROGRESS_LOG_CURRENT.md`
+   - Extract from docs/project-management/PROGRESS_LOG_CURRENT.md → `docs/project-management/PROGRESS_LOG_CURRENT.md`
 2. Archive historical progress:
    - Move older entries → `archive/progress/PROGRESS_LOG_2024-2025.md`
 
 **Step 3: Move project management docs**
 ```bash
-git mv PROJECT_TRACKER.md docs/project-management/GITHUB_ISSUES_TEMPLATE.md
-git mv IMPLEMENTATION_PLAN_REVISED_FINAL.md docs/planning/IMPLEMENTATION_ROADMAP.md
+git mv docs/project-management/GITHUB_ISSUES_TEMPLATE.md docs/project-management/GITHUB_ISSUES_TEMPLATE.md
+git mv docs/planning/IMPLEMENTATION_ROADMAP.md docs/planning/IMPLEMENTATION_ROADMAP.md
 ```
 
 **Step 4: Move onboarding docs**
 ```bash
-git mv GETTING_STARTED.md docs/onboarding/GETTING_STARTED.md
+git mv docs/onboarding/GETTING_STARTED.md docs/onboarding/docs/onboarding/GETTING_STARTED.md
 ```
 
 **Step 5: Reorganize existing docs/ files**
 ```bash
-git mv docs/QUICK_START_ANALYZE.md docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md
-git mv docs/PRE_WEEK_1_FINAL_CHECKLIST.md docs/checklists/PRE_WEEK_1_FINAL.md
-git mv docs/WEEK_1_CRITICAL_CHECKLIST.md docs/checklists/WEEK_1_CRITICAL.md
-git mv docs/CI_CD_COMPLETE_GUIDE.md docs/devops/CI_CD_COMPLETE_GUIDE.md
+git mv docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md
+git mv docs/checklists/PRE_WEEK_1_FINAL.md docs/checklists/PRE_WEEK_1_FINAL.md
+git mv docs/checklists/WEEK_1_CRITICAL.md docs/checklists/WEEK_1_CRITICAL.md
+git mv docs/devops/CI_CD_COMPLETE_GUIDE.md docs/devops/CI_CD_COMPLETE_GUIDE.md
 ```
 
 **Step 6: Update archive with date prefixes** (optional enhancement)
@@ -794,20 +794,20 @@ git mv PHASE_0_AND_WEEK_1-2_COMPLETION_REPORT.md 2025-11-10_PHASE_0_WEEK_1-2_COM
 **Step 3: Global find-replace for moved docs:**
 
 ```bash
-# BAHR_AI_POET_MASTER_PLAN.md → docs/vision/MASTER_PLAN.md
+# docs/vision/MASTER_PLAN.md → docs/vision/MASTER_PLAN.md
 find . -name "*.md" -exec sed -i '' 's|BAHR_AI_POET_MASTER_PLAN\.md|docs/vision/MASTER_PLAN.md|g' {} +
 
-# PROJECT_TRACKER.md → docs/project-management/GITHUB_ISSUES_TEMPLATE.md
+# docs/project-management/GITHUB_ISSUES_TEMPLATE.md → docs/project-management/GITHUB_ISSUES_TEMPLATE.md
 find . -name "*.md" -exec sed -i '' 's|PROJECT_TRACKER\.md|docs/project-management/GITHUB_ISSUES_TEMPLATE.md|g' {} +
 
-# PROGRESS_LOG.md → docs/project-management/PROGRESS_LOG_CURRENT.md
+# docs/project-management/PROGRESS_LOG_CURRENT.md → docs/project-management/PROGRESS_LOG_CURRENT.md
 find . -name "*.md" -exec sed -i '' 's|PROGRESS_LOG\.md|docs/project-management/PROGRESS_LOG_CURRENT.md|g' {} +
 
-# IMPLEMENTATION_PLAN_REVISED_FINAL.md → docs/planning/IMPLEMENTATION_ROADMAP.md
+# docs/planning/IMPLEMENTATION_ROADMAP.md → docs/planning/IMPLEMENTATION_ROADMAP.md
 find . -name "*.md" -exec sed -i '' 's|IMPLEMENTATION_PLAN_REVISED_FINAL\.md|docs/planning/IMPLEMENTATION_ROADMAP.md|g' {} +
 
-# GETTING_STARTED.md → docs/onboarding/GETTING_STARTED.md
-find . -name "*.md" -exec sed -i '' 's|GETTING_STARTED\.md|docs/onboarding/GETTING_STARTED.md|g' {} +
+# docs/onboarding/GETTING_STARTED.md → docs/onboarding/docs/onboarding/GETTING_STARTED.md
+find . -name "*.md" -exec sed -i '' 's|GETTING_STARTED\.md|docs/onboarding/docs/onboarding/GETTING_STARTED.md|g' {} +
 
 # QUICK_START_ANALYZE.md → docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md
 find . -name "*.md" -exec sed -i '' 's|docs/QUICK_START_ANALYZE\.md|docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md|g' {} +
@@ -942,7 +942,7 @@ File: `docs/project-management/DOCUMENTATION_REORGANIZATION_CHANGELOG.md`
 ### Moved Files
 | Old Path | New Path | Reason |
 |----------|----------|--------|
-| `/BAHR_AI_POET_MASTER_PLAN.md` | `/docs/vision/MASTER_PLAN.md` | Root cleanup |
+| `/docs/vision/MASTER_PLAN.md` | `/docs/vision/MASTER_PLAN.md` | Root cleanup |
 | ... | ... | ... |
 
 ### New Folder Structure
@@ -976,7 +976,7 @@ Add prominent notice:
 
 ### Quick Links
 - 🌟 **Vision & Strategy:** [Master Plan](docs/vision/MASTER_PLAN.md)
-- 🚀 **Get Started:** [Developer Onboarding](docs/onboarding/GETTING_STARTED.md)
+- 🚀 **Get Started:** [Developer Onboarding](docs/onboarding/docs/onboarding/GETTING_STARTED.md)
 - 📋 **Current Progress:** [Progress Log](docs/project-management/PROGRESS_LOG_CURRENT.md)
 - 🏗️ **Architecture:** [Technical Docs](docs/technical/)
 - 📖 **Implementation:** [Feature Guides](implementation-guides/)
@@ -1014,7 +1014,7 @@ See docs/project-management/DOCUMENTATION_REORGANIZATION_CHANGELOG.md for detail
 - Root-level .md files: 7
 - Orphaned/duplicate content: 2-3 instances
 - Average doc findability: ~6/10 (subjective)
-- PROGRESS_LOG.md size: 3,116 lines (unwieldy)
+- docs/project-management/PROGRESS_LOG_CURRENT.md size: 3,116 lines (unwieldy)
 
 **After Reorganization:**
 - Root-level .md files: 2 (README, CONTRIBUTING)
@@ -1167,7 +1167,7 @@ docs(fix): correct broken links in BACKEND_API.md
 
 ## Where to Find Things
 - 🌟 Vision & Roadmap → `/docs/vision/`
-- 🚀 Getting Started → `/docs/onboarding/GETTING_STARTED.md`
+- 🚀 Getting Started → `/docs/onboarding/docs/onboarding/GETTING_STARTED.md`
 - 📋 Current Progress → `/docs/project-management/PROGRESS_LOG_CURRENT.md`
 - 🏗️ Architecture → `/docs/technical/`
 - 📖 How to Build Features → `/implementation-guides/`
@@ -1210,7 +1210,7 @@ docs(fix): correct broken links in BACKEND_API.md
 When onboarding new team members:
 
 - [ ] Read `/docs/README.md` (5 min) - Documentation structure overview
-- [ ] Read `/docs/onboarding/GETTING_STARTED.md` (30 min) - Development setup
+- [ ] Read `/docs/onboarding/docs/onboarding/GETTING_STARTED.md` (30 min) - Development setup
 - [ ] Bookmark `/docs/DOCUMENTATION_QUICK_REFERENCE.md` - Quick reference
 - [ ] Review `/docs/vision/MASTER_PLAN.md` (20 min) - Understand the vision
 - [ ] Skim `/docs/planning/IMPLEMENTATION_ROADMAP.md` (15 min) - Current phase

@@ -209,7 +209,7 @@ Daily Breakdown:
       - 📝 Dataset statistics report
     Evening (1 hour):
       - 📝 Weekly review and planning
-      - 📝 Update PROGRESS_LOG.md
+      - 📝 Update docs/project-management/PROGRESS_LOG_CURRENT.md
     Deliverable: Testing infrastructure ready
 
 ⏰ Week 2 Time Budget:
@@ -1687,11 +1687,11 @@ Core Documentation:
   - docs/technical/DATABASE_SCHEMA.md - Database design
   - docs/workflows/DEVELOPMENT_WORKFLOW.md - Git & CI/CD
   - docs/research/ARABIC_NLP_RESEARCH.md - Research references
-  - PROGRESS_LOG.md - Daily progress tracking
+  - docs/project-management/PROGRESS_LOG_CURRENT.md - Daily progress tracking
 
 Project Management:
   - Use this timeline as master reference
-  - Update PROGRESS_LOG.md daily
+  - Update docs/project-management/PROGRESS_LOG_CURRENT.md daily
   - Review and adjust weekly
   - Celebrate milestones!
 ```

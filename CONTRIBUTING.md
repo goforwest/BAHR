@@ -121,7 +121,7 @@ We welcome various types of contributions:
 
 #### ✨ Feature Requests
 - Discuss in GitHub Issues before implementing
-- Align with project vision (see `docs/BAHR_AI_POET_MASTER_PLAN.md`)
+- Align with project vision (see `docs/vision/MASTER_PLAN.md`)
 - Check `docs/planning/DEFERRED_FEATURES.md` for scope
 - Use the feature request template
 

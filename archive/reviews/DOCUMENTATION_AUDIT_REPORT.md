@@ -34,21 +34,21 @@ Files Recommended for Archive:  13
 
 | File Name | Type | Issue Detected | Recommended Action | Notes |
 |-----------|------|----------------|-------------------|-------|
-| **IMPLEMENTATION_PLAN_FOR_CODEX.md** | Plan (v1.0) | **OBSOLETE** - Explicitly deprecated Nov 9, 2025 | **ARCHIVE** (already has deprecation notice) | Superseded by IMPLEMENTATION_PLAN_REVISED_FINAL.md. Keep for historical reference as header indicates. |
-| **WEEK_0_CRITICAL_CHECKLIST.md** | Checklist | **REDUNDANT** - Overlaps 80% with docs/PRE_WEEK_1_FINAL_CHECKLIST.md | **CONSOLIDATE** → Merge into docs/PRE_WEEK_1_FINAL_CHECKLIST.md | Both cover pre-Week 1 setup. Root file covers issues #1-10, docs/ file covers broader validation. |
-| **docs/WEEK_1_CRITICAL_CHECKLIST.md** | Checklist | **REDUNDANT** - Overlaps 60% with PHASE_1_WEEK_1-2_SPEC.md | **CONSOLIDATE** → Merge critical sections into PHASE_1_WEEK_1-2_SPEC.md | Week 1 checklist duplicates spec content but adds CAMeL Tools testing and dataset labeling guidance. |
-| **docs/PRE_WEEK_1_FINAL_CHECKLIST.md** | Checklist | **REDUNDANT** - Overlaps with WEEK_0_CRITICAL_CHECKLIST.md (root) | **KEEP** as canonical source, archive root WEEK_0 version | More comprehensive (480 lines vs 586 lines) and better organized. |
+| **IMPLEMENTATION_PLAN_FOR_CODEX.md** | Plan (v1.0) | **OBSOLETE** - Explicitly deprecated Nov 9, 2025 | **ARCHIVE** (already has deprecation notice) | Superseded by docs/planning/IMPLEMENTATION_ROADMAP.md. Keep for historical reference as header indicates. |
+| **WEEK_0_CRITICAL_CHECKLIST.md** | Checklist | **REDUNDANT** - Overlaps 80% with docs/checklists/PRE_WEEK_1_FINAL.md | **CONSOLIDATE** → Merge into docs/checklists/PRE_WEEK_1_FINAL.md | Both cover pre-Week 1 setup. Root file covers issues #1-10, docs/ file covers broader validation. |
+| **docs/checklists/WEEK_1_CRITICAL.md** | Checklist | **REDUNDANT** - Overlaps 60% with PHASE_1_WEEK_1-2_SPEC.md | **CONSOLIDATE** → Merge critical sections into PHASE_1_WEEK_1-2_SPEC.md | Week 1 checklist duplicates spec content but adds CAMeL Tools testing and dataset labeling guidance. |
+| **docs/checklists/PRE_WEEK_1_FINAL.md** | Checklist | **REDUNDANT** - Overlaps with WEEK_0_CRITICAL_CHECKLIST.md (root) | **KEEP** as canonical source, archive root WEEK_0 version | More comprehensive (480 lines vs 586 lines) and better organized. |
 | **docs/CI_CD_GUIDE.md** | Guide | **REDUNDANT** - 70% overlap with docs/CI_CD_ARCHITECTURE.md and .github/CI_CD_QUICKREF.md | **CONSOLIDATE** → Merge into single CI/CD reference | Three separate CI/CD docs create confusion. Recommend single source. |
 | **docs/CI_CD_ARCHITECTURE.md** | Architecture | **REDUNDANT** - Overlaps with CI_CD_GUIDE.md | **CONSOLIDATE** → Keep architecture diagrams, merge prose into CI_CD_GUIDE.md | Contains valuable Mermaid diagrams that should be preserved. |
 | **.github/CI_CD_SETUP_COMPLETE.md** | Completion Report | **HISTORICAL** - Completion report dated Nov 9, 2025 | **ARCHIVE** → Move to archive/milestones/ | Completed milestone, should be archived. |
 | **.github/CI_CD_ACTION_CHECKLIST.md** | Checklist | **OPERATIONAL** - Contains ongoing actions | **KEEP** in .github/ | Active checklist for team, not redundant. |
 | **.github/CI_CD_QUICKREF.md** | Quick Reference | **REDUNDANT** - Overlaps with CI_CD_GUIDE.md | **CONSOLIDATE** → Merge into CI_CD_GUIDE.md as "Quick Reference" section | Keep quick reference format but consolidate location. |
-| **PROJECT_TRACKER.md** | Tracker | **LOW USAGE** - GitHub Issues template, not actively maintained | **CONSOLIDATE** → Move to docs/planning/PROJECT_MANAGEMENT.md | Root level cluttered. Move planning docs to docs/planning/. |
-| **PROGRESS_LOG.md** | Log | **ACTIVE** - Daily progress tracking (2922 lines) | **KEEP** but consider archiving old entries (pre-Week 1) | Extremely detailed but useful. Archive entries >30 days old to separate file. |
+| **docs/project-management/GITHUB_ISSUES_TEMPLATE.md** | Tracker | **LOW USAGE** - GitHub Issues template, not actively maintained | **CONSOLIDATE** → Move to docs/planning/PROJECT_MANAGEMENT.md | Root level cluttered. Move planning docs to docs/planning/. |
+| **docs/project-management/PROGRESS_LOG_CURRENT.md** | Log | **ACTIVE** - Daily progress tracking (2922 lines) | **KEEP** but consider archiving old entries (pre-Week 1) | Extremely detailed but useful. Archive entries >30 days old to separate file. |
 | **TESTING_CHECKLIST.md** | Checklist | **PARTIALLY REDUNDANT** - Overlaps 40% with docs/technical/INTEGRATION_E2E_TESTING.md | **KEEP** as operational checklist, note overlap | Different purposes: operational checklist vs technical guide. |
 | **CODEX_CONVERSATION_GUIDE.md** | Guide | **SPECIALIZED** - AI assistant prompt guide | **KEEP** but consider renaming to AI_ASSISTANT_GUIDE.md | Unique purpose, no redundancy. Clarify name for broader AI tools. |
 | **PROJECT_STARTER_TEMPLATE.md** | Template | **PARTIALLY REDUNDANT** - Overlaps with implementation-guides/ | **KEEP** as boilerplate, cross-reference implementation guides | Serves as quick-start template. Update to reference implementation guides. |
-| **BAHR_AI_POET_MASTER_PLAN.md** | Vision Document | **STRATEGIC** - Long-term vision (1676 lines) | **KEEP** in root | Foundational vision doc, no redundancy. |
+| **docs/vision/MASTER_PLAN.md** | Vision Document | **STRATEGIC** - Long-term vision (1676 lines) | **KEEP** in root | Foundational vision doc, no redundancy. |
 | **PHASE_1_WEEK_1-2_SPEC.md** | Spec | **ACTIVE** - Week 1-2 implementation spec | **KEEP** | Core implementation spec, no redundancy. |
 | **docs/technical/DEPLOYMENT_GUIDE.md** | Guide (Arabic) | **REDUNDANT** - 65% overlap with implementation-guides/feature-deployment-cicd.md | **CONSOLIDATE** → Keep technical guide, reference from implementation guide | Two deployment guides (one Arabic, one English). Consider consolidation or clear differentiation. |
 | **implementation-guides/feature-deployment-cicd.md** | Feature Guide | **REDUNDANT** - Overlaps with docs/technical/DEPLOYMENT_GUIDE.md | **KEEP** as implementation guide, remove deployment strategy overlap | Focus on implementation steps, reference DEPLOYMENT_GUIDE.md for strategy. |
@@ -94,7 +94,7 @@ mv IMPLEMENTATION_PLAN_FOR_CODEX.md archive/plans/v1/
 - `docs/CI_CD_ARCHITECTURE.md`
 - `.github/CI_CD_QUICKREF.md`
 
-**Action:** Create unified `docs/CI_CD_COMPLETE_GUIDE.md` with sections:
+**Action:** Create unified `docs/devops/CI_CD_COMPLETE_GUIDE.md` with sections:
 1. Overview & Architecture (from CI_CD_ARCHITECTURE.md)
 2. Workflow Configuration (from CI_CD_GUIDE.md)
 3. Quick Reference (from CI_CD_QUICKREF.md)
@@ -110,10 +110,10 @@ mv IMPLEMENTATION_PLAN_FOR_CODEX.md archive/plans/v1/
 #### 4. Consolidate Week 0/Pre-Week 1 Checklists
 **Files:**
 - `WEEK_0_CRITICAL_CHECKLIST.md` (root)
-- `docs/PRE_WEEK_1_FINAL_CHECKLIST.md` (docs/)
+- `docs/checklists/PRE_WEEK_1_FINAL.md` (docs/)
 
 **Action:** 
-1. Keep `docs/PRE_WEEK_1_FINAL_CHECKLIST.md` as canonical source
+1. Keep `docs/checklists/PRE_WEEK_1_FINAL.md` as canonical source
 2. Move `WEEK_0_CRITICAL_CHECKLIST.md` to `archive/checklists/WEEK_0_CRITICAL_CHECKLIST.md`
 3. Add redirect/note in root README.md
 
@@ -141,7 +141,7 @@ mv IMPLEMENTATION_PLAN_FOR_CODEX.md archive/plans/v1/
 
 #### 6. Merge Week 1 Checklist into Spec
 **Files:**
-- `docs/WEEK_1_CRITICAL_CHECKLIST.md`
+- `docs/checklists/WEEK_1_CRITICAL.md`
 - `PHASE_1_WEEK_1-2_SPEC.md`
 
 **Action:**
@@ -154,12 +154,12 @@ mv IMPLEMENTATION_PLAN_FOR_CODEX.md archive/plans/v1/
 
 **Impact:** Consolidates Week 1 guidance into single authoritative document.
 
-#### 7. Archive Old PROGRESS_LOG.md Entries
-**Files:** `PROGRESS_LOG.md` (2922 lines, growing continuously)
+#### 7. Archive Old docs/project-management/PROGRESS_LOG_CURRENT.md Entries
+**Files:** `docs/project-management/PROGRESS_LOG_CURRENT.md` (2922 lines, growing continuously)
 
 **Action:**
 1. Create `archive/progress/PROGRESS_LOG_WEEK_1.md` for completed weeks
-2. Keep only current month in main PROGRESS_LOG.md
+2. Keep only current month in main docs/project-management/PROGRESS_LOG_CURRENT.md
 3. Automate monthly archival process
 
 **Impact:** Reduces main log size by ~70%, improves readability.
@@ -261,7 +261,7 @@ Navigation Difficulty:     Low (clear single sources of truth)
 **Risk:** Low (just file movement)
 
 ### Phase 2: Consolidation (Next 2 Weeks)
-1. ✅ Create `docs/CI_CD_COMPLETE_GUIDE.md` consolidating 3 CI/CD docs
+1. ✅ Create `docs/devops/CI_CD_COMPLETE_GUIDE.md` consolidating 3 CI/CD docs
 2. ✅ Merge Week 1 checklist into `PHASE_1_WEEK_1-2_SPEC.md`
 3. ✅ Add cross-references between technical guides and implementation guides
 4. ✅ Remove duplicate code examples
@@ -270,7 +270,7 @@ Navigation Difficulty:     Low (clear single sources of truth)
 **Risk:** Medium (requires content restructuring)
 
 ### Phase 3: Optimization (Next 4-6 Weeks)
-1. ✅ Archive old PROGRESS_LOG.md entries
+1. ✅ Archive old docs/project-management/PROGRESS_LOG_CURRENT.md entries
 2. ✅ Add version metadata headers to all docs
 3. ✅ Define and document naming conventions
 4. ✅ Create documentation style guide

@@ -20,7 +20,7 @@
    - Reason: Historical milestone report
    
 3. ✅ `WEEK_0_CRITICAL_CHECKLIST.md` → `archive/checklists/`
-   - Reason: Superseded by `docs/PRE_WEEK_1_FINAL_CHECKLIST.md`
+   - Reason: Superseded by `docs/checklists/PRE_WEEK_1_FINAL.md`
 
 **Archive Organization:**
 - ✅ Updated `archive/README.md` with new entries
@@ -33,7 +33,7 @@
 ### Phase 2: CI/CD Consolidation ✅ COMPLETE
 
 **Created New Unified Guide:**
-- ✅ `docs/CI_CD_COMPLETE_GUIDE.md` (800+ lines)
+- ✅ `docs/devops/CI_CD_COMPLETE_GUIDE.md` (800+ lines)
   - Consolidated 3 files into 1
   - Eliminated 70% redundancy
   - Added comprehensive table of contents
@@ -89,7 +89,7 @@ New CI_CD_COMPLETE_GUIDE.md Structure:
 ### Phase 3: Checklist Consolidation 📋 DOCUMENTED
 
 **Files Analyzed:**
-- `docs/WEEK_1_CRITICAL_CHECKLIST.md` (616 lines)
+- `docs/checklists/WEEK_1_CRITICAL.md` (616 lines)
 - `PHASE_1_WEEK_1-2_SPEC.md` (1,169 lines)
 
 **Recommendation:**
@@ -136,7 +136,7 @@ REMOVED:
   ❌ WEEK_0_CRITICAL_CHECKLIST.md (archived)
 
 MAINTAINED:
-  ✅ IMPLEMENTATION_PLAN_REVISED_FINAL.md (current plan v2.0)
+  ✅ docs/planning/IMPLEMENTATION_ROADMAP.md (current plan v2.0)
   ✅ PHASE_1_WEEK_1-2_SPEC.md
   ✅ All other active documentation
 
@@ -205,23 +205,23 @@ grep -r "WEEK_0_CRITICAL_CHECKLIST.md" .
 **Update Pattern:**
 ```markdown
 OLD: See [CI_CD_GUIDE.md](./docs/CI_CD_GUIDE.md)
-NEW: See [CI_CD_COMPLETE_GUIDE.md](./docs/CI_CD_COMPLETE_GUIDE.md)
+NEW: See [CI_CD_COMPLETE_GUIDE.md](./docs/devops/CI_CD_COMPLETE_GUIDE.md)
 
 OLD: [IMPLEMENTATION_PLAN_FOR_CODEX.md](./IMPLEMENTATION_PLAN_FOR_CODEX.md)
-NEW: [IMPLEMENTATION_PLAN_REVISED_FINAL.md](./IMPLEMENTATION_PLAN_REVISED_FINAL.md)
+NEW: [docs/planning/IMPLEMENTATION_ROADMAP.md](./docs/planning/IMPLEMENTATION_ROADMAP.md)
      OR [archive/plans/v1/IMPLEMENTATION_PLAN_FOR_CODEX.md](./archive/plans/v1/IMPLEMENTATION_PLAN_FOR_CODEX.md) (historical)
 
 OLD: [WEEK_0_CRITICAL_CHECKLIST.md](./WEEK_0_CRITICAL_CHECKLIST.md)
-NEW: [docs/PRE_WEEK_1_FINAL_CHECKLIST.md](./docs/PRE_WEEK_1_FINAL_CHECKLIST.md)
+NEW: [docs/checklists/PRE_WEEK_1_FINAL.md](./docs/checklists/PRE_WEEK_1_FINAL.md)
 ```
 
 **Likely Files Affected:**
 - `README.md`
-- `GETTING_STARTED.md`
+- `docs/onboarding/GETTING_STARTED.md`
 - `docs/README.md`
 - `implementation-guides/README.md`
 - `.github/CI_CD_ACTION_CHECKLIST.md`
-- `PROGRESS_LOG.md`
+- `docs/project-management/PROGRESS_LOG_CURRENT.md`
 
 ---
 
@@ -305,7 +305,7 @@ NEW: [docs/PRE_WEEK_1_FINAL_CHECKLIST.md](./docs/PRE_WEEK_1_FINAL_CHECKLIST.md)
    - Deferred work documentation
    - 3,500+ lines of comprehensive reporting
 
-3. ✨ **`docs/CI_CD_COMPLETE_GUIDE.md`**
+3. ✨ **`docs/devops/CI_CD_COMPLETE_GUIDE.md`**
    - Unified CI/CD guide
    - 800+ lines
    - Eliminated 70% redundancy
@@ -369,11 +369,11 @@ Developer Experience:        ✅ Better organized
 All work is documented in:
 - **Audit Report:** `DOCUMENTATION_AUDIT_REPORT.md`
 - **Implementation Details:** `DOCUMENTATION_CONSOLIDATION_IMPLEMENTATION.md`
-- **Consolidated CI/CD Guide:** `docs/CI_CD_COMPLETE_GUIDE.md`
+- **Consolidated CI/CD Guide:** `docs/devops/CI_CD_COMPLETE_GUIDE.md`
 - **Archive Index:** `archive/README.md`
 
 ### Questions?
-- **About consolidated CI/CD guide:** Review `docs/CI_CD_COMPLETE_GUIDE.md`
+- **About consolidated CI/CD guide:** Review `docs/devops/CI_CD_COMPLETE_GUIDE.md`
 - **About archived files:** Check `archive/README.md`
 - **About next steps:** See "Next Steps" section above
 - **About deferred work:** See `DOCUMENTATION_CONSOLIDATION_IMPLEMENTATION.md`

@@ -59,7 +59,7 @@ Verification: docker exec queries confirmed counts
 ### Configuration Updates (4 files)
 13. `backend/app/models/__init__.py` - Centralized model exports
 14. `alembic/env.py` - Alembic configuration with model imports
-15. `PROGRESS_LOG.md` - Day 3 milestone documentation
+15. `docs/project-management/PROGRESS_LOG_CURRENT.md` - Day 3 milestone documentation
 16. `scripts/setup-branch-protection.sh` - Branch protection script
 
 ---

@@ -1,9 +1,13 @@
 # BAHR Platform - Getting Started Guide
 ## Complete Setup & Onboarding for Developers
 
-**Version:** 2.0 (Consolidated)
-**Last Updated:** November 9, 2025
-**Consolidates:** QUICK_START_GUIDE.md + START_HERE.md + START_HERE_DEVELOPER.md
+**Category:** Onboarding  
+**Status:** 🎯 Active  
+**Version:** 2.1  
+**Last Updated:** 2025-11-10  
+**Audience:** Developers, New Contributors  
+**Consolidates:** QUICK_START_GUIDE.md + START_HERE.md + START_HERE_DEVELOPER.md  
+**Related Docs:** [Phase 0 Setup](../phases/PHASE_0_SETUP.md), [Week 1 Checklist](../checklists/WEEK_1_CRITICAL.md)
 
 ---
 
@@ -139,7 +143,7 @@ Annotation Rate:
 3. **Allocate daily time for annotation in Week 2** - Quality > Speed
 4. **Use Mock API for parallel development** - Frontend doesn't wait till Week 5
 5. **Review DEFERRED_FEATURES.md for every idea** - Stay focused
-6. **Update PROGRESS_LOG.md daily** - 5 min documentation prevents "Where was I?"
+6. **Update docs/project-management/PROGRESS_LOG_CURRENT.md daily** - 5 min documentation prevents "Where was I?"
 
 ---
 
@@ -1160,7 +1164,7 @@ docker-compose down -v
 - ✅ Execute Quick Wins in Week 1-2
 - ✅ Use DEFERRED_FEATURES.md to prevent scope creep
 - ✅ Allocate 2-3 hours/day for data annotation in Week 2
-- ✅ Update PROGRESS_LOG.md daily (5 minutes)
+- ✅ Update docs/project-management/PROGRESS_LOG_CURRENT.md daily (5 minutes)
 - ✅ Ask questions early and often
 - ✅ Write tests for everything you build
 - ✅ Have fun building سوق عكاظ الرقمي! 🎭
@@ -1199,3 +1203,14 @@ This guide consolidates three previous documents:
 
 **Version:** 2.0
 **Consolidation Date:** November 9, 2025
+
+---
+
+## 📜 Document History
+
+| Version | Date | Changes | Reason |
+|---------|------|---------|--------|
+| 2.1 | 2025-11-10 | Relocated to /docs/onboarding/, updated metadata | Documentation reorganization |
+| 2.0 | 2025-11-09 | Consolidated 3 guides into single document | Reduce duplication |
+| 1.0 | 2024-12-01 | Initial QUICK_START_GUIDE.md | Project setup |
+

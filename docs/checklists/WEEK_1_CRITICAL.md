@@ -1,8 +1,17 @@
 # 🚨 WEEK 1 CRITICAL CHECKLIST - Read Before Starting!
 ## Expert Review Feedback Integration Summary
 
+**Category:** Checklist  
+**Status:** ✅ Complete  
+**Version:** 1.0  
+**Last Updated:** 2025-11-10  
+**Audience:** Developers starting Week 1  
+**Purpose:** Critical pre-Week 1 validation tasks  
+**Related Docs:** [Phase 1 Spec](../phases/PHASE_1_WEEK_1-2_SPEC.md), [Getting Started](../onboarding/GETTING_STARTED.md)
+
+---
+
 **Date:** November 8, 2025  
-**Status:** ✅ **COMPLETED** - November 10, 2025  
 **Completion:** Phase 0 (95%) + Week 1-2 (100%)
 
 ---
@@ -30,7 +39,7 @@ $ python -c "from camel_tools.utils.normalize import normalize_unicode; print('�
 - Native performance on M1/M2 chips
 ```
 
-**Documentation:** PROGRESS_LOG.md updated with native ARM64 confirmation
+**Documentation:** docs/project-management/PROGRESS_LOG_CURRENT.md updated with native ARM64 confirmation
 
 ---
 
@@ -514,7 +523,7 @@ docs/phases/
 # Emergency fallback: Use PyArabic only
 pip install pyarabic
 # Defer CAMeL Tools to Phase 2
-# Document decision in PROGRESS_LOG.md
+# Document decision in docs/project-management/PROGRESS_LOG_CURRENT.md
 ```
 
 ### Accuracy Stuck at 60% (Week 5):
@@ -575,6 +584,6 @@ Your documentation is excellent. The 14-week plan is ambitious but achievable wi
 - **Document as you go**
 - **Pivot when needed**
 
-Good luck with Week 1! Update `PROGRESS_LOG.md` daily to track progress.
+Good luck with Week 1! Update `docs/project-management/PROGRESS_LOG_CURRENT.md` daily to track progress.
 
 **Last Updated:** November 8, 2025 (Post Expert Review)

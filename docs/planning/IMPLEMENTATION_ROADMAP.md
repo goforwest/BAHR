@@ -1,19 +1,36 @@
 # 🚀 BAHR Implementation Plan - FINAL APPROVED VERSION
 ## Complete Implementation Roadmap with All Review Fixes Applied
 
----
-
-**Version:** 2.0 (Final Approved)
-**Date:** November 9, 2025
-**Status:** ✅ **FULLY APPROVED FOR BUILD**
-**Previous Version:** [IMPLEMENTATION_PLAN_FOR_CODEX.md](./IMPLEMENTATION_PLAN_FOR_CODEX.md)
-**Technical Review:** [TECHNICAL_ARCHITECTURE_REVIEW_REPORT.md](./TECHNICAL_ARCHITECTURE_REVIEW_REPORT.md)
+**Category:** Planning  
+**Status:** ✅ Complete  
+**Version:** 2.0 (Final Approved)  
+**Last Updated:** 2025-11-10  
+**Audience:** Development Team, AI Coding Assistants  
+**Purpose:** Production-ready implementation plan with zero ambiguities  
+**Previous Version:** [v1.0](../../archive/plans/v1/IMPLEMENTATION_PLAN_FOR_CODEX.md) (archived)  
+**Related Docs:** [Project Timeline](PROJECT_TIMELINE.md), [Phase Specs](../phases/), [Master Plan](../vision/MASTER_PLAN.md)
 
 ---
 
 ## 📋 Document Purpose
 
 This document integrates all feedback from the senior technical architecture review and provides a **production-ready implementation plan** with zero ambiguities. All critical issues identified in the review have been resolved.
+
+---
+
+## 📚 Documentation Hierarchy
+
+This document is part of the planning documentation hierarchy:
+
+1. **Vision** → [Master Plan](../vision/MASTER_PLAN.md) - Long-term vision (why & what)
+2. **Roadmap** → **This Document** - Implementation plan (how & when - high level)
+3. **Timeline** → [Project Timeline](PROJECT_TIMELINE.md) - Week-by-week schedule
+4. **Phases** → [Phase Specs](../phases/) - Granular phase specifications  
+5. **Guides** → [Implementation Guides](../../implementation-guides/) - Feature-specific codex
+
+**Use this when:** You need the complete implementation strategy with all architectural decisions.  
+**Reference Timeline for:** Specific week-by-week breakdown and time estimates.  
+**Reference Phase Specs for:** Detailed technical requirements for each phase.
 
 ---
 
@@ -942,10 +959,10 @@ Week 8:
 ## 📚 Updated Documentation Index
 
 ### Core Planning
-- ✅ [BAHR_AI_POET_MASTER_PLAN.md](./BAHR_AI_POET_MASTER_PLAN.md) - Grand vision
-- ✅ [IMPLEMENTATION_PLAN_REVISED_FINAL.md](./IMPLEMENTATION_PLAN_REVISED_FINAL.md) - This document
+- ✅ [docs/vision/MASTER_PLAN.md](./docs/vision/MASTER_PLAN.md) - Grand vision
+- ✅ [docs/planning/IMPLEMENTATION_ROADMAP.md](./docs/planning/IMPLEMENTATION_ROADMAP.md) - This document
 - ✅ [PHASE_1_WEEK_1-2_SPEC.md](./PHASE_1_WEEK_1-2_SPEC.md) - Detailed prosody engine spec
-- ✅ [PROJECT_TRACKER.md](./PROJECT_TRACKER.md) - Progress tracking
+- ✅ [docs/project-management/GITHUB_ISSUES_TEMPLATE.md](./docs/project-management/GITHUB_ISSUES_TEMPLATE.md) - Progress tracking
 
 ### NEW: Critical Fixes
 - ✅ [docs/technical/SECRETS_MANAGEMENT.md](./docs/technical/SECRETS_MANAGEMENT.md) - Production secrets
@@ -1073,3 +1090,14 @@ Week 8:
 ---
 
 **Let's build سوق عكاظ الرقمي! 🎭🚀**
+
+---
+
+## 📜 Document History
+
+| Version | Date | Changes | Reason |
+|---------|------|---------|--------|
+| 2.0 | 2025-11-10 | Renamed to IMPLEMENTATION_ROADMAP.md, relocated to /docs/planning/ | Documentation reorganization |
+| 2.0 | 2025-11-09 | Integrated all 10 expert review recommendations | Architecture review fixes |
+| 1.0 | 2025-11-08 | Initial IMPLEMENTATION_PLAN_FOR_CODEX.md (v1.0, 2,963 lines) | First implementation plan |
+

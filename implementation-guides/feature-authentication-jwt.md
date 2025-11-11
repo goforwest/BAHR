@@ -1698,7 +1698,7 @@ async def register(...):
 
 ### Additional References
 
-6. **docs/WEEK_1_CRITICAL_CHECKLIST.md:82-120**
+6. **docs/checklists/WEEK_1_CRITICAL.md:82-120**
    - Week 1 security implementation priorities
    - Critical security items checklist
 

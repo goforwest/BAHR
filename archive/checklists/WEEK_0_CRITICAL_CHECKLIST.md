@@ -345,7 +345,7 @@ This Week 0 phase addresses all 10 critical issues identified in the technical r
       meta: dict
   ```
 
-**Documentation:** [IMPLEMENTATION_PLAN_REVISED_FINAL.md#7-batch-analysis-api](./IMPLEMENTATION_PLAN_REVISED_FINAL.md#7-batch-analysis-api)
+**Documentation:** [docs/planning/IMPLEMENTATION_ROADMAP.md#7-batch-analysis-api](./docs/planning/IMPLEMENTATION_ROADMAP.md#7-batch-analysis-api)
 
 **Estimated Time:** 1 hour (planning only, implementation in Week 3)
 
@@ -387,7 +387,7 @@ This Week 0 phase addresses all 10 critical issues identified in the technical r
   # Note: Will implement pagination in Week 4 when building list endpoints
   ```
 
-**Documentation:** [IMPLEMENTATION_PLAN_REVISED_FINAL.md#8-pagination-specification](./IMPLEMENTATION_PLAN_REVISED_FINAL.md#8-pagination-specification)
+**Documentation:** [docs/planning/IMPLEMENTATION_ROADMAP.md#8-pagination-specification](./docs/planning/IMPLEMENTATION_ROADMAP.md#8-pagination-specification)
 
 **Estimated Time:** 1 hour (planning only)
 
@@ -408,7 +408,7 @@ This Week 0 phase addresses all 10 critical issues identified in the technical r
 - [ ] **9.2** Create circuit breaker utility
   ```python
   # Create: backend/app/core/circuit_breaker.py
-  # Copy implementation from IMPLEMENTATION_PLAN_REVISED_FINAL.md
+  # Copy implementation from docs/planning/IMPLEMENTATION_ROADMAP.md
   ```
 
 - [ ] **9.3** Add to implementation plan
@@ -416,7 +416,7 @@ This Week 0 phase addresses all 10 critical issues identified in the technical r
   # Note: Will integrate circuit breaker in Week 5 when building repositories
   ```
 
-**Documentation:** [IMPLEMENTATION_PLAN_REVISED_FINAL.md#9-circuit-breaker-pattern](./IMPLEMENTATION_PLAN_REVISED_FINAL.md#9-circuit-breaker-pattern)
+**Documentation:** [docs/planning/IMPLEMENTATION_ROADMAP.md#9-circuit-breaker-pattern](./docs/planning/IMPLEMENTATION_ROADMAP.md#9-circuit-breaker-pattern)
 
 **Estimated Time:** 30 minutes (planning only, implementation in Week 5)
 
@@ -436,7 +436,7 @@ This Week 0 phase addresses all 10 critical issues identified in the technical r
 
 - [ ] **10.2** Create test templates
   ```bash
-  # Create files (content from IMPLEMENTATION_PLAN_REVISED_FINAL.md):
+  # Create files (content from docs/planning/IMPLEMENTATION_ROADMAP.md):
   touch backend/tests/security/test_sql_injection.py
   touch backend/tests/security/test_xss.py
   touch backend/tests/security/test_auth.py
@@ -455,7 +455,7 @@ This Week 0 phase addresses all 10 critical issues identified in the technical r
   # Note: Will write security tests in Week 7
   ```
 
-**Documentation:** [IMPLEMENTATION_PLAN_REVISED_FINAL.md#10-security-testing-suite](./IMPLEMENTATION_PLAN_REVISED_FINAL.md#10-security-testing-suite)
+**Documentation:** [docs/planning/IMPLEMENTATION_ROADMAP.md#10-security-testing-suite](./docs/planning/IMPLEMENTATION_ROADMAP.md#10-security-testing-suite)
 
 **Estimated Time:** 1 hour (setup only, tests written in Week 7)
 
@@ -574,7 +574,7 @@ Once Week 0 is complete:
 
 1. **Read:** [PHASE_1_WEEK_1-2_SPEC.md](./PHASE_1_WEEK_1-2_SPEC.md)
 2. **Start:** Implement `backend/app/core/normalization.py`
-3. **Track:** Update [PROJECT_TRACKER.md](./PROJECT_TRACKER.md) daily
+3. **Track:** Update [docs/project-management/GITHUB_ISSUES_TEMPLATE.md](./docs/project-management/GITHUB_ISSUES_TEMPLATE.md) daily
 
 **Good luck! 🎯**
 

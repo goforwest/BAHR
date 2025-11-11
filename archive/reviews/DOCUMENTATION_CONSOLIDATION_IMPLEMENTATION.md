@@ -47,7 +47,7 @@ mv IMPLEMENTATION_PLAN_FOR_CODEX.md → archive/plans/v1/IMPLEMENTATION_PLAN_FOR
 
 **Rationale:**
 - Explicitly deprecated on November 9, 2025
-- Superseded by `IMPLEMENTATION_PLAN_REVISED_FINAL.md` (v2.0)
+- Superseded by `docs/planning/IMPLEMENTATION_ROADMAP.md` (v2.0)
 - 2,963 lines of historical content preserved
 
 **Impact:**
@@ -84,13 +84,13 @@ mv WEEK_0_CRITICAL_CHECKLIST.md → archive/checklists/WEEK_0_CRITICAL_CHECKLIST
 ```
 
 **Rationale:**
-- 80% content overlap with `docs/PRE_WEEK_1_FINAL_CHECKLIST.md`
+- 80% content overlap with `docs/checklists/PRE_WEEK_1_FINAL.md`
 - Superseded by more comprehensive checklist
 - Historical value preserved
 
 **Impact:**
 - ✅ Eliminated 80% redundancy
-- ✅ Single source of truth: `docs/PRE_WEEK_1_FINAL_CHECKLIST.md`
+- ✅ Single source of truth: `docs/checklists/PRE_WEEK_1_FINAL.md`
 - ✅ Root directory simplified
 
 ---
@@ -128,7 +128,7 @@ mv WEEK_0_CRITICAL_CHECKLIST.md → archive/checklists/WEEK_0_CRITICAL_CHECKLIST
 **Action Taken:**
 ```bash
 # Created new file
-docs/CI_CD_COMPLETE_GUIDE.md (800+ lines)
+docs/devops/CI_CD_COMPLETE_GUIDE.md (800+ lines)
 
 # Removed old files
 rm docs/CI_CD_GUIDE.md
@@ -214,7 +214,7 @@ rm .github/CI_CD_QUICKREF.md
 ### 3.1 Week 1 Checklist Analysis
 
 **Current Status:**
-- `docs/WEEK_1_CRITICAL_CHECKLIST.md` (616 lines) contains unique, valuable content
+- `docs/checklists/WEEK_1_CRITICAL.md` (616 lines) contains unique, valuable content
 - Content includes:
   - ✅ M1/M2 CAMeL Tools testing procedures
   - ✅ Dataset labeling evening schedule
@@ -399,17 +399,17 @@ Unique to feature-analysis-api.md:
 BAHR/
 ├── README.md                             [Main project overview]
 ├── CONTRIBUTING.md                       [Contribution guidelines]
-├── GETTING_STARTED.md                    [Quick start guide]
+├── docs/onboarding/GETTING_STARTED.md                    [Quick start guide]
 ├── LICENSE                               [MIT license]
 │
-├── BAHR_AI_POET_MASTER_PLAN.md          [Long-term vision]
-├── IMPLEMENTATION_PLAN_REVISED_FINAL.md [Current implementation plan v2.0]
+├── docs/vision/MASTER_PLAN.md          [Long-term vision]
+├── docs/planning/IMPLEMENTATION_ROADMAP.md [Current implementation plan v2.0]
 ├── PHASE_1_WEEK_1-2_SPEC.md             [Week 1-2 detailed spec]
 │
 ├── CODEX_CONVERSATION_GUIDE.md          [AI assistant prompts]
 ├── PROJECT_STARTER_TEMPLATE.md          [Boilerplate code templates]
-├── PROJECT_TRACKER.md                   [GitHub issues template]
-├── PROGRESS_LOG.md                      [Daily progress tracking]
+├── docs/project-management/GITHUB_ISSUES_TEMPLATE.md                   [GitHub issues template]
+├── docs/project-management/PROGRESS_LOG_CURRENT.md                      [Daily progress tracking]
 ├── TESTING_CHECKLIST.md                 [QA checklist]
 │
 └── DOCUMENTATION_AUDIT_REPORT.md        [This audit report] ✨
@@ -564,22 +564,22 @@ grep -r "IMPLEMENTATION_PLAN_FOR_CODEX.md" .
 **Update Pattern:**
 ```markdown
 OLD: See [CI_CD_GUIDE.md](./docs/CI_CD_GUIDE.md)
-NEW: See [CI_CD_COMPLETE_GUIDE.md](./docs/CI_CD_COMPLETE_GUIDE.md)
+NEW: See [CI_CD_COMPLETE_GUIDE.md](./docs/devops/CI_CD_COMPLETE_GUIDE.md)
 
 OLD: See [IMPLEMENTATION_PLAN_FOR_CODEX.md](./IMPLEMENTATION_PLAN_FOR_CODEX.md)
-NEW: See [IMPLEMENTATION_PLAN_REVISED_FINAL.md](./IMPLEMENTATION_PLAN_REVISED_FINAL.md) (current) or [archive/plans/v1/IMPLEMENTATION_PLAN_FOR_CODEX.md](./archive/plans/v1/IMPLEMENTATION_PLAN_FOR_CODEX.md) (historical)
+NEW: See [docs/planning/IMPLEMENTATION_ROADMAP.md](./docs/planning/IMPLEMENTATION_ROADMAP.md) (current) or [archive/plans/v1/IMPLEMENTATION_PLAN_FOR_CODEX.md](./archive/plans/v1/IMPLEMENTATION_PLAN_FOR_CODEX.md) (historical)
 
 OLD: See [WEEK_0_CRITICAL_CHECKLIST.md](./WEEK_0_CRITICAL_CHECKLIST.md)
-NEW: See [docs/PRE_WEEK_1_FINAL_CHECKLIST.md](./docs/PRE_WEEK_1_FINAL_CHECKLIST.md)
+NEW: See [docs/checklists/PRE_WEEK_1_FINAL.md](./docs/checklists/PRE_WEEK_1_FINAL.md)
 ```
 
 **Likely Candidates:**
 - `README.md`
-- `GETTING_STARTED.md`
+- `docs/onboarding/GETTING_STARTED.md`
 - `docs/README.md`
 - `implementation-guides/README.md`
 - `.github/CI_CD_ACTION_CHECKLIST.md`
-- `PROGRESS_LOG.md`
+- `docs/project-management/PROGRESS_LOG_CURRENT.md`
 
 ---
 
@@ -607,7 +607,7 @@ NEW: See [docs/PRE_WEEK_1_FINAL_CHECKLIST.md](./docs/PRE_WEEK_1_FINAL_CHECKLIST.
 ## 📋 Remaining Work (Deferred to Development Team)
 
 ### Phase 3: Checklist Consolidation
-**Files:** `docs/WEEK_1_CRITICAL_CHECKLIST.md`, `PHASE_1_WEEK_1-2_SPEC.md`
+**Files:** `docs/checklists/WEEK_1_CRITICAL.md`, `PHASE_1_WEEK_1-2_SPEC.md`
 
 **Options:**
 1. **Keep as standalone** (RECOMMENDED)
@@ -694,7 +694,7 @@ Developer Satisfaction:          TBD (survey after implementation)
 ## 📚 Related Documentation
 
 - [DOCUMENTATION_AUDIT_REPORT.md](./DOCUMENTATION_AUDIT_REPORT.md) - Original audit findings
-- [docs/CI_CD_COMPLETE_GUIDE.md](./docs/CI_CD_COMPLETE_GUIDE.md) - New consolidated CI/CD guide
+- [docs/devops/CI_CD_COMPLETE_GUIDE.md](./docs/devops/CI_CD_COMPLETE_GUIDE.md) - New consolidated CI/CD guide
 - [archive/README.md](./archive/README.md) - Archive index and navigation
 - [docs/README.md](./docs/README.md) - Main documentation index
 

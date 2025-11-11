@@ -1,6 +1,13 @@
 # 🎭 بَحْر - سوق عكاظ الرقمي
 ## Master Plan - الخطة الشاملة للمشروع
 
+**Category:** Vision & Strategy  
+**Status:** 🎯 Active  
+**Version:** 2.0  
+**Last Updated:** 2025-11-10  
+**Audience:** Stakeholders, Product Team, Developers  
+**Related Docs:** [Implementation Roadmap](../planning/IMPLEMENTATION_ROADMAP.md), [Project Timeline](../planning/PROJECT_TIMELINE.md)
+
 ---
 
 ## 🌟 الرؤية الكبرى (Grand Vision)
@@ -1673,3 +1680,13 @@ Even if you don't build everything in this plan, building Phase 1-2 is already i
 أنا معك كل الطريق! 🚀
 
 **يلا نبني سوق عكاظ الرقمي! 🎭**
+
+---
+
+## 📜 Document History
+
+| Version | Date | Changes | Reason |
+|---------|------|---------|--------|
+| 2.0 | 2025-11-10 | Relocated to /docs/vision/, added metadata header | Documentation reorganization |
+| 1.0 | 2024-12-01 | Initial version | Project inception |
+

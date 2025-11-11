@@ -470,7 +470,7 @@ Step 1: Check if it's in NON_GOALS.md
   - If YES: Politely decline with rationale from this doc
   - If NO: Go to Step 2
 
-Step 2: Check if it's in MVP plan (BAHR_AI_POET_MASTER_PLAN.md)
+Step 2: Check if it's in MVP plan (docs/vision/MASTER_PLAN.md)
   - If YES: Confirm it's scheduled and provide timeline
   - If NO: Go to Step 3
 

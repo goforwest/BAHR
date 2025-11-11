@@ -141,7 +141,7 @@ python -c "from camel_tools.utils.normalize import normalize_unicode; print('✅
 deactivate
 rm -rf test_env
 
-# 📝 Document which method worked in PROGRESS_LOG.md
+# 📝 Document which method worked in docs/project-management/PROGRESS_LOG_CURRENT.md
 ```
 
 **Fallback Plan (if both fail):**

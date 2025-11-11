@@ -476,7 +476,7 @@ Expert Assessment:
 
 #### 🆕 New Critical File Created:
 
-**`docs/PRE_WEEK_1_FINAL_CHECKLIST.md`** (✨ MOST IMPORTANT)
+**`docs/checklists/PRE_WEEK_1_FINAL.md`** (✨ MOST IMPORTANT)
 - Ultimate go/no-go validation before Week 1
 - 5 critical pre-flight checks (CAMeL Tools, expectations, dataset, TDD, security)
 - Timeline confirmation (14 weeks accepted)
@@ -534,7 +534,7 @@ DECISION: ✅ GREEN LIGHT FOR WEEK 1 IMPLEMENTATION
    - Rate limiting (100 req/hr, Redis)
 
 5. **Friday Week 1:** Review and plan Week 2
-   - Update PROGRESS_LOG.md
+   - Update docs/project-management/PROGRESS_LOG_CURRENT.md
    - Verify 10-20 Golden Set verses collected
    - Confirm all Quick Wins completed
 
@@ -555,7 +555,7 @@ DECISION: ✅ GREEN LIGHT FOR WEEK 1 IMPLEMENTATION
 ## � NEXT STEPS - Week 1 Launch Sequence:
 
 **Pre-Week 1 (Weekend Before):**
-1. Read `docs/PRE_WEEK_1_FINAL_CHECKLIST.md` completely (30 minutes)
+1. Read `docs/checklists/PRE_WEEK_1_FINAL.md` completely (30 minutes)
 2. Verify all development tools installed
 3. Mental preparation (accept 70-75% target, 14-week timeline)
 4. Schedule 30hrs for Week 1 (Mon-Fri, 6hrs/day)
@@ -646,7 +646,7 @@ Coverage:
 Priority: IMPLEMENT IN WEEK 1 (Items 1-5: Password, JWT, SQL, XSS, Rate Limiting)
 ```
 
-#### 2️⃣ `docs/WEEK_1_CRITICAL_CHECKLIST.md` ✨ **ESSENTIAL REFERENCE**
+#### 2️⃣ `docs/checklists/WEEK_1_CRITICAL.md` ✨ **ESSENTIAL REFERENCE**
 ```yaml
 Purpose: Comprehensive pre-implementation guide
 Content:
@@ -948,7 +948,7 @@ Action: Set up pytest + coverage reporting on Day 2
 ```yaml
 Files Created (NEW):
   ✅ docs/technical/SECURITY.md (comprehensive security guide)
-  ✅ docs/WEEK_1_CRITICAL_CHECKLIST.md (essential reference)
+  ✅ docs/checklists/WEEK_1_CRITICAL.md (essential reference)
 
 Files Updated (MAJOR):
   ✅ docs/technical/PERFORMANCE_TARGETS.md
@@ -1015,7 +1015,7 @@ arch -x86_64 pip install camel-tools==1.5.2
 # If fail, try Docker:
 docker run --platform=linux/amd64 python:3.11 pip install camel-tools
 
-# Document which approach worked in PROGRESS_LOG.md
+# Document which approach worked in docs/project-management/PROGRESS_LOG_CURRENT.md
 ```
 
 #### Day 1 Evening:
@@ -1250,7 +1250,7 @@ Security:
 **4. ملفات تم تحديثها بشكل كبير (صباحاً):**
 - ✅ `docs/planning/PROJECT_TIMELINE.md` - 12 weeks → 14 weeks
 - ✅ `docs/technical/PROSODY_ENGINE.md` - Added hybrid approach + rule tables
-- ✅ `PROGRESS_LOG.md` - هذا الملف
+- ✅ `docs/project-management/PROGRESS_LOG_CURRENT.md` - هذا الملف
    - ✅ `docs/planning/PROJECT_TIMELINE.md` - v2.1 ضبط نطاق الأسابيع
    - ✅ `docs/technical/BACKEND_API.md` - سياسة الحد وواجهة إدخال البيانات
    - ✅ `docs/phases/PHASE_1_MVP.md` - حدود النطاق ومعايير القبول
@@ -1372,7 +1372,7 @@ Benefit: Save 200MB+, avoid version conflicts
 | `docs/workflows/DEVELOPMENT_WORKFLOW.md` | ✅ مكتمل | No changes needed |
 | `docs/research/ARABIC_NLP_RESEARCH.md` | ✅ مكتمل | Will update to remove Farasa |
 | `docs/planning/PROJECT_TIMELINE.md` | ✅ محدّث | ✨ Extended to 14 weeks |
-| `PROGRESS_LOG.md` | ✅ محدّث | ✨ This update |
+| `docs/project-management/PROGRESS_LOG_CURRENT.md` | ✅ محدّث | ✨ This update |
 
 ### الملفات الجديدة (5):
 | الملف | الحالة | الغرض |

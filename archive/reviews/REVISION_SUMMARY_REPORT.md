@@ -39,10 +39,10 @@
 | **4** | Elasticsearch Timing Unclear | 🟡 HIGH | ✅ FIXED | [ADR-002](./docs/ARCHITECTURE_DECISIONS.md#adr-002) |
 | **5** | CORS Policy Not Specified | 🟡 HIGH | ✅ FIXED | [ADR-003](./docs/ARCHITECTURE_DECISIONS.md#adr-003) |
 | **6** | Backup Strategy Missing | 🟡 HIGH | ✅ FIXED | [ADR-004](./docs/ARCHITECTURE_DECISIONS.md#adr-004) |
-| **7** | Batch API Endpoint Missing | 🟢 MEDIUM | ✅ ADDED | [Revised Plan §7](./IMPLEMENTATION_PLAN_REVISED_FINAL.md#7-batch-analysis-api) |
-| **8** | Pagination Spec Undefined | 🟢 MEDIUM | ✅ ADDED | [Revised Plan §8](./IMPLEMENTATION_PLAN_REVISED_FINAL.md#8-pagination-specification) |
-| **9** | Circuit Breaker Pattern Missing | 🟢 MEDIUM | ✅ ADDED | [Revised Plan §9](./IMPLEMENTATION_PLAN_REVISED_FINAL.md#9-circuit-breaker-pattern) |
-| **10** | Security Tests Missing | 🟡 HIGH | ✅ ADDED | [Revised Plan §10](./IMPLEMENTATION_PLAN_REVISED_FINAL.md#10-security-testing-suite) |
+| **7** | Batch API Endpoint Missing | 🟢 MEDIUM | ✅ ADDED | [Revised Plan §7](./docs/planning/IMPLEMENTATION_ROADMAP.md#7-batch-analysis-api) |
+| **8** | Pagination Spec Undefined | 🟢 MEDIUM | ✅ ADDED | [Revised Plan §8](./docs/planning/IMPLEMENTATION_ROADMAP.md#8-pagination-specification) |
+| **9** | Circuit Breaker Pattern Missing | 🟢 MEDIUM | ✅ ADDED | [Revised Plan §9](./docs/planning/IMPLEMENTATION_ROADMAP.md#9-circuit-breaker-pattern) |
+| **10** | Security Tests Missing | 🟡 HIGH | ✅ ADDED | [Revised Plan §10](./docs/planning/IMPLEMENTATION_ROADMAP.md#10-security-testing-suite) |
 
 ---
 
@@ -317,7 +317,7 @@ Week 7-8: Testing & Deployment (UPDATED - added security tests)
 
 ### How We Fixed It
 1. ✅ Created 4 new critical documents (secrets, indexes, ADRs, Week 0)
-2. ✅ Updated 1 major plan (IMPLEMENTATION_PLAN_REVISED_FINAL.md)
+2. ✅ Updated 1 major plan (docs/planning/IMPLEMENTATION_ROADMAP.md)
 3. ✅ Added new features (batch API, pagination, circuit breaker, security tests)
 4. ✅ Documented all architecture decisions (10 ADRs)
 
@@ -328,13 +328,13 @@ Week 7-8: Testing & Deployment (UPDATED - added security tests)
 ```
 /Users/hamoudi/Desktop/Personal/BAHR/
 │
-├── 🆕 IMPLEMENTATION_PLAN_REVISED_FINAL.md (v2.0)
+├── 🆕 docs/planning/IMPLEMENTATION_ROADMAP.md (v2.0)
 ├── 🆕 WEEK_0_CRITICAL_CHECKLIST.md
 ├── 🆕 REVISION_SUMMARY_REPORT.md (this document)
 ├── TECHNICAL_ARCHITECTURE_REVIEW_REPORT.md
-├── BAHR_AI_POET_MASTER_PLAN.md
+├── docs/vision/MASTER_PLAN.md
 ├── PHASE_1_WEEK_1-2_SPEC.md
-├── PROJECT_TRACKER.md
+├── docs/project-management/GITHUB_ISSUES_TEMPLATE.md
 │
 ├── docs/
 │   ├── 🆕 ARCHITECTURE_DECISIONS.md (10 ADRs)
@@ -370,7 +370,7 @@ Week 7-8: Testing & Deployment (UPDATED - added security tests)
 4. ✅ **Verify:** All 45 tasks completed
 
 ### Before Starting Week 1
-1. ✅ **Review:** [IMPLEMENTATION_PLAN_REVISED_FINAL.md](./IMPLEMENTATION_PLAN_REVISED_FINAL.md)
+1. ✅ **Review:** [docs/planning/IMPLEMENTATION_ROADMAP.md](./docs/planning/IMPLEMENTATION_ROADMAP.md)
 2. ✅ **Read:** [PHASE_1_WEEK_1-2_SPEC.md](./PHASE_1_WEEK_1-2_SPEC.md)
 3. ✅ **Confirm:** All Week 0 tasks signed off
 

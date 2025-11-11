@@ -26,18 +26,31 @@ Historical completion summaries for specific development milestones.
 | `PRODUCTION_LAUNCH_ANNOUNCEMENT.md` | Nov 10, 2025 | Production deployment announcement (Railway) |
 | `DEPLOYMENT_SUMMARY.md` | Nov 10, 2025 | Deployment completion summary and status |
 
-**Current Tracking:** See [/PROGRESS_LOG.md](../PROGRESS_LOG.md) for ongoing daily progress.
+**Current Tracking:** See [/docs/project-management/PROGRESS_LOG_CURRENT.md](../docs/project-management/PROGRESS_LOG_CURRENT.md) for ongoing daily progress.
 
 ---
 
-### 🚧 `/blockers/` - Resolved Blockers
+### � `/progress/` - Historical Progress Logs
+**NEW (November 10, 2025):** Archived daily progress tracking entries.
+
+| File | Date | Summary |
+|------|------|---------|
+| `PROGRESS_LOG_2024-2025_HISTORICAL.md` | Nov 10, 2025 | Historical progress entries (project inception through November 7, 2025) |
+
+**Current Progress:** See [/docs/project-management/PROGRESS_LOG_CURRENT.md](../docs/project-management/PROGRESS_LOG_CURRENT.md) for recent updates (last 30 days).
+
+**Archival Rationale:** Original PROGRESS_LOG.md grew to 3,116 lines, making it unwieldy. Split into current (manageable) and historical (reference) logs during documentation reorganization.
+
+---
+
+### �🚧 `/blockers/` - Resolved Blockers
 Documentation of critical blockers and their resolutions.
 
 | File | Date | Summary |
 |------|------|---------|
 | `BLOCKER_3_COMPLETION_SUMMARY.md` | Nov 9, 2025 | Golden Set data collection: 20 verses, full prosodic annotations, 100% validation |
 
-**Current Blockers:** Track active blockers in [/PROJECT_TRACKER.md](../PROJECT_TRACKER.md).
+**Current Blockers:** Track active blockers in [/docs/project-management/GITHUB_ISSUES_TEMPLATE.md](../docs/project-management/GITHUB_ISSUES_TEMPLATE.md).
 
 ---
 
@@ -121,7 +134,7 @@ Original implementation plans that have been revised and superseded.
 |------|---------|------|---------|
 | `IMPLEMENTATION_PLAN_FOR_CODEX.md` | v1.0 | Nov 2025 | Original implementation plan (2,963 lines) - superseded by v2.0 after architecture review |
 
-**Current Plan:** See [/IMPLEMENTATION_PLAN_REVISED_FINAL.md](../IMPLEMENTATION_PLAN_REVISED_FINAL.md) (v2.0, approved Nov 9, 2025).
+**Current Plan:** See [/docs/planning/IMPLEMENTATION_ROADMAP.md](../docs/planning/IMPLEMENTATION_ROADMAP.md) (v2.0, approved Nov 9, 2025).
 
 **Deprecation Reason:** Architecture review identified 10 critical issues requiring comprehensive revision. See `archive/reviews/TECHNICAL_ARCHITECTURE_REVIEW_REPORT.md` for details.
 
@@ -134,7 +147,7 @@ Historical checklists that have been completed or consolidated into other docume
 |------|------|---------|
 | `WEEK_0_CRITICAL_CHECKLIST.md` | Nov 2025 | Week 0 pre-development checklist (586 lines) - superseded by PRE_WEEK_1_FINAL_CHECKLIST.md |
 
-**Current Checklist:** See [/docs/PRE_WEEK_1_FINAL_CHECKLIST.md](../docs/PRE_WEEK_1_FINAL_CHECKLIST.md) for consolidated pre-implementation validation.
+**Current Checklist:** See [/docs/checklists/PRE_WEEK_1_FINAL.md](../docs/checklists/PRE_WEEK_1_FINAL.md) for consolidated pre-implementation validation.
 
 ---
 
@@ -146,7 +159,7 @@ Files were archived if they met one or more of the following criteria:
 1. **Obsolete**: Describes completed one-time work (e.g., specific milestone completions)
 2. **Superseded**: Replaced by updated or consolidated documentation
 3. **Historical**: Valuable for context but not needed for active development
-4. **Redundant**: Content duplicated in active tracking systems (e.g., PROGRESS_LOG.md)
+4. **Redundant**: Content duplicated in active tracking systems (e.g., docs/project-management/PROGRESS_LOG_CURRENT.md)
 
 ### Not Deletion - Archival
 **Important:** No documentation was deleted. All files were **moved to this archive** to:
@@ -200,9 +213,9 @@ When archiving additional files:
 
 ### Active Documentation
 - [/README.md](../README.md) - Project overview
-- [/PROGRESS_LOG.md](../PROGRESS_LOG.md) - Daily progress tracking
-- [/PROJECT_TRACKER.md](../PROJECT_TRACKER.md) - Active issues and milestones
-- [/IMPLEMENTATION_PLAN_REVISED_FINAL.md](../IMPLEMENTATION_PLAN_REVISED_FINAL.md) - Current implementation plan (v2.0)
+- [/docs/project-management/PROGRESS_LOG_CURRENT.md](../docs/project-management/PROGRESS_LOG_CURRENT.md) - Daily progress tracking
+- [/docs/project-management/GITHUB_ISSUES_TEMPLATE.md](../docs/project-management/GITHUB_ISSUES_TEMPLATE.md) - Active issues and milestones
+- [/docs/planning/IMPLEMENTATION_ROADMAP.md](../docs/planning/IMPLEMENTATION_ROADMAP.md) - Current implementation plan (v2.0)
 - [/docs/ARCHITECTURE_DECISIONS.md](../docs/ARCHITECTURE_DECISIONS.md) - Architecture Decision Records (ADRs)
 
 ### Documentation Organization
@@ -214,7 +227,7 @@ When archiving additional files:
 ## Questions?
 
 If you need information from archived documents or have questions about why something was archived, refer to:
-- **PROGRESS_LOG.md** for comprehensive timeline
+- **docs/project-management/PROGRESS_LOG_CURRENT.md** for comprehensive timeline
 - **ARCHITECTURE_DECISIONS.md** for architectural rationale
 - **Git history** for complete evolution: `git log --follow <archived-file>`
 

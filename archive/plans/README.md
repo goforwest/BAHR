@@ -10,7 +10,7 @@ This directory contains historical implementation plans that have been replaced 
 - **Status:** ⚠️ **SUPERSEDED** by v2.0
 - **Location:** `archive/plans/v1/IMPLEMENTATION_PLAN_FOR_CODEX.md`
 
-**Superseded By:** [/IMPLEMENTATION_PLAN_REVISED_FINAL.md](../../IMPLEMENTATION_PLAN_REVISED_FINAL.md) (v2.0)
+**Superseded By:** [/docs/planning/IMPLEMENTATION_ROADMAP.md](../../docs/planning/IMPLEMENTATION_ROADMAP.md) (v2.0)
 
 **Reason for Supersession:**
 Architecture review identified 10 critical issues requiring comprehensive revision:
@@ -31,7 +31,7 @@ See [archive/reviews/TECHNICAL_ARCHITECTURE_REVIEW_REPORT.md](../reviews/TECHNIC
 
 ## Current Active Plan
 
-📌 **Use:** [/IMPLEMENTATION_PLAN_REVISED_FINAL.md](../../IMPLEMENTATION_PLAN_REVISED_FINAL.md) (v2.0)
+📌 **Use:** [/docs/planning/IMPLEMENTATION_ROADMAP.md](../../docs/planning/IMPLEMENTATION_ROADMAP.md) (v2.0)
 
 **Status:** ✅ Active (approved November 9, 2025)
 

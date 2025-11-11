@@ -391,7 +391,7 @@ https://github.com/yourusername/bahr
 - **Dataset Specification:** `docs/research/DATASET_SPEC.md`
 - **Prosody Engine Documentation:** `docs/technical/PROSODY_ENGINE.md`
 - **Project Overview:** `docs/START_HERE.md`
-- **Week 1 Checklist:** `docs/WEEK_1_CRITICAL_CHECKLIST.md`
+- **Week 1 Checklist:** `docs/checklists/WEEK_1_CRITICAL.md`
 
 ---
 

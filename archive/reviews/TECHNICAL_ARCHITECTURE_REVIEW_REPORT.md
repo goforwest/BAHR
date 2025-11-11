@@ -812,7 +812,7 @@ meter_detection_confidence = Histogram(
 
 ### 7.1 Team Structure Assessment
 
-**Proposed Team (from BAHR_AI_POET_MASTER_PLAN.md):**
+**Proposed Team (from docs/vision/MASTER_PLAN.md):**
 
 **Year 1:**
 - **Months 1-6**: Solo founder + freelancers (design, video)

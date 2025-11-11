@@ -1,5 +1,15 @@
 # Quick Start Guide - Analyze Endpoint
 
+**Category:** Guide  
+**Status:** 🎯 Active  
+**Version:** 1.0  
+**Last Updated:** 2025-11-10  
+**Audience:** Developers, API Users  
+**Purpose:** Quick reference for using the /analyze API endpoint  
+**Related Docs:** [Backend API](../technical/BACKEND_API.md), [Getting Started](../onboarding/GETTING_STARTED.md)
+
+---
+
 ## Prerequisites
 - Docker and Docker Compose installed
 - Python 3.11+ installed

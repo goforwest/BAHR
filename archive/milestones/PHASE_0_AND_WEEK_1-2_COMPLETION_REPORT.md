@@ -155,7 +155,7 @@ Status:  ✅ EXCEEDED TARGET
 
 ### ✅ Task 6: Setup & Documentation ✅ COMPLETE
 
-**Files:** README.md, PROGRESS_LOG.md, implementation guides
+**Files:** README.md, docs/project-management/PROGRESS_LOG_CURRENT.md, implementation guides
 
 **Completed:**
 - ✅ All code documented with docstrings

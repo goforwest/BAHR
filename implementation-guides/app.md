@@ -516,8 +516,8 @@ BAHR/
 ├── .pre-commit-config.yaml
 ├── README.md
 ├── CONTRIBUTING.md
-├── BAHR_AI_POET_MASTER_PLAN.md   # Product vision
-└── PROGRESS_LOG.md
+├── docs/vision/MASTER_PLAN.md   # Product vision
+└── docs/project-management/PROGRESS_LOG_CURRENT.md
 ```
 
 ---

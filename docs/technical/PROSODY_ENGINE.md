@@ -1558,7 +1558,7 @@ class ParallelProsodyAnalyzer:
 ### 9.4 خطة الإغلاق (Closure Plan)
 1. إضافة ملف قياس أداء بسيط.
 2. إضافة مجموعة أبيات موسومة بواقع 50 بيت مبدئي (Golden Set) + توسعة تدريجية.
-3. استخراج تقرير أسبوعي (دقة / زمن / انحراف) يوثق في `PROGRESS_LOG.md`.
+3. استخراج تقرير أسبوعي (دقة / زمن / انحراف) يوثق في `docs/project-management/PROGRESS_LOG_CURRENT.md`.
 
 ### Test Suite للتحقق من الدقة:
 

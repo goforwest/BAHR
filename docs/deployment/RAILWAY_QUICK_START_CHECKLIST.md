@@ -1,5 +1,15 @@
 # Railway Deployment - Quick Start Checklist
 
+**Category:** Deployment  
+**Status:** 🎯 Active  
+**Version:** 1.0  
+**Last Updated:** 2025-11-10  
+**Audience:** Developers doing first-time deployment  
+**Purpose:** Condensed checklist format for quick reference  
+**Related Docs:** [Complete Guide](RAILWAY_COMPLETE_GUIDE.md) (detailed), [Visual Setup](RAILWAY_VISUAL_SETUP_GUIDE.md) (screenshots)
+
+---
+
 ## ⚠️ READ THIS FIRST
 
 **The #1 mistake that causes deployment to fail:**

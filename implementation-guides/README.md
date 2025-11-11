@@ -240,7 +240,7 @@ Week 14:    Buffer week
 2. Implement: Follow numbered steps
 3. Test: Run provided test cases
 4. Commit: Use conventional commits (`feat(prosody): add al-tawil meter`)
-5. Update: Log progress in `PROGRESS_LOG.md`
+5. Update: Log progress in `docs/project-management/PROGRESS_LOG_CURRENT.md`
 
 ---
 
@@ -324,7 +324,7 @@ main (production)
 
 ## 📊 Progress Tracking
 
-Update `PROGRESS_LOG.md` daily (5 minutes):
+Update `docs/project-management/PROGRESS_LOG_CURRENT.md` daily (5 minutes):
 
 ```markdown
 ## [Agent B] - 2025-11-10

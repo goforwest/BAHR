@@ -280,8 +280,8 @@ All documentation is complete and accessible:
 - [CODEX_GUIDE_COMPLETION_SUMMARY.md](CODEX_GUIDE_COMPLETION_SUMMARY.md) - Achievement summary
 - [IMPLEMENTATION_PROGRESS_CHART.md](IMPLEMENTATION_PROGRESS_CHART.md) - Visual progress
 - [RAILWAY_DEPLOYMENT_GUIDE.md](RAILWAY_DEPLOYMENT_GUIDE.md) - Deployment instructions
-- [PROJECT_TRACKER.md](PROJECT_TRACKER.md) - Project management tracker
-- [PROGRESS_LOG.md](PROGRESS_LOG.md) - Detailed progress log
+- [docs/project-management/GITHUB_ISSUES_TEMPLATE.md](docs/project-management/GITHUB_ISSUES_TEMPLATE.md) - Project management tracker
+- [docs/project-management/PROGRESS_LOG_CURRENT.md](docs/project-management/PROGRESS_LOG_CURRENT.md) - Detailed progress log
 
 ### **Technical Specs**
 - `PHASE_1_WEEK_1-2_SPEC.md` - Prosody engine specification
@@ -451,7 +451,7 @@ This is a significant achievement:
 **Documentation:**
 - Implementation Guide: [CODEX_CONVERSATION_GUIDE.md](CODEX_CONVERSATION_GUIDE.md)
 - Verification Report: [IMPLEMENTATION_VERIFICATION_REPORT.md](IMPLEMENTATION_VERIFICATION_REPORT.md)
-- Project Tracker: [PROJECT_TRACKER.md](PROJECT_TRACKER.md)
+- Project Tracker: [docs/project-management/GITHUB_ISSUES_TEMPLATE.md](docs/project-management/GITHUB_ISSUES_TEMPLATE.md)
 
 ---
 

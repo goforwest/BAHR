@@ -486,7 +486,7 @@ Week 12:
 1. Add strikethrough to wrong assumption
 2. Add new section: "Revised Assumption X.X (Date)"
 3. Document reason for change
-4. Update PROGRESS_LOG.md with reference
+4. Update docs/project-management/PROGRESS_LOG_CURRENT.md with reference
 
 **Example:**
 ```markdown

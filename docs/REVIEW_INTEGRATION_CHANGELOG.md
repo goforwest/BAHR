@@ -43,7 +43,7 @@
 2. `docs/planning/QUICK_WINS.md` - Added dataset labeling tool as Quick Win #9
 3. `docs/technical/PERFORMANCE_TARGETS.md` - Added monitoring dashboard JSON examples
 4. `docs/workflows/DEVELOPMENT_WORKFLOW.md` - Added property-based testing reference
-5. `PROGRESS_LOG.md` - Added review integration summary
+5. `docs/project-management/PROGRESS_LOG_CURRENT.md` - Added review integration summary
 
 ### Files Validated (No Changes Needed):
 1. ✅ `PROJECT_TIMELINE.md` - Already reflects 14-week timeline
@@ -275,7 +275,7 @@ def test_normalizer_never_crashes(arabic_text):
 
 **Implementation:**
 - ✅ Added to `PROJECT_TIMELINE.md` Week 4 & Week 6 notes
-- ✅ Budget documented in `PROGRESS_LOG.md`
+- ✅ Budget documented in `docs/project-management/PROGRESS_LOG_CURRENT.md`
 - ✅ Optional but highly recommended
 
 **Deliverables:**
@@ -413,7 +413,7 @@ streamlit = "^1.28.0"   # Dataset labeling tool (optional)
 
 ### Week 1 Day 1 Hour 1:
 1. **CRITICAL:** Test CAMeL Tools (ARM64 → Rosetta → Docker)
-2. Document which approach works in `PROGRESS_LOG.md`
+2. Document which approach works in `docs/project-management/PROGRESS_LOG_CURRENT.md`
 
 ### Week 1 Friday:
 1. Build dataset labeling tool (2-3 hours)

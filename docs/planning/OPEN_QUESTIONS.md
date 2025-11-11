@@ -66,7 +66,7 @@ from camel_tools.utils.normalize import normalize_unicode
 text = "أَهْلاً بِكُمْ"
 result = normalize_unicode(text)
 assert result is not None
-# If passes: Document method in PROGRESS_LOG.md
+# If passes: Document method in docs/project-management/PROGRESS_LOG_CURRENT.md
 ```
 
 **Status:** ⏳ UNRESOLVED - Test on Day 1
@@ -254,7 +254,7 @@ Should MVP support all 16 classical meters or focus on 8 most common?
 - Week 5: Measure accuracy on all 16 meters
 - If overall accuracy > 70%: Keep 16 ✅
 - If < 65%: Reduce to 8 🔄
-- Document decision in PROGRESS_LOG.md
+- Document decision in docs/project-management/PROGRESS_LOG_CURRENT.md
 
 **Pivot Plan:**
 ```yaml
