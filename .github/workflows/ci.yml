@@ -152,7 +152,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./backend
-          file: ./backend/Dockerfile
+          file: ./infrastructure/docker/backend/Dockerfile.dev
           push: false
           tags: bahr-api:test
           cache-from: type=gha

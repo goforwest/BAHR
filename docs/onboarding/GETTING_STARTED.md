@@ -274,7 +274,7 @@ If you see an error, check [docs/technical/NLP_INTEGRATION_GUIDE.md](docs/techni
 cd ..
 
 # Start all services using Docker Compose
-docker-compose up -d
+docker-compose -f infrastructure/docker/docker-compose.yml up -d
 
 # Verify containers are running
 docker ps
@@ -317,8 +317,11 @@ EOF
 ### Step 5: Initialize Database
 
 ```bash
+# Navigate to backend
+cd backend
+
 # Run database migrations (creates tables)
-alembic upgrade head
+alembic -c database/migrations/alembic.ini upgrade head
 
 # Seed initial data (16 Arabic prosody meters + 8 tafa'il)
 python scripts/seed_database.py
@@ -803,10 +806,10 @@ EOF
 
 ```bash
 # Start PostgreSQL and Redis
-docker-compose up -d
+docker-compose -f infrastructure/docker/docker-compose.yml up -d
 
 # Verify services are running
-docker-compose ps
+docker-compose -f infrastructure/docker/docker-compose.yml ps
 
 # Expected output:
 # NAME              STATUS    PORTS
@@ -908,7 +911,7 @@ sqlalchemy.exc.OperationalError: could not connect to server
 docker ps | grep postgres
 
 # If not running, start it
-docker-compose up -d postgres
+docker-compose -f infrastructure/docker/docker-compose.yml up -d postgres
 
 # Verify connection manually
 docker exec bahr_postgres psql -U bahr -d bahr_dev -c "SELECT 1;"
@@ -929,7 +932,7 @@ redis.exceptions.ConnectionError: Error connecting to Redis
 docker ps | grep redis
 
 # If not running, start it
-docker-compose up -d redis
+docker-compose -f infrastructure/docker/docker-compose.yml up -d redis
 
 # Test connection
 docker exec bahr_redis redis-cli PING
@@ -968,14 +971,18 @@ alembic.util.exc.CommandError: Can't locate revision identified by 'head'
 
 **Solution:**
 ```bash
+# Navigate to backend
+cd backend
+
 # Reset Alembic (development only, destroys data)
-alembic downgrade base
-alembic upgrade head
+alembic -c database/migrations/alembic.ini downgrade base
+alembic -c database/migrations/alembic.ini upgrade head
 
 # If that fails, recreate database
-docker-compose down -v
-docker-compose up -d
-# Then repeat migrations
+cd ..
+docker-compose -f infrastructure/docker/docker-compose.yml down -v
+docker-compose -f infrastructure/docker/docker-compose.yml up -d
+# Then repeat migrations from backend directory
 ```
 
 ---
@@ -1106,7 +1113,7 @@ git push origin feature/your-feature-name
 
 ```bash
 # Start everything (from project root)
-docker-compose up -d  # Start DB and Redis
+docker-compose -f infrastructure/docker/docker-compose.yml up -d  # Start DB and Redis
 
 # Terminal 1: Start backend
 cd backend && source venv/bin/activate && uvicorn app.main:app --reload
@@ -1135,12 +1142,12 @@ npm test
 docker exec -it bahr_postgres psql -U bahr -d bahr_dev
 
 # Reset database (⚠️ destroys all data)
-docker-compose down -v
-docker-compose up -d
+docker-compose -f infrastructure/docker/docker-compose.yml down -v
+docker-compose -f infrastructure/docker/docker-compose.yml up -d
 
-# Run migrations (after Alembic setup)
+# Run migrations (from backend directory)
 cd backend
-alembic upgrade head
+alembic -c database/migrations/alembic.ini upgrade head
 ```
 
 ### Stopping Services

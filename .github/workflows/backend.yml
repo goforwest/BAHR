@@ -6,14 +6,14 @@ on:
     branches: [main, develop]
     paths:
       - 'backend/**'
+      - 'infrastructure/docker/backend/**'
       - '.github/workflows/backend.yml'
-      - 'pytest.ini'
   pull_request:
     branches: [main, develop]
     paths:
       - 'backend/**'
+      - 'infrastructure/docker/backend/**'
       - '.github/workflows/backend.yml'
-      - 'pytest.ini'
 
 jobs:
   test:

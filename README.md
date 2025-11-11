@@ -103,15 +103,25 @@ BAHR/
 │   │   ├── models/       # Database models
 │   │   ├── prosody/      # Prosody engine
 │   │   └── nlp/          # NLP utilities
+│   ├── database/
+│   │   └── migrations/   # Alembic migrations
+│   ├── scripts/          # Database seeding
 │   └── tests/            # Backend tests
 ├── dataset/               # Golden dataset & scripts
 │   ├── evaluation/       # Test verses
 │   └── scripts/          # Data processing
+├── infrastructure/        # Deployment & DevOps
+│   ├── docker/           # Docker configs
+│   └── railway/          # Railway configs
 ├── docs/                  # Complete documentation
-│   ├── technical/        # API specs, architecture
-│   ├── planning/         # Timeline, assumptions
-│   └── research/         # NLP research, datasets
-└── implementation-guides/ # Step-by-step guides
+│   ├── architecture/     # Architecture decisions
+│   ├── features/         # Implementation guides
+│   ├── technical/        # API specs
+│   └── planning/         # Timeline, roadmap
+└── scripts/               # Development scripts
+    ├── setup/            # Environment setup
+    ├── health/           # Health checks
+    └── testing/          # Test utilities
 ```
 
 ---
@@ -126,7 +136,7 @@ BAHR/
 - 📋 **Current Progress:** [Progress Log](docs/project-management/PROGRESS_LOG_CURRENT.md) - Recent updates and achievements
 - 🎯 **Implementation Plan:** [Roadmap](docs/planning/IMPLEMENTATION_ROADMAP.md) - Current implementation plan (v2.0)
 - �️ **Architecture:** [Technical Docs](docs/technical/) - API specs, database schema, architecture decisions
-- 📖 **Feature Guides:** [Implementation Guides](implementation-guides/) - Step-by-step feature implementation
+- 📖 **Feature Guides:** [Implementation Guides](docs/features/) - Step-by-step feature implementation
 
 ### 📂 Documentation Categories
 - **Vision:** Long-term goals, product strategy ([/docs/vision/](docs/vision/))
