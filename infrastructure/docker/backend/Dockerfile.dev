@@ -54,8 +54,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # Cleanup
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements files
+# Copy requirements files (including modular requirements directory)
 COPY requirements.txt ./
+COPY requirements/ ./requirements/
 
 # Install Python dependencies (development)
 RUN pip install --upgrade pip setuptools wheel && \
@@ -83,8 +84,9 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload
 # =============================================================================
 FROM base as builder
 
-# Copy requirements
+# Copy requirements (including modular requirements directory)
 COPY requirements.txt ./
+COPY requirements/ ./requirements/
 
 # Install dependencies to a specific location
 RUN pip install --upgrade pip && \
