@@ -41,7 +41,7 @@ bcrypt==4.1.1
 # ============================================================================
 # CAMeL Tools - Comprehensive Arabic NLP toolkit
 # Note: May require Rosetta 2 on M1/M2 Macs (see TROUBLESHOOTING.md)
-camel-tools==1.5.2
+camel-tools==1.5.7  # Updated for Python 3.11+ compatibility
 
 # PyArabic - Lightweight Arabic text processing
 pyarabic==0.6.15
