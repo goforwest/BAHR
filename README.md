@@ -55,7 +55,13 @@ Visit: http://localhost:3000
 
 ```bash
 cd backend
-pip install -r requirements.txt
+# Development environment (includes testing tools)
+pip install -r requirements/development.txt
+
+# Or for production
+pip install -r requirements/production.txt
+
+# Start server
 uvicorn app.main:app --reload
 ```
 
@@ -199,6 +205,33 @@ BAHR/
 - [ ] Production deployment to Railway + Vercel
 - [ ] Authentication & user management
 - [ ] Performance optimization
+
+---
+
+## 🛠️ Developer Productivity
+
+### Shell Aliases (Optional but Recommended)
+
+BAHR includes a comprehensive set of shell aliases for common development tasks. To use them:
+
+```bash
+# Add to your ~/.zshrc
+source /Users/YOUR_USERNAME/Desktop/Personal/BAHR/.bahr_aliases.sh
+
+# Reload shell
+source ~/.zshrc
+```
+
+**Available commands:**
+- `bahr-help` - Show all available commands
+- `bahr-setup` - Complete environment setup
+- `bahr-start/stop/restart` - Manage Docker services
+- `bahr-migrate` - Run database migrations
+- `bahr-test` - Run tests with coverage
+- `bahr-backend/frontend` - Start development servers
+- Plus 30+ more utilities for navigation, testing, and database management
+
+See the full command list by running `bahr-help` after sourcing the aliases file.
 
 ---
 
