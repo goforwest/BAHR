@@ -15,7 +15,7 @@ This collection of documents provides a comprehensive, step-by-step plan to rest
 ## 📖 Document Map
 
 ### 1. **Executive Summary** 🎯
-**File:** [EXECUTIVE_SUMMARY.md](EXECUTIVE_SUMMARY.md)  
+**File:** [EXECUTIVE_SUMMARY.md](../EXECUTIVE_SUMMARY.md)  
 **Audience:** Project Managers, Executives, Stakeholders  
 **Purpose:** High-level overview, ROI analysis, risk assessment, timeline
 
@@ -36,7 +36,7 @@ This collection of documents provides a comprehensive, step-by-step plan to rest
 ---
 
 ### 2. **Complete Restructuring Plan** 🏗️
-**File:** [REPOSITORY_RESTRUCTURING_PLAN.md](REPOSITORY_RESTRUCTURING_PLAN.md)  
+**File:** [planning/COMPLETE_PLAN.md](planning/COMPLETE_PLAN.md)  
 **Audience:** Technical Leads, DevOps Engineers, Architects  
 **Purpose:** Comprehensive technical plan for executing the restructuring
 
@@ -65,7 +65,7 @@ This collection of documents provides a comprehensive, step-by-step plan to rest
 ---
 
 ### 3. **Repository Structure Reference** 📁
-**File:** [REPOSITORY_STRUCTURE.md](REPOSITORY_STRUCTURE.md)  
+**File:** [../REPOSITORY_STRUCTURE.md](../REPOSITORY_STRUCTURE.md)  
 **Audience:** All Developers, New Contributors  
 **Purpose:** Visual reference and quick navigation guide
 
@@ -88,7 +88,7 @@ This collection of documents provides a comprehensive, step-by-step plan to rest
 ---
 
 ### 4. **Migration Guide for Developers** 🔄
-**File:** [docs/MIGRATION_GUIDE.md](docs/MIGRATION_GUIDE.md)  
+**File:** [../MIGRATION_GUIDE.md](../MIGRATION_GUIDE.md)  
 **Audience:** Individual Developers, Contributors  
 **Purpose:** Step-by-step instructions for adapting to the new structure
 

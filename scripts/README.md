@@ -116,28 +116,232 @@ cd frontend && npm run lint -- --fix && npx prettier --write . && cd ..
 
 ---
 
-## Dataset Scripts
+## Testing Scripts
 
-Located in `dataset/scripts/` - see `dataset/scripts/README.md`
+### `testing/test-ci-local.sh`
+
+See detailed documentation in the CI/CD Scripts section above.
+
+### `testing/test_analyze_endpoint.sh`
+
+**Purpose:** Test the `/api/v1/analyze` endpoint functionality
+
+**Usage:**
+```bash
+# Ensure backend is running first
+cd backend && uvicorn app.main:app --reload
+
+# In another terminal
+./scripts/testing/test_analyze_endpoint.sh
+```
+
+**What it tests:**
+- ✅ Server health check
+- ✅ Valid verse analysis
+- ✅ Taqti3 generation
+- ✅ Bahr detection
+- ✅ Correction suggestions
+- ✅ Multiple verse formats
+
+**Example output:**
+```
+==========================================
+BAHR Analyze Endpoint Test
+==========================================
+
+✓ Server is running
+
+Test 1: Analyzing a valid verse...
+✓ Analysis successful
+{
+  "taqti3": "//0/0/0 //0/0/0",
+  "bahr": {
+    "name_ar": "الطويل",
+    "confidence": 0.95
+  }
+}
+```
+
+### `testing/verify_redis_caching.sh`
+
+**Purpose:** Verify Redis caching is working correctly for analysis endpoint
+
+**Usage:**
+```bash
+# Ensure backend and Redis are running
+docker-compose up -d redis
+cd backend && uvicorn app.main:app --reload
+
+# In another terminal
+./scripts/testing/verify_redis_caching.sh
+```
+
+**What it checks:**
+- ✅ Server health
+- ✅ Redis connectivity
+- ✅ Cache miss (first request)
+- ✅ Cache hit (second request)
+- ✅ Performance improvement (should be ~10x faster)
+
+**Expected behavior:**
+- First request: ~500ms (performs analysis)
+- Second request: <50ms (cache hit)
+
+### `testing/test_redis_caching.py`
+
+**Purpose:** Python-based Redis caching performance test
+
+**Usage:**
+```bash
+# Ensure backend and Redis are running
+./scripts/testing/test_redis_caching.py
+```
+
+**Features:**
+- Async HTTP client for accurate timing
+- Multiple test scenarios
+- Cache invalidation testing
+- Performance benchmarks
+- Detailed output with confidence scores
 
 ---
 
-## Other Utility Scripts
+## Health Check Scripts
 
-### `verify_setup.sh`
+### `health/health_check.sh`
+
+**Purpose:** Quick health check for deployed BAHR services
+
+**Usage:**
+```bash
+./scripts/health/health_check.sh <backend_url> [frontend_url]
+
+# Example
+./scripts/health/health_check.sh https://bahr-backend.railway.app https://bahr-frontend.railway.app
+```
+
+**Checks:**
+- Backend `/health` endpoint
+- Frontend availability (optional)
+- HTTP status codes
+
+**Exit codes:**
+- `0` - All services healthy
+- `1` - One or more services down
+
+### `health/verify_deployment.sh`
+
+**Purpose:** Comprehensive deployment verification for production
+
+**Usage:**
+```bash
+# Set environment variables
+export BACKEND_URL=https://your-backend.railway.app
+export FRONTEND_URL=https://your-frontend.railway.app
+./scripts/health/verify_deployment.sh
+
+# Or inline
+BACKEND_URL=https://backend.railway.app FRONTEND_URL=https://frontend.railway.app ./scripts/health/verify_deployment.sh
+```
+
+**What it verifies:**
+- ✅ Backend health endpoint
+- ✅ Frontend availability
+- ✅ API endpoints functionality
+- ✅ CORS configuration
+- ✅ Database connectivity
+- ✅ Redis caching
+- ✅ Complete analysis workflow
+
+**Output:**
+```
+============================================
+   BAHR Deployment Verification
+============================================
+
+Backend URL:  https://bahr-backend.railway.app
+Frontend URL: https://bahr-frontend.railway.app
+
+✓ Backend health check
+✓ Frontend availability
+✓ API analyze endpoint
+✓ Database connection
+✓ Redis caching
+
+============================================
+   Deployment Verification: PASSED
+============================================
+```
+
+---
+
+## Setup Scripts
+
+### `setup/verify_setup.sh`
 
 **Purpose:** Verify development environment setup
 
 **Usage:**
 ```bash
-./verify_setup.sh
+./scripts/setup/verify_setup.sh
 ```
 
-Checks:
+**Checks:**
 - Python version and dependencies
 - Node.js and npm
 - Git configuration
 - Required tools installed
+- Docker and Docker Compose
+
+### `setup/setup-branch-protection.sh`
+
+**Purpose:** Configure GitHub branch protection rules for main branch
+
+**Usage:**
+```bash
+# Requires GitHub CLI (gh) authentication
+./scripts/setup/setup-branch-protection.sh
+```
+
+**What it configures:**
+- ✅ Required status checks (all CI workflows must pass)
+- ✅ Enforce admins (no bypass for admins)
+- ✅ Required pull request reviews (1 approval required)
+- ✅ Dismiss stale reviews on new commits
+- ✅ Strict status checks (branch must be up to date)
+
+**Requirements:**
+- GitHub CLI (`gh`) must be installed and authenticated
+- Repository admin permissions
+
+---
+
+## Utility Scripts
+
+### `fix-workflow-dispatch.sh`
+
+**Purpose:** Fix GitHub Actions workflow_dispatch formatting
+
+**Usage:**
+```bash
+./scripts/fix-workflow-dispatch.sh
+```
+
+**What it does:**
+- Scans all workflow files in `.github/workflows/`
+- Fixes empty `workflow_dispatch:` declarations
+- Converts to `workflow_dispatch: {}` format
+
+**When to use:**
+- After creating new GitHub Actions workflows
+- When workflows show validation errors
+- Before committing workflow changes
+
+---
+
+## Dataset Scripts
+
+Located in `dataset/scripts/` - see `dataset/scripts/README.md`
 
 ---
 
