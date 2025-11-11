@@ -31,9 +31,9 @@ if database_url:
 import sys
 from pathlib import Path
 
-# Add backend directory to path
-backend_dir = Path(__file__).resolve().parent.parent / "backend"
-sys.path.insert(0, str(backend_dir))
+# Add backend root to path (../../ from here = backend/)
+backend_root = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(backend_root))
 
 # Import Base and all models
 from app.models import Base
