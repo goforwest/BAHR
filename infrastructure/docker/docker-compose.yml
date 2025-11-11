@@ -72,8 +72,8 @@ services:
   # ===========================================================================
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: ../../backend
+      dockerfile: ../../infrastructure/docker/backend/Dockerfile.dev
       target: development
 
     container_name: bahr_backend
@@ -124,11 +124,10 @@ services:
       - "8000:8000"  # API & /metrics exposed on same port in MVP
 
     volumes:
-      # Mount source code for hot-reload
-      - ./backend:/app
-      # Prevent overwriting node_modules/venv
-      - backend_cache:/app/__pycache__
-      - backend_venv:/app/.venv
+      # Mount backend code for hot-reload
+      - ../../backend:/app
+      # Exclude virtual environment
+      - /app/.venv
 
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --log-level info
 
@@ -147,7 +146,7 @@ services:
   # ===========================================================================
   # frontend:
   #   build:
-  #     context: ./frontend
+  #     context: ../../frontend
   #     dockerfile: Dockerfile
   #     target: development
   #
@@ -165,7 +164,7 @@ services:
   #     - "3000:3000"
   #
   #   volumes:
-  #     - ./frontend:/app
+  #     - ../../frontend:/app
   #     - frontend_node_modules:/app/node_modules
   #
   #   command: npm run dev
