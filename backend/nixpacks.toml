@@ -9,17 +9,20 @@ aptPkgs = ["libpq-dev"]
 cmds = [
   "python -m venv /opt/venv",
   "/opt/venv/bin/pip install --upgrade pip setuptools wheel",
-  "/opt/venv/bin/pip install -r requirements.txt"
+  "/opt/venv/bin/pip install -r requirements/production.txt"
 ]
 cacheDirectories = ["/root/.cache/pip"]
 
 [phases.build]
 cmds = [
   "echo 'Build complete - BAHR Backend'",
-  # Cleanup to reduce image size (remove cache files and bytecode)
+  # Aggressive cleanup to reduce image size
   "find /opt/venv -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true",
   "find /opt/venv -type f -name '*.pyc' -delete 2>/dev/null || true",
-  "find /opt/venv -type f -name '*.pyo' -delete 2>/dev/null || true"
+  "find /opt/venv -type f -name '*.pyo' -delete 2>/dev/null || true",
+  "find /opt/venv -type d -name 'test*' -exec rm -rf {} + 2>/dev/null || true",
+  # Remove pip cache
+  "rm -rf /root/.cache/pip"
 ]
 
 # No release phase - migrations run at startup when DATABASE_URL is available
@@ -29,4 +32,4 @@ cmd = "/opt/venv/bin/alembic upgrade head && /opt/venv/bin/python scripts/seed_d
 
 [variables]
 PYTHONUNBUFFERED = "1"
-PIP_NO_CACHE_DIR = "0"
+PIP_NO_CACHE_DIR = "1"

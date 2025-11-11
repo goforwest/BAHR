@@ -1,4 +1,9 @@
-# Python
+# =============================================================================
+# BAHR Backend - Docker Ignore
+# Excludes unnecessary files from Docker build context
+# =============================================================================
+
+# Python bytecode and cache
 __pycache__/
 *.py[cod]
 *$py.class
@@ -7,51 +12,103 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.pyc
+*.pyo
 
-# Virtual environments
+# Virtual environments (CRITICAL - can be GBs)
 venv/
+.venv/
 env/
+.env/
 ENV/
+env.bak/
+venv.bak/
 
-# IDE
+# IDE and editors
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.DS_Store
 
-# Testing (keep test files for now)
+# Testing
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
 .tox/
+.nox/
+*.cover
+.hypothesis/
+.mypy_cache/
+.dmypy.json
+dmypy.json
 
-# Documentation
-docs/_build/
+# Documentation (not needed in container)
+docs/
+*.md
+!README.md
 
-# Database
+# Database files (don't copy local DBs)
 *.db
 *.sqlite
 *.sqlite3
+*.db-journal
 
 # Logs
 *.log
 logs/
+*.log.*
 
-# Environment
+# Environment files (use Railway env vars instead)
 .env
+.env.*
 .env.local
 .env.*.local
-
-# OS
-.DS_Store
-Thumbs.db
+!.env.example
 
 # Git
 .git/
 .gitignore
+.gitattributes
 
-# Unnecessary for production (but keep for build compatibility)
-# tests/  # Commented out - may be needed for Dockerfile builds
-*.md
-docker-compose.yml
+# Docker
+.dockerignore
+Dockerfile*
+docker-compose*.yml
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Development tools
+Makefile
+.editorconfig
+
+# OS files
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Large data files that shouldn't be in image
+*.csv
+*.json.gz
+*.parquet
+*.arrow
+data/
+datasets/
+
+# Alembic old directory (if exists at root)
+alembic/
+
+# Scripts that aren't needed in production
+scripts/setup/
+scripts/testing/

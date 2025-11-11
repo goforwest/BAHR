@@ -1,0 +1,46 @@
+# =============================================================================
+# BAHR Root - Docker Ignore
+# This file is used when Railway builds from repository root
+# =============================================================================
+# 
+# IMPORTANT: Railway should be configured with Root Directory = "backend"
+# This file is a safety net in case it's building from root.
+
+# Exclude everything except backend
+*
+!backend/
+
+# But exclude these from backend too
+backend/.venv/
+backend/venv/
+backend/__pycache__/
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/*.log
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Exclude other directories entirely
+.git/
+.github/
+frontend/
+docs/
+dataset/
+infrastructure/
+scripts/
+archive/
+.venv/
+venv/
+node_modules/
+
+# Documentation
+*.md
+!backend/README.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
