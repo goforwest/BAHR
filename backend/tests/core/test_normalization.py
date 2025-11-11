@@ -257,9 +257,8 @@ class TestEdgeCases:
     """Test edge cases and error handling."""
 
     def test_normalize_none_as_text(self):
-        # Passing None should raise ValueError (not AttributeError)
-        # because the validation catches it as empty
-        with pytest.raises(ValueError, match="cannot be empty"):
+        # Passing None should raise ValueError with specific message
+        with pytest.raises(ValueError, match="cannot be None"):
             normalize_arabic_text(None)
 
     def test_very_long_text(self):

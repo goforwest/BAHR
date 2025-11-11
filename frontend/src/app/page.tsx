@@ -1,4 +1,16 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useAnalytics } from '@/hooks/useAnalytics';
+
 export default function Home() {
+  const { trackPageView } = useAnalytics();
+
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView('/');
+  }, [trackPageView]);
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 p-8">
       <main className="flex w-full max-w-4xl flex-col items-center gap-12 rounded-2xl border border-slate-200 bg-white p-12 shadow-xl">

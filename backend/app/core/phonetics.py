@@ -200,16 +200,16 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
                 if vowel in ['an', 'un', 'in']:
                     base_vowel = vowel[0]  # 'a', 'u', or 'i'
                     # First consonant (with sukun - geminated part)
-                    phonemes.append(Phoneme(consonant, '', False))
+                    phonemes.append(Phoneme(consonant, '', True))
                     # Second consonant (with short vowel)
-                    phonemes.append(Phoneme(consonant, base_vowel, False))
+                    phonemes.append(Phoneme(consonant, base_vowel, True))
                     # Add separate phoneme for 'n' (noon sakinah from tanween)
                     phonemes.append(Phoneme('ن', '', False))
                 else:
                     # First consonant (with sukun - geminated part)
-                    phonemes.append(Phoneme(consonant, '', False))
+                    phonemes.append(Phoneme(consonant, '', True))
                     # Second consonant (with the vowel or sukun)
-                    phonemes.append(Phoneme(consonant, vowel, False))
+                    phonemes.append(Phoneme(consonant, vowel, True))
                 i = j
                 continue
             

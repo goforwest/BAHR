@@ -166,9 +166,21 @@ def normalize_arabic_text(
         >>> normalize_arabic_text("مَرْحَبًا", remove_tashkeel=True)
         "مرحبا"
     """
+    # Edge case: None input
+    if text is None:
+        raise ValueError("Text cannot be None")
+    
+    # Edge case: Non-string input
+    if not isinstance(text, str):
+        raise ValueError(f"Text must be a string, got {type(text).__name__}")
+    
     if not text or not text.strip():
         raise ValueError("Text cannot be empty")
 
+    # Edge case: Text too short (less than 2 characters)
+    if len(text.strip()) < 2:
+        raise ValueError("Text must contain at least 2 characters")
+    
     # Check if text contains Arabic
     if not any('\u0600' <= c <= '\u06FF' for c in text):
         raise ValueError("Text must contain Arabic characters")
@@ -190,6 +202,10 @@ def normalize_arabic_text(
     # Remove diacritics if requested
     if remove_tashkeel:
         text = remove_diacritics(text)
+
+    # Edge case: Check text is still non-empty after normalization
+    if not text or not text.strip():
+        raise ValueError("Text is empty after normalization")
 
     return text
 

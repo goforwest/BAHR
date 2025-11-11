@@ -71,7 +71,12 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
       )}
 
       {/* Verse Text Card */}
-      <motion.div variants={itemVariants} className="bg-white shadow-lg rounded-lg p-6">
+      <motion.div 
+        variants={itemVariants}
+        whileHover="hover"
+        initial="initial"
+        className="bg-white shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
+      >
         <h3 className="text-sm font-medium text-gray-500 mb-3">البيت الشعري</h3>
         <p
           dir="rtl"
@@ -82,7 +87,12 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
       </motion.div>
 
       {/* Taqti3 Card */}
-      <motion.div variants={itemVariants} className="bg-white shadow-lg rounded-lg p-6">
+      <motion.div 
+        variants={itemVariants}
+        whileHover="hover"
+        initial="initial"
+        className="bg-white shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
+      >
         <h3 className="text-sm font-medium text-gray-500 mb-3">التقطيع العروضي</h3>
         <p
           dir="rtl"
@@ -94,7 +104,12 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
 
       {/* Bahr Card */}
       {bahr && (
-        <motion.div variants={itemVariants} className="bg-white shadow-lg rounded-lg p-6">
+        <motion.div 
+          variants={itemVariants}
+          whileHover="hover"
+          initial="initial"
+          className="bg-white shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
+        >
           <h3 className="text-sm font-medium text-gray-500 mb-3">البحر الشعري</h3>
           <div className="space-y-3">
             <div className="flex items-baseline justify-between">
@@ -120,7 +135,12 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
       )}
 
       {/* Score Card */}
-      <motion.div variants={itemVariants} className="bg-white shadow-lg rounded-lg p-6">
+      <motion.div 
+        variants={itemVariants}
+        whileHover="hover"
+        initial="initial"
+        className="bg-white shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
+      >
         <h3 className="text-sm font-medium text-gray-500 mb-3">درجة الجودة</h3>
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -151,7 +171,12 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
 
       {/* Errors and Suggestions */}
       {result.errors && result.errors.length > 0 && (
-        <motion.div variants={itemVariants} className="bg-red-50 border border-red-200 shadow-lg rounded-lg p-6">
+        <motion.div 
+          variants={itemVariants}
+          whileHover="hover"
+          initial="initial"
+          className="bg-red-50 border border-red-200 shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
+        >
           <h3 className="text-sm font-medium text-red-800 mb-3">الأخطاء العروضية</h3>
           <ul className="space-y-2">
             {result.errors.map((error, index) => (
@@ -165,7 +190,12 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
       )}
 
       {result.suggestions && result.suggestions.length > 0 && (
-        <motion.div variants={itemVariants} className="bg-blue-50 border border-blue-200 shadow-lg rounded-lg p-6">
+        <motion.div 
+          variants={itemVariants}
+          whileHover="hover"
+          initial="initial"
+          className="bg-blue-50 border border-blue-200 shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
+        >
           <h3 className="text-sm font-medium text-blue-800 mb-3">اقتراحات التحسين</h3>
           <ul className="space-y-2">
             {result.suggestions.map((suggestion, index) => (

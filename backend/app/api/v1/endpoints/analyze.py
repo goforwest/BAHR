@@ -70,36 +70,70 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         HTTPException: 400 for invalid input, 500 for server errors
     """
     try:
+        # Edge case: Very long text (beyond validation but still problematic)
+        if len(request.text) > 5000:
+            logger.warning(f"Text length {len(request.text)} exceeds recommended limit")
+        
         # Step a: Normalize text
         logger.info(f"Analyzing verse: {request.text[:50]}...")
-        normalized_text = normalize_arabic_text(
-            request.text,
-            remove_tashkeel=False,  # Keep diacritics for accurate analysis
-            normalize_hamzas=True,
-            normalize_alefs=True
-        )
         
-        # Step b: Check Redis cache
+        try:
+            normalized_text = normalize_arabic_text(
+                request.text,
+                remove_tashkeel=False,  # Keep diacritics for accurate analysis
+                normalize_hamzas=True,
+                normalize_alefs=True
+            )
+        except Exception as e:
+            logger.error(f"Text normalization failed: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Failed to normalize text: {str(e)}"
+            )
+        
+        # Edge case: Empty text after normalization
+        if not normalized_text or not normalized_text.strip():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Text is empty after normalization"
+            )
+        
+        # Step b: Check Redis cache (with graceful degradation)
         cache_key = generate_cache_key(normalized_text)
-        cached_result = await cache_get(cache_key)
+        cached_result = None
         
-        if cached_result:
-            logger.info(f"Cache hit for key: {cache_key}")
-            return AnalyzeResponse(**cached_result)
+        try:
+            cached_result = await cache_get(cache_key)
+            if cached_result:
+                logger.info(f"Cache hit for key: {cache_key}")
+                return AnalyzeResponse(**cached_result)
+        except Exception as e:
+            # Cache failure should not break the request
+            logger.warning(f"Cache read failed (continuing without cache): {e}")
         
         logger.info(f"Cache miss for key: {cache_key}, performing analysis")
         
         # Step c: Perform taqti3 (scansion)
         try:
             taqti3_result = perform_taqti3(normalized_text, normalize=False)
+            
+            # Edge case: Empty taqti3 result
+            if not taqti3_result or not taqti3_result.strip():
+                logger.warning("Taqti3 returned empty result")
+                taqti3_result = "غير محدد"  # "Not determined"
+                
         except ValueError as e:
-            logger.error(f"Taqti3 failed: {e}")
+            logger.error(f"Taqti3 validation error: {e}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid verse: {str(e)}"
+                detail=f"Invalid verse structure: {str(e)}"
             )
+        except Exception as e:
+            logger.error(f"Taqti3 processing failed: {e}", exc_info=True)
+            # Provide graceful fallback
+            taqti3_result = "خطأ في التحليل"  # "Analysis error"
         
-        # Step c: Detect bahr (meter)
+        # Step d: Detect bahr (meter) with error handling
         bahr_info = None
         confidence = 0.0
         
@@ -117,11 +151,14 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
                 else:
                     logger.info("No bahr detected with sufficient confidence")
             except Exception as e:
-                logger.error(f"Bahr detection failed: {e}")
-                # Continue without bahr detection
+                logger.error(f"Bahr detection failed: {e}", exc_info=True)
+                # Continue without bahr detection - don't fail the whole request
         
-        # Step d: Calculate score (confidence * 100)
+        # Step e: Calculate score (confidence * 100)
         score = round(confidence * 100, 2) if confidence > 0 else 0.0
+        
+        # Edge case: Ensure score is within valid range
+        score = max(0.0, min(100.0, score))
         
         # Generate suggestions
         suggestions = []
@@ -135,7 +172,7 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         if not bahr_info and request.detect_bahr:
             suggestions.append("لم يتم التعرف على البحر بثقة كافية")
         
-        # Step e: Build response
+        # Step f: Build response
         response = AnalyzeResponse(
             text=request.text,
             taqti3=taqti3_result,
@@ -145,12 +182,16 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             score=score
         )
         
-        # Step f: Cache result (TTL: 24 hours = 86400 seconds)
-        response_dict = response.model_dump()
-        await cache_set(cache_key, response_dict, ttl=86400)
-        logger.info(f"Cached analysis result with key: {cache_key}")
+        # Step g: Cache result (TTL: 24 hours = 86400 seconds) with error handling
+        try:
+            response_dict = response.model_dump()
+            await cache_set(cache_key, response_dict, ttl=86400)
+            logger.info(f"Cached analysis result with key: {cache_key}")
+        except Exception as e:
+            # Cache failure should not break the response
+            logger.warning(f"Failed to cache result: {e}")
         
-        # Step g: Return response
+        # Step h: Return response
         return response
         
     except HTTPException:
@@ -168,5 +209,5 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         logger.error(f"Unexpected error during analysis: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occurred during analysis"
+            detail="An unexpected error occurred during analysis. Please try again."
         )

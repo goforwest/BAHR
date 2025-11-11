@@ -58,8 +58,23 @@ async def cache_get(key: str) -> Optional[Any]:
         value = await redis.get(key)
         if value:
             logger.debug(f"Cache hit for key: {key}")
-            return json.loads(value)
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to deserialize cached value for key {key}: {e}")
+                # Delete corrupted cache entry
+                try:
+                    await redis.delete(key)
+                except Exception:
+                    pass
+                return None
         logger.debug(f"Cache miss for key: {key}")
+        return None
+    except ConnectionError as e:
+        logger.error(f"Redis connection error for key {key}: {e}")
+        return None
+    except TimeoutError as e:
+        logger.error(f"Redis timeout for key {key}: {e}")
         return None
     except Exception as e:
         logger.error(f"Redis get error for key {key}: {e}")
@@ -83,10 +98,26 @@ async def cache_set(key: str, value: Any, ttl: int = 86400) -> bool:
     """
     try:
         redis = await get_redis()
-        serialized = json.dumps(value, ensure_ascii=False)
+        try:
+            serialized = json.dumps(value, ensure_ascii=False)
+        except (TypeError, ValueError) as e:
+            logger.error(f"Failed to serialize value for key {key}: {e}")
+            return False
+        
+        # Edge case: Validate TTL
+        if ttl <= 0:
+            logger.warning(f"Invalid TTL {ttl} for key {key}, using default 86400")
+            ttl = 86400
+        
         await redis.setex(key, ttl, serialized)
         logger.debug(f"Cached key: {key} with TTL: {ttl}s")
         return True
+    except ConnectionError as e:
+        logger.error(f"Redis connection error for key {key}: {e}")
+        return False
+    except TimeoutError as e:
+        logger.error(f"Redis timeout for key {key}: {e}")
+        return False
     except Exception as e:
         logger.error(f"Redis set error for key {key}: {e}")
         return False

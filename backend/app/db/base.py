@@ -12,6 +12,7 @@ from app.models.poem import Poem, Verse
 from app.models.meter import Meter
 from app.models.tafila import Tafila
 from app.models.analysis import Analysis
+from app.models.analytics import AnalyticsEvent
 # Add more as you create them
 
-__all__ = ["Base", "User", "Bahr", "Taf3ila", "Poem", "Verse", "Meter", "Tafila", "Analysis"]
+__all__ = ["Base", "User", "Bahr", "Taf3ila", "Poem", "Verse", "Meter", "Tafila", "Analysis", "AnalyticsEvent"]

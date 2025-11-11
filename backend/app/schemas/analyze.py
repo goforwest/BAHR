@@ -35,8 +35,25 @@ class AnalyzeRequest(BaseModel):
     @classmethod
     def validate_arabic(cls, v: str) -> str:
         """Validate that text contains Arabic characters."""
-        if not any('\u0600' <= ch <= '\u06FF' for ch in v):
+        # Edge case: Strip whitespace for validation
+        stripped = v.strip()
+        
+        if not stripped:
+            raise ValueError('Text cannot be empty or only whitespace')
+        
+        if len(stripped) < 5:
+            raise ValueError('Text must be at least 5 characters long')
+        
+        # Check for Arabic characters
+        arabic_char_count = sum(1 for ch in v if '\u0600' <= ch <= '\u06FF')
+        
+        if arabic_char_count == 0:
             raise ValueError('Text must contain Arabic characters')
+        
+        # Edge case: Warn if text has very little Arabic (< 30%)
+        if arabic_char_count / len(stripped) < 0.3:
+            raise ValueError('Text must be primarily in Arabic (at least 30% Arabic characters)')
+        
         return v.strip()
     
     model_config = {

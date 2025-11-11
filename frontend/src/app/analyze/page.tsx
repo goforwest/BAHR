@@ -5,30 +5,81 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { AnalyzeForm } from '@/components/AnalyzeForm';
 import { AnalyzeResults } from '@/components/AnalyzeResults';
+import { AnalysisLoadingSkeleton } from '@/components/Skeleton';
+import { ExampleVerses } from '@/components/ExampleVerses';
+import { Toast, useToast } from '@/components/Toast';
 import { useAnalyze } from '@/hooks/useAnalyze';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import type { AnalyzeResponse } from '@/types/analyze';
 
 export default function AnalyzePage() {
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
-  const { mutate, isPending, error } = useAnalyze();
+  const [lastSubmittedText, setLastSubmittedText] = useState<string>('');
+  const { mutate, isPending, error, reset } = useAnalyze();
+  const { toast, showSuccess, hideToast } = useToast();
+  const { track, trackPageView } = useAnalytics();
+
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView('/analyze');
+  }, [trackPageView]);
 
   const handleSubmit = (text: string) => {
+    setLastSubmittedText(text);
+    
+    // Track analysis submission
+    track('analyze_submit', {
+      verse_length: text.length,
+      has_diacritics: /[\u064B-\u0652]/.test(text),
+    });
+    
     mutate(
-      { text, detect_bahr: true, suggest_corrections: false },
+      { text, detect_bahr: true, suggest_corrections: true },
       {
         onSuccess: (data) => {
           setResult(data);
+          showSuccess('تم تحليل البيت الشعري بنجاح');
+          
+          // Track successful analysis
+          track('analyze_success', {
+            bahr_detected: data.bahr?.name_ar || 'unknown',
+            score: data.score,
+          });
+        },
+        onError: (err) => {
+          // Track analysis error
+          track('analyze_error', {
+            error_message: err.message,
+          });
         },
       }
     );
   };
 
+  const handleExampleSelect = (text: string) => {
+    track('example_click', {
+      verse_preview: text.substring(0, 20),
+    });
+    handleSubmit(text);
+  };
+
+  const handleRetry = () => {
+    if (lastSubmittedText) {
+      track('retry_click');
+      reset(); // Clear error
+      handleSubmit(lastSubmittedText);
+    }
+  };
+
   const handleReset = () => {
+    track('reset_click');
     setResult(null);
+    setLastSubmittedText('');
+    reset();
   };
 
   return (
@@ -55,13 +106,39 @@ export default function AnalyzePage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Toast Notifications */}
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          show={toast.show}
+          onClose={hideToast}
+        />
+
         {/* Form Section */}
         <section className="mb-12">
-          <AnalyzeForm onSubmit={handleSubmit} isLoading={isPending} error={error} />
+          <AnalyzeForm 
+            onSubmit={handleSubmit} 
+            onRetry={handleRetry}
+            isLoading={isPending} 
+            error={error} 
+          />
         </section>
 
+        {/* Examples Section */}
+        {!result && !isPending && (
+          <section className="max-w-3xl mx-auto mb-12">
+            <ExampleVerses
+              onSelect={handleExampleSelect}
+              disabled={isPending}
+            />
+          </section>
+        )}
+
+        {/* Loading State */}
+        {isPending && <AnalysisLoadingSkeleton />}
+
         {/* Results Section */}
-        {result && (
+        {result && !isPending && (
           <section>
             <AnalyzeResults result={result} onReset={handleReset} />
           </section>
