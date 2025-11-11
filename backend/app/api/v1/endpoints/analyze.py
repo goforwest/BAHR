@@ -4,10 +4,13 @@ Analyze endpoint for prosodic analysis of Arabic poetry.
 
 import logging
 from fastapi import APIRouter, HTTPException, status
-from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, BahrInfo
+from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, BahrInfo, RhymeInfo
 from app.core.normalization import normalize_arabic_text
 from app.core.taqti3 import perform_taqti3
 from app.core.bahr_detector import BahrDetector
+from app.core.quality import analyze_verse_quality
+from app.core.phonetics import text_to_phonetic_pattern
+from app.core.rhyme import analyze_verse_rhyme
 from app.db.redis import cache_get, cache_set, generate_cache_key
 
 logger = logging.getLogger(__name__)
@@ -142,6 +145,7 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
                 detected_bahr = bahr_detector.analyze_verse(normalized_text)
                 if detected_bahr:
                     bahr_info = BahrInfo(
+                        id=detected_bahr.id,
                         name_ar=detected_bahr.name_ar,
                         name_en=detected_bahr.name_en,
                         confidence=detected_bahr.confidence
@@ -154,35 +158,89 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
                 logger.error(f"Bahr detection failed: {e}", exc_info=True)
                 # Continue without bahr detection - don't fail the whole request
         
-        # Step e: Calculate score (confidence * 100)
-        score = round(confidence * 100, 2) if confidence > 0 else 0.0
+        # Step e: Advanced quality analysis using quality module
+        try:
+            # Get phonetic pattern for advanced analysis
+            phonetic_pattern = text_to_phonetic_pattern(normalized_text)
+            
+            # Perform comprehensive quality analysis
+            quality_score, quality_errors, quality_suggestions = analyze_verse_quality(
+                verse_text=request.text,
+                taqti3_result=taqti3_result,
+                bahr_id=bahr_info.id if bahr_info else None,
+                bahr_name_ar=bahr_info.name_ar if bahr_info else None,
+                meter_confidence=confidence,
+                detected_pattern=phonetic_pattern,
+                expected_pattern=""  # Could be enhanced to fetch from bahr template
+            )
+            
+            # Use sophisticated score from quality module
+            score = quality_score.overall
+            
+            # Use quality-generated suggestions
+            suggestions = quality_suggestions if request.suggest_corrections else []
+            
+            # Log quality metrics
+            logger.info(
+                f"Quality analysis: overall={score:.2f}, "
+                f"meter_accuracy={quality_score.meter_accuracy:.2f}, "
+                f"errors_count={len(quality_errors)}"
+            )
+            
+        except Exception as e:
+            # Fallback to simple scoring if quality module fails
+            logger.warning(f"Quality analysis failed, using simple scoring: {e}")
+            
+            score = round(confidence * 100, 2) if confidence > 0 else 0.0
+            score = max(0.0, min(100.0, score))
+            
+            suggestions = []
+            if confidence >= 0.9:
+                suggestions.append("التقطيع دقيق ومتسق")
+            elif confidence >= 0.7:
+                suggestions.append("التقطيع جيد مع بعض الاختلافات البسيطة")
+            elif confidence > 0:
+                suggestions.append("قد يحتاج البيت إلى مراجعة للتقطيع")
+            
+            if not bahr_info and request.detect_bahr:
+                suggestions.append("لم يتم التعرف على البحر بثقة كافية")
         
-        # Edge case: Ensure score is within valid range
-        score = max(0.0, min(100.0, score))
+        # Step f: Rhyme analysis (if requested)
+        rhyme_info = None
+        if request.analyze_rhyme:
+            try:
+                rhyme_pattern, rhyme_desc_ar, rhyme_desc_en = analyze_verse_rhyme(request.text)
+                
+                rhyme_info = RhymeInfo(
+                    rawi=rhyme_pattern.qafiyah.rawi,
+                    rawi_vowel=rhyme_pattern.qafiyah.rawi_vowel,
+                    rhyme_types=[rt.value for rt in rhyme_pattern.rhyme_types],
+                    description_ar=rhyme_desc_ar,
+                    description_en=rhyme_desc_en
+                )
+                
+                # Add rhyme info to suggestions
+                if request.suggest_corrections:
+                    suggestions.append(f"🎵 {rhyme_desc_ar}")
+                
+                logger.info(f"Rhyme analysis: rawi={rhyme_pattern.qafiyah.rawi}, types={len(rhyme_pattern.rhyme_types)}")
+                
+            except Exception as e:
+                # Rhyme analysis is optional, don't fail if it errors
+                logger.warning(f"Rhyme analysis failed: {e}")
         
-        # Generate suggestions
-        suggestions = []
-        if confidence >= 0.9:
-            suggestions.append("التقطيع دقيق ومتسق")
-        elif confidence >= 0.7:
-            suggestions.append("التقطيع جيد مع بعض الاختلافات البسيطة")
-        elif confidence > 0:
-            suggestions.append("قد يحتاج البيت إلى مراجعة للتقطيع")
-        
-        if not bahr_info and request.detect_bahr:
-            suggestions.append("لم يتم التعرف على البحر بثقة كافية")
-        
-        # Step f: Build response
+        # Step g: Build response
         response = AnalyzeResponse(
             text=request.text,
             taqti3=taqti3_result,
             bahr=bahr_info,
+            rhyme=rhyme_info,
             errors=[],
             suggestions=suggestions if request.suggest_corrections else [],
             score=score
         )
         
-        # Step g: Cache result (TTL: 24 hours = 86400 seconds) with error handling
+        # Step h: Cache result (TTL: 24 hours = 86400 seconds) with error handling
         try:
             response_dict = response.model_dump()
             await cache_set(cache_key, response_dict, ttl=86400)
@@ -191,7 +249,7 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             # Cache failure should not break the response
             logger.warning(f"Failed to cache result: {e}")
         
-        # Step h: Return response
+        # Step i: Return response
         return response
         
     except HTTPException:

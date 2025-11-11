@@ -30,6 +30,10 @@ class AnalyzeRequest(BaseModel):
         default=False,
         description="Whether to suggest prosodic corrections"
     )
+    analyze_rhyme: bool = Field(
+        default=True,
+        description="Whether to analyze rhyme (qafiyah)"
+    )
     
     @field_validator('text')
     @classmethod
@@ -79,10 +83,12 @@ class BahrInfo(BaseModel):
     Information about a detected meter (bahr).
     
     Attributes:
+        id: Unique identifier for the meter
         name_ar: Arabic name of the meter
         name_en: English transliteration
         confidence: Detection confidence score (0.0 to 1.0)
     """
+    id: int = Field(..., description="Unique identifier for the meter")
     name_ar: str = Field(..., description="Arabic name of the meter")
     name_en: str = Field(..., description="English transliteration")
     confidence: float = Field(
@@ -96,9 +102,42 @@ class BahrInfo(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
+                    "id": 1,
                     "name_ar": "الطويل",
                     "name_en": "at-Tawil",
                     "confidence": 0.95
+                }
+            ]
+        }
+    }
+
+
+class RhymeInfo(BaseModel):
+    """
+    Information about rhyme (qafiyah) in the verse.
+    
+    Attributes:
+        rawi: The main rhyme letter (حرف الروي)
+        rawi_vowel: Vowel on the rawi ('i', 'u', 'a', or '' for sukun)
+        rhyme_types: List of rhyme type classifications
+        description_ar: Arabic description of the qafiyah
+        description_en: English description of the qafiyah
+    """
+    rawi: str = Field(..., description="Main rhyme letter (حرف الروي)")
+    rawi_vowel: str = Field(..., description="Vowel on rawi")
+    rhyme_types: List[str] = Field(..., description="Rhyme type classifications")
+    description_ar: str = Field(..., description="Arabic description")
+    description_en: str = Field(..., description="English description")
+    
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "rawi": "م",
+                    "rawi_vowel": "",
+                    "rhyme_types": ["مقيدة", "مجردة"],
+                    "description_ar": "القافية: روي:م (مقيدة, مجردة)",
+                    "description_en": "Qafiyah: rawi=م"
                 }
             ]
         }
@@ -123,6 +162,10 @@ class AnalyzeResponse(BaseModel):
         None,
         description="Detected meter information"
     )
+    rhyme: Optional[RhymeInfo] = Field(
+        None,
+        description="Rhyme (qafiyah) information"
+    )
     errors: List[str] = Field(
         default_factory=list,
         description="List of prosodic errors"
@@ -145,9 +188,17 @@ class AnalyzeResponse(BaseModel):
                     "text": "إذا غامَرتَ في شَرَفٍ مَرومِ",
                     "taqti3": "فعولن مفاعيلن فعولن مفاعيلن",
                     "bahr": {
+                        "id": 1,
                         "name_ar": "الطويل",
                         "name_en": "at-Tawil",
                         "confidence": 0.95
+                    },
+                    "rhyme": {
+                        "rawi": "م",
+                        "rawi_vowel": "",
+                        "rhyme_types": ["مقيدة", "مجردة"],
+                        "description_ar": "القافية: روي:م (مقيدة, مجردة)",
+                        "description_en": "Qafiyah: rawi=م"
                     },
                     "errors": [],
                     "suggestions": ["التقطيع دقيق ومتسق"],
