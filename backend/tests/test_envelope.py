@@ -2,9 +2,8 @@ import os
 import sys
 from fastapi.testclient import TestClient
 
-# Ensure project root is on path so we can import backend package
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-from backend.app.main import app
+# Import from app module directly (works in both local and Docker/Railway contexts)
+from app.main import app
 
 
 client = TestClient(app)
