@@ -335,6 +335,10 @@ class BahrDetectorV2:
         """
         Calculate confidence score.
 
+        CRITICAL FIX: Exact matches should ALWAYS have high confidence,
+        regardless of transformation count. A pattern that exists in the
+        cache is a valid meter pattern, even if it uses many zihafat.
+
         Args:
             match_quality: Quality of the match
             is_exact: Whether this is an exact pattern match
@@ -343,20 +347,30 @@ class BahrDetectorV2:
         Returns:
             Confidence score (0.0-1.0)
         """
-        # Base confidence by match quality
-        quality_scores = {
-            MatchQuality.EXACT: 1.00,
-            MatchQuality.STRONG: 0.95,
-            MatchQuality.MODERATE: 0.85,
-            MatchQuality.WEAK: 0.75,
-            MatchQuality.NO_MATCH: 0.0,
-        }
-
-        base_score = quality_scores[match_quality]
-
-        # Reduce for approximate matches
-        if not is_exact:
-            base_score *= 0.95
+        # CRITICAL: Prioritize exact matches over transformation complexity
+        # An exact match means the pattern exists in our validated cache,
+        # which means it's a legitimate meter pattern regardless of zihafat used
+        if is_exact:
+            # Exact matches get high confidence (0.92-0.97)
+            # Still differentiate by quality, but keep all exact matches high
+            quality_scores_exact = {
+                MatchQuality.EXACT: 0.97,      # All base (no transformations)
+                MatchQuality.STRONG: 0.95,     # 1-2 common transformations
+                MatchQuality.MODERATE: 0.93,   # 3+ common transformations
+                MatchQuality.WEAK: 0.92,       # Many transformations (but still valid!)
+                MatchQuality.NO_MATCH: 0.0,
+            }
+            base_score = quality_scores_exact[match_quality]
+        else:
+            # Approximate matches (fuzzy matching) - lower confidence
+            quality_scores_approx = {
+                MatchQuality.EXACT: 0.90,      # Very close match
+                MatchQuality.STRONG: 0.85,     # Good similarity
+                MatchQuality.MODERATE: 0.75,   # Moderate similarity
+                MatchQuality.WEAK: 0.65,       # Weak similarity
+                MatchQuality.NO_MATCH: 0.0,
+            }
+            base_score = quality_scores_approx[match_quality]
 
         # Slight boost for common meters (Tier 1)
         from .meters import MeterTier
