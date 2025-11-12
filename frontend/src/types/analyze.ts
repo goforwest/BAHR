@@ -62,6 +62,40 @@ export interface RhymeInfo {
 }
 
 /**
+ * Information about an alternative meter candidate - MULTI-CANDIDATE NEW
+ */
+export interface AlternativeMeter {
+  /** Meter ID */
+  id: number;
+  /** Arabic name of the meter */
+  name_ar: string;
+  /** English transliteration */
+  name_en: string;
+  /** Confidence score (0.0 to 1.0) */
+  confidence: number;
+  /** The exact phonetic pattern that matched */
+  matched_pattern: string;
+  /** Transformations applied */
+  transformations?: string[];
+  /** Confidence difference from top candidate */
+  confidence_diff: number;
+}
+
+/**
+ * Information about detection uncertainty - MULTI-CANDIDATE NEW
+ */
+export interface DetectionUncertainty {
+  /** Whether the detection is uncertain */
+  is_uncertain: boolean;
+  /** Reason for uncertainty: 'low_confidence', 'close_candidates' */
+  reason?: string;
+  /** Difference between top 2 candidates (if applicable) */
+  top_diff?: number;
+  /** Recommendation for the user: 'add_diacritics', 'manual_review' */
+  recommendation?: string;
+}
+
+/**
  * Response schema for verse analysis (V2 Enhanced).
  */
 export interface AnalyzeResponse {
@@ -73,10 +107,50 @@ export interface AnalyzeResponse {
   bahr: BahrInfo | null;
   /** Rhyme (qafiyah) information (V2 NEW) */
   rhyme?: RhymeInfo | null;
+  /** Alternative meter candidates when detection is uncertain (MULTI-CANDIDATE NEW) */
+  alternative_meters?: AlternativeMeter[] | null;
+  /** Detection uncertainty information (MULTI-CANDIDATE NEW) */
+  detection_uncertainty?: DetectionUncertainty | null;
   /** List of prosodic errors detected */
   errors: string[];
   /** List of improvement suggestions */
   suggestions: string[];
   /** Overall quality score (0-100) */
   score: number;
+}
+
+/**
+ * Meter feedback request schema - FEEDBACK NEW
+ */
+export interface MeterFeedback {
+  /** Original input text */
+  text: string;
+  /** Normalized version of the text */
+  normalized_text: string;
+  /** The meter that was detected by the system (Arabic name) */
+  detected_meter: string;
+  /** Confidence score of the detected meter */
+  detected_confidence: number;
+  /** The meter the user selected (may be same as detected) */
+  user_selected_meter: string;
+  /** List of alternative meters shown to the user */
+  alternatives_shown: string[];
+  /** Whether the input text had diacritical marks */
+  has_tashkeel: boolean;
+  /** Optional comment from the user */
+  user_comment?: string;
+  /** Feedback submission timestamp */
+  timestamp: string;
+}
+
+/**
+ * Feedback submission response - FEEDBACK NEW
+ */
+export interface FeedbackResponse {
+  /** Success or error status */
+  status: string;
+  /** User-friendly message */
+  message: string;
+  /** Unique feedback identifier */
+  feedback_id: string;
 }
