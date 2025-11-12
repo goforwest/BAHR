@@ -106,6 +106,9 @@ temp/
 data/
 datasets/
 
+# Alembic old directory (if exists at root)
+alembic/
+
 # Scripts that aren't needed in production
 scripts/setup/
 scripts/testing/

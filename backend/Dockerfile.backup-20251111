@@ -80,22 +80,34 @@ EXPOSE 8000 9090
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--log-level", "debug"]
 
 # =============================================================================
-# Stage 3: Builder (for production)
+# Stage 3: Builder (for production) - install into venv to copy minimal runtime
 # =============================================================================
-FROM base as builder
+FROM python:3.11.10-slim-bookworm as builder
 
-# Copy requirements (including modular requirements directory)
-COPY requirements.txt ./
+ENV VENV_PATH=/opt/venv
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/* && \
+    python -m venv $VENV_PATH && \
+    $VENV_PATH/bin/pip install --upgrade pip
+
+WORKDIR /build
 COPY requirements/ ./requirements/
+COPY requirements.txt ./
 
-# Install dependencies to a specific location
-RUN pip install --upgrade pip && \
-    pip install --prefix=/install --no-warn-script-location -r requirements.txt
+# Install only production requirements (which includes base) using no cache
+RUN $VENV_PATH/bin/pip install --no-cache-dir --no-warn-script-location -r requirements/production.txt && \
+    find $VENV_PATH -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
+    find $VENV_PATH -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
+    find $VENV_PATH -type f -name "*.pyc" -delete && \
+    rm -rf /root/.cache
 
 # =============================================================================
 # Stage 4: Production Image (DEFAULT - MUST BE LAST FOR RAILWAY)
 # =============================================================================
-FROM python:3.11-slim as production
+FROM python:3.11.10-slim-bookworm as production
 
 LABEL maintainer="BAHR Production Team"
 LABEL description="BAHR Backend API - Production Environment"
@@ -105,12 +117,12 @@ LABEL version="1.0.0"
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     ENVIRONMENT=production \
-    DEBUG=false
+    DEBUG=false \
+    VENV_PATH=/opt/venv \
+    PATH="/opt/venv/bin:$PATH"
 
 # Install only runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # PostgreSQL client library (runtime only)
-    libpq5 \
     # Curl for health checks
     curl \
     # Cleanup
@@ -120,16 +132,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Create application directory
 WORKDIR /app
 
-# Copy installed dependencies from builder stage
-COPY --from=builder /install /usr/local
+# Copy only virtual environment (dependencies) from builder
+COPY --from=builder /opt/venv /opt/venv
 
-# Copy application code
-COPY . .
+# Copy only necessary application files
+COPY app/ ./app/
+COPY database/ ./database/
+COPY alembic.ini ./
+COPY alembic/ ./alembic/
+
+# Clean up unnecessary files to reduce image size
+RUN find /usr/local -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local -type d -name "test" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local -type f -name "*.pyc" -delete && \
+    find /usr/local -type f -name "*.pyo" -delete && \
+    find /usr/local -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
+    rm -rf /root/.cache
 
 # Create non-root user for production
 RUN useradd -m -u 1000 -s /bin/sh appuser && \
     chown -R appuser:appuser /app && \
-    chmod -R 755 /app
+    chmod -R 755 /app && \
+    chown -R appuser:appuser /opt/venv
 
 # Switch to non-root user
 USER appuser
