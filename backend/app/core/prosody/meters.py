@@ -412,6 +412,27 @@ AS_SARI = Meter(
     example_verse="يا دَهْرُ وَيْحَكَ ما أَبْقَيْتَ مِنْ أَحَدِ"
 )
 
+# 10b. السريع (مفعولات variant) - "The Fast (maf'ulat ending)"
+AS_SARI_MAFOOLAT = Meter(
+    id=20,
+    name_ar="السريع (مفعولات)",
+    name_en="as-Sari' (maf'ulat)",
+    tier=MeterTier.TIER_2,
+    frequency_rank=20,
+    base_tafail=[
+        TAFAIL_BASE["مستفعلن"],
+        TAFAIL_BASE["مستفعلن"],
+        TAFAIL_BASE["مفعولات"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL]),
+        2: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL]),
+        3: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF], is_final=True),
+    },
+    description="نسخة السريع المنتهية بمفعولات بدلاً من فاعلن",
+    example_verse="لا تَعذُليهِ فَإِنَّ العَذلَ يولَعُهُ"
+)
+
 # 11. المديد (al-Madid) - "The Extended"
 AL_MADID = Meter(
     id=9,
@@ -627,6 +648,7 @@ METERS_REGISTRY: Dict[int, Meter] = {
     17: MAJZU_AL_KAMIL,
     18: MAJZU_AL_HAZAJ,
     19: AL_KAMIL_3,
+    20: AS_SARI_MAFOOLAT,
 }
 
 

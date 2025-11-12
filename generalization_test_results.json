@@ -1,9 +1,9 @@
 {
   "total": 30,
-  "correct": 29,
-  "incorrect": 1,
+  "correct": 30,
+  "incorrect": 0,
   "no_detection": 0,
-  "accuracy": 96.66666666666667,
+  "accuracy": 100.0,
   "by_meter": {
     "الطويل": {
       "total": 6,
@@ -52,8 +52,8 @@
     },
     "السريع": {
       "total": 1,
-      "correct": 0,
-      "incorrect": 1
+      "correct": 1,
+      "incorrect": 0
     },
     "المديد": {
       "total": 1,
@@ -68,25 +68,13 @@
     },
     "classical": {
       "total": 26,
-      "correct": 25
+      "correct": 26
     },
     "contemporary": {
       "total": 1,
       "correct": 1
     }
   },
-  "misclassifications": [
-    {
-      "verse_id": "gen_027",
-      "text": "لا تعذليه فان العذل يولعه",
-      "poet": "جميل بثينة",
-      "era": "classical",
-      "expected_meter": "السريع",
-      "detected_meter": "الرجز",
-      "confidence": 0.8767142857142857,
-      "phonetic_pattern": "/o/o//o/o/o//o/o/o/o/",
-      "explanation": "مطابقة مع زحافات: قطع | Match with variations: قطع (تقريبية 95.2% | approximate 95.2%)"
-    }
-  ],
+  "misclassifications": [],
   "failed_scansions": []
 }
