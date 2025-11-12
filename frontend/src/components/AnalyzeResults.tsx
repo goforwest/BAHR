@@ -87,20 +87,22 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
       </motion.div>
 
       {/* Taqti3 Card */}
-      <motion.div 
-        variants={itemVariants}
-        whileHover="hover"
-        initial="initial"
-        className="bg-white shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
-      >
-        <h3 className="text-sm font-medium text-gray-500 mb-3">التقطيع العروضي</h3>
-        <p
-          dir="rtl"
-          className="font-mono text-lg text-blue-900 bg-blue-50 p-4 rounded-md overflow-x-auto"
+      {taqti3 && taqti3.trim() && taqti3 !== 'غير محدد' && taqti3 !== 'خطأ في التحليل' && (
+        <motion.div
+          variants={itemVariants}
+          whileHover="hover"
+          initial="initial"
+          className="bg-white shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
         >
-          {taqti3}
-        </p>
-      </motion.div>
+          <h3 className="text-sm font-medium text-gray-500 mb-3">التقطيع العروضي</h3>
+          <p
+            dir="rtl"
+            className="font-mono text-lg text-blue-900 bg-blue-50 p-4 rounded-md overflow-x-auto whitespace-pre-wrap"
+          >
+            {taqti3}
+          </p>
+        </motion.div>
+      )}
 
       {/* Bahr Card */}
       {bahr && (
@@ -217,7 +219,7 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
       )}
 
       {/* Score Card */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         whileHover="hover"
         initial="initial"
@@ -226,28 +228,61 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
         <h3 className="text-sm font-medium text-gray-500 mb-3">درجة الجودة</h3>
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-2xl font-bold text-gray-900">{score}</span>
+            <span className="text-3xl font-bold text-gray-900">{score.toFixed(1)}</span>
             <span className="text-sm text-gray-500">من 100</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-4">
             <div
               className={`h-4 rounded-full transition-all duration-500 ${
-                score >= 80
+                score >= 90
                   ? 'bg-green-500'
-                  : score >= 60
+                  : score >= 80
+                  ? 'bg-blue-500'
+                  : score >= 70
                   ? 'bg-yellow-500'
+                  : score >= 50
+                  ? 'bg-orange-500'
                   : 'bg-red-500'
               }`}
-              style={{ width: `${score}%` }}
+              style={{ width: `${Math.min(score, 100)}%` }}
             />
           </div>
-          <p className="mt-2 text-sm text-gray-600">
-            {score >= 80
-              ? 'ممتاز! البيت موافق للوزن'
-              : score >= 60
-              ? 'جيد، مع بعض الملاحظات'
-              : 'يحتاج إلى مراجعة'}
-          </p>
+          <div className="mt-3 flex items-center gap-2">
+            <span
+              className={`inline-block px-3 py-1 text-sm font-semibold rounded-full ${
+                score >= 90
+                  ? 'bg-green-100 text-green-800'
+                  : score >= 80
+                  ? 'bg-blue-100 text-blue-800'
+                  : score >= 70
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : score >= 50
+                  ? 'bg-orange-100 text-orange-800'
+                  : 'bg-red-100 text-red-800'
+              }`}
+            >
+              {score >= 90
+                ? '✨ ممتاز'
+                : score >= 80
+                ? '✓ جيد جداً'
+                : score >= 70
+                ? '~ جيد'
+                : score >= 50
+                ? '⚠ مقبول'
+                : '✗ ضعيف'}
+            </span>
+            <p className="text-sm text-gray-600">
+              {score >= 90
+                ? 'البيت موافق للوزن تماماً'
+                : score >= 80
+                ? 'البيت موافق للوزن مع اختلافات طفيفة'
+                : score >= 70
+                ? 'البيت جيد مع بعض الملاحظات'
+                : score >= 50
+                ? 'البيت يحتاج إلى مراجعة'
+                : 'البيت يحتاج إلى تحسين'}
+            </p>
+          </div>
         </div>
       </motion.div>
 
