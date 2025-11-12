@@ -1,13 +1,13 @@
 {
   "total": 118,
-  "correct": 100,
+  "correct": 114,
   "incorrect": 0,
-  "no_detection": 18,
-  "accuracy": 84.7457627118644,
+  "no_detection": 4,
+  "accuracy": 96.61016949152543,
   "by_meter": {
     "الطويل": {
       "total": 24,
-      "correct": 16,
+      "correct": 24,
       "incorrect": 0
     },
     "الرجز": {
@@ -17,12 +17,12 @@
     },
     "الرمل": {
       "total": 13,
-      "correct": 11,
+      "correct": 13,
       "incorrect": 0
     },
     "البسيط": {
       "total": 17,
-      "correct": 15,
+      "correct": 17,
       "incorrect": 0
     },
     "الكامل": {
@@ -37,7 +37,7 @@
     },
     "الخفيف": {
       "total": 9,
-      "correct": 8,
+      "correct": 9,
       "incorrect": 0
     },
     "الهزج": {
@@ -47,147 +47,57 @@
     },
     "الوافر": {
       "total": 13,
-      "correct": 12,
+      "correct": 13,
       "incorrect": 0
     }
   },
   "by_difficulty": {
     "easy": {
       "total": 55,
-      "correct": 45
+      "correct": 52
     },
     "medium": {
       "total": 63,
-      "correct": 55
+      "correct": 62
     }
   },
-  "misclassifications": [],
-  "failed_scansions": [
-    {
-      "verse_id": "golden_101",
-      "text": "قفا نبك من ذكرى حبيب ومنزل",
-      "expected_meter": "الطويل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_102",
-      "text": "ارى كل حي هالكا وابن هالك",
-      "expected_meter": "الطويل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_103",
-      "text": "بدت مثل قرن الشمس في رونق الضحى",
-      "expected_meter": "الطويل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_104",
-      "text": "صفا كل شيء للحبيب المحب",
-      "expected_meter": "الرمل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_105",
-      "text": "الا ليت الشباب يعود يوما",
-      "expected_meter": "البسيط",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
+  "misclassifications": [
     {
       "verse_id": "golden_106",
       "text": "توكلت في رزقي على الله خالقي",
       "expected_meter": "الكامل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_107",
-      "text": "يا من يعز علينا ان نفارقهم",
-      "expected_meter": "الخفيف",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
+      "detected_meter": "None",
+      "confidence": 0.0,
+      "phonetic_pattern": "///o//o///o//o///o//o///o//o",
+      "difficulty": "easy"
     },
     {
       "verse_id": "golden_108",
       "text": "قل للذين تفرقوا اين الوفاء",
       "expected_meter": "الكامل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_109",
-      "text": "من يهن يسهل الهوان عليه",
-      "expected_meter": "الوافر",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_110",
-      "text": "واني لارجو الله حتى كانني",
-      "expected_meter": "الطويل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
+      "detected_meter": "None",
+      "confidence": 0.0,
+      "phonetic_pattern": "///o//o///o//o///o//o///o//o",
+      "difficulty": "medium"
     },
     {
       "verse_id": "golden_111",
       "text": "انا الذي نظر الاعمى الى ادبي",
       "expected_meter": "الكامل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_112",
-      "text": "فان تفق انا ابن غسان فاعلموا",
-      "expected_meter": "الطويل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
+      "detected_meter": "None",
+      "confidence": 0.0,
+      "phonetic_pattern": "///o//o///o//o///o//o///o//o",
+      "difficulty": "easy"
     },
     {
       "verse_id": "golden_113",
       "text": "لا تسقني ماء الحياة بذلة",
       "expected_meter": "الكامل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_114",
-      "text": "ولقد ذكرتك والرماح نواهل",
-      "expected_meter": "الطويل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_115",
-      "text": "اذا المرء لم يدنس من اللوم عرضه",
-      "expected_meter": "الطويل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_116",
-      "text": "وقفت على ربع لمية ناقتي",
-      "expected_meter": "الطويل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_117",
-      "text": "الم تر ان الله اعطاك صورة",
-      "expected_meter": "البسيط",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
-    },
-    {
-      "verse_id": "golden_118",
-      "text": "تجلدت والايام تجري علي",
-      "expected_meter": "الرمل",
-      "expected_tafail": "",
-      "error": "Empty pattern generated"
+      "detected_meter": "None",
+      "confidence": 0.0,
+      "phonetic_pattern": "///o//o///o//o///o//o///o//o",
+      "difficulty": "easy"
     }
-  ]
+  ],
+  "failed_scansions": []
 }
