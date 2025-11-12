@@ -128,9 +128,26 @@ temp/
 data/
 datasets/
 
-# Alembic old directory (if exists at root)
-alembic/
+# NOTE: We DO need alembic/ directory for database migrations
+# (Previously excluded by mistake)
 
 # Scripts that aren't needed in production
 scripts/setup/
 scripts/testing/
+
+# Downloaded Python packages (should not be in repo)
+*.whl
+*.tar.gz
+*.egg
+*.zip
+
+# Test and verification scripts
+test-*.sh
+verify-*.sh
+*-test.sh
+
+# Railway/deployment configs (not needed in container)
+railway.toml
+railway.json
+nixpacks.toml
+Procfile

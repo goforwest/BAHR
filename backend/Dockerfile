@@ -1,12 +1,13 @@
 # =============================================================================
 # BAHR - Railway Optimized Production Dockerfile
-# Target: < 1.5 GB final image (Railway limit: 4 GB)
+# Target: < 3.5 GB final image (Railway limit: 4 GB)
+# Optimizations: CPU-only PyTorch, aggressive cleanup, multi-stage build
 # =============================================================================
 
 # =============================================================================
 # Stage 1: Builder - Install dependencies only
 # =============================================================================
-FROM python:3.11-slim AS builder
+FROM python:3.11-slim-bookworm AS builder
 
 # Prevent Python from writing pyc files and buffering stdout/stderr
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -29,18 +30,33 @@ COPY requirements.txt ./
 
 # Install Python dependencies to /install prefix
 RUN pip install --upgrade pip setuptools wheel && \
+    # Install CPU-only PyTorch first (saves ~1.5 GB vs CUDA version)
+    pip install --prefix=/install --no-warn-script-location \
+    torch==2.9.0+cpu --index-url https://download.pytorch.org/whl/cpu && \
+    # Install remaining requirements
     pip install --prefix=/install --no-warn-script-location \
     -r requirements/production.txt && \
     # Remove pip cache and unnecessary files
     rm -rf /root/.cache/pip && \
     find /install -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
     find /install -type f -name "*.pyc" -delete && \
-    find /install -type f -name "*.pyo" -delete
+    find /install -type f -name "*.pyo" -delete && \
+    # Remove test files and documentation from packages (saves ~800 MB)
+    find /install -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
+    find /install -type d -name "test" -exec rm -rf {} + 2>/dev/null || true && \
+    find /install -type d -name "docs" -exec rm -rf {} + 2>/dev/null || true && \
+    find /install -name "*.md" -delete 2>/dev/null || true && \
+    # Remove large unused model files from transformers (saves ~300 MB)
+    find /install -path "*/transformers/models/*" -name "*.ckpt" -delete 2>/dev/null || true && \
+    find /install -path "*/transformers/models/*" -name "*.bin" -size +10M -delete 2>/dev/null || true && \
+    # Remove unnecessary torch files
+    find /install -path "*/torch/test" -exec rm -rf {} + 2>/dev/null || true && \
+    find /install -path "*/torch/include" -exec rm -rf {} + 2>/dev/null || true
 
 # =============================================================================
 # Stage 2: Runtime - Minimal production image
 # =============================================================================
-FROM python:3.11-slim AS production
+FROM python:3.11-slim-bookworm AS production
 
 LABEL maintainer="BAHR Production Team"
 LABEL description="BAHR Backend API - Railway Optimized"
