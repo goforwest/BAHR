@@ -208,13 +208,18 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                         explanation_ar = explanation_full
                         explanation_en = explanation_full
 
+                    # Safely extract match_quality value (handle None or missing attribute)
+                    match_quality_value = None
+                    if hasattr(detection_result, 'match_quality') and detection_result.match_quality:
+                        match_quality_value = detection_result.match_quality.value if hasattr(detection_result.match_quality, 'value') else str(detection_result.match_quality)
+
                     bahr_info = BahrInfo(
                         id=detection_result.meter_id,
                         name_ar=detection_result.meter_name_ar,
                         name_en=detection_result.meter_name_en,
                         confidence=detection_result.confidence,
                         # NEW: Explainability fields
-                        match_quality=detection_result.match_quality.value,
+                        match_quality=match_quality_value,
                         matched_pattern=detection_result.matched_pattern,
                         transformations=detection_result.transformations,
                         explanation_ar=explanation_ar.strip(),
