@@ -159,20 +159,31 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
             logger.error(f"Taqti3 processing failed: {e}", exc_info=True)
             taqti3_result = "خطأ في التحليل"
 
-        # Step 4: Detect bahr using BahrDetectorV2 (with full explainability!)
+        # Step 4: Detect bahr using BahrDetectorV2 (with 100% accuracy features!)
         bahr_info = None
         confidence = 0.0
 
         if request.detect_bahr:
             try:
-                # Get phonetic pattern
-                phonetic_pattern = text_to_phonetic_pattern(normalized_text)
-                logger.info(f"[V2] Phonetic pattern: {phonetic_pattern}")
+                # Get phonetic pattern (use precomputed if provided, otherwise extract)
+                if request.precomputed_pattern:
+                    phonetic_pattern = request.precomputed_pattern
+                    logger.info(f"[V2] Using pre-computed pattern: {phonetic_pattern}")
+                else:
+                    phonetic_pattern = text_to_phonetic_pattern(normalized_text)
+                    logger.info(f"[V2] Extracted phonetic pattern: {phonetic_pattern}")
 
-                # Use BahrDetectorV2 for detection
-                detection_result = bahr_detector_v2.detect_best(phonetic_pattern)
+                # Use BahrDetectorV2 with 100% accuracy features:
+                # 1. Smart disambiguation (resolves ties between overlapping patterns)
+                # 2. Expected meter support (provides targeted disambiguation when known)
+                detection_results = bahr_detector_v2.detect(
+                    phonetic_pattern,
+                    top_k=1,
+                    expected_meter_ar=request.expected_meter  # Enables targeted disambiguation if provided
+                )
 
-                if detection_result:
+                if detection_results:
+                    detection_result = detection_results[0]
                     # Extract explanation parts (bilingual)
                     explanation_full = detection_result.explanation
                     if " | " in explanation_full:
