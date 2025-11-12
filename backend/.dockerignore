@@ -3,6 +3,24 @@
 # Excludes unnecessary files from Docker build context
 # =============================================================================
 
+# =============================================================================
+# CRITICAL: Exclude large local development directories (MUST BE FIRST)
+# =============================================================================
+**/.venv/
+**/.venv
+**/venv/
+**/venv
+**/.env/
+**/env/
+**/ENV/
+**/node_modules/
+../.git/
+../frontend/
+../dataset/
+../docs/
+../archive/
+../tests/
+
 # Python bytecode and cache
 __pycache__/
 *.py[cod]
@@ -73,9 +91,13 @@ logs/
 .gitignore
 .gitattributes
 
-# Docker
+# Docker - exclude unused Dockerfiles
 .dockerignore
-Dockerfile*
+Dockerfile.backup*
+Dockerfile.minimal
+Dockerfile.multi-stage*
+Dockerfile.optimized
+Dockerfile.test
 docker-compose*.yml
 
 # CI/CD
