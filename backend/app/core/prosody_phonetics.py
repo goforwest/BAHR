@@ -25,11 +25,11 @@ from typing import List, Optional
 
 # Handle imports for both module use and standalone testing
 try:
-    from app.core.phonetics import extract_phonemes, Phoneme
+    from app.core.phonetics import Phoneme, extract_phonemes
 except ModuleNotFoundError:
     # Standalone mode - add backend to path
-    sys.path.insert(0, '/home/user/BAHR/backend')
-    from app.core.phonetics import extract_phonemes, Phoneme
+    sys.path.insert(0, "/home/user/BAHR/backend")
+    from app.core.phonetics import Phoneme, extract_phonemes
 
 
 def phonemes_to_prosodic_pattern_v2(phonemes: List[Phoneme]) -> str:
@@ -76,14 +76,14 @@ def phonemes_to_prosodic_pattern_v2(phonemes: List[Phoneme]) -> str:
         # Handle shadda (gemination) - consonant is doubled
         if phoneme.has_shadda:
             # First occurrence: treated as sakin (no vowel)
-            pattern += 'o'
+            pattern += "o"
             # Second occurrence: has the vowel
             if phoneme.is_long_vowel():
-                pattern += '/o'
+                pattern += "/o"
             elif phoneme.is_sukun():
-                pattern += 'o'
+                pattern += "o"
             else:
-                pattern += '/'
+                pattern += "/"
             i += 1
             continue
 
@@ -91,23 +91,23 @@ def phonemes_to_prosodic_pattern_v2(phonemes: List[Phoneme]) -> str:
         if phoneme.is_long_vowel():
             # Long vowel = haraka + madd (sakin)
             # The haraka was from the consonant, madd creates the sakin
-            pattern += '/o'
+            pattern += "/o"
             i += 1
             continue
 
         # Handle sukun
         if phoneme.is_sukun():
-            pattern += 'o'
+            pattern += "o"
             i += 1
             continue
 
         # Handle short vowels (including tanween)
         # Tanween (an, un, in) is treated like short vowel + nun sakin
-        if phoneme.vowel in ['a', 'u', 'i']:
-            pattern += '/'
-        elif phoneme.vowel in ['an', 'un', 'in']:
+        if phoneme.vowel in ["a", "u", "i"]:
+            pattern += "/"
+        elif phoneme.vowel in ["an", "un", "in"]:
             # Tanween = short vowel + nun sakin
-            pattern += '/o'
+            pattern += "/o"
 
         i += 1
 
@@ -177,11 +177,12 @@ text_to_phonetic_pattern_v2 = text_to_pattern_v2
 if __name__ == "__main__":
     # Demo and test
     import sys
-    sys.path.insert(0, '/home/user/BAHR/backend')
 
-    print("="*80)
+    sys.path.insert(0, "/home/user/BAHR/backend")
+
+    print("=" * 80)
     print("Prosody-Aware Phonetic Conversion Demo (Letter-Based)")
-    print("="*80)
+    print("=" * 80)
     print()
 
     # Test with تفاعيل
@@ -201,7 +202,7 @@ if __name__ == "__main__":
         print(f"{match} {name}: '{pattern}' (expected: '{expected}')")
 
     print()
-    print("-"*80)
+    print("-" * 80)
     print()
 
     # Test with full verse
@@ -218,6 +219,7 @@ if __name__ == "__main__":
 
     # Also show old method for comparison
     from app.core.phonetics import text_to_phonetic_pattern
+
     old_pattern = text_to_phonetic_pattern(verse, has_tashkeel=True)
     print(f"Old method: {old_pattern} (len={len(old_pattern)})")
     print()
@@ -227,7 +229,7 @@ if __name__ == "__main__":
         print("Character-by-character comparison:")
         max_len = max(len(pattern), len(expected_base))
         for i in range(max_len):
-            gen_char = pattern[i] if i < len(pattern) else ' '
-            exp_char = expected_base[i] if i < len(expected_base) else ' '
-            match_char = '✓' if gen_char == exp_char else '✗'
+            gen_char = pattern[i] if i < len(pattern) else " "
+            exp_char = expected_base[i] if i < len(expected_base) else " "
+            match_char = "✓" if gen_char == exp_char else "✗"
             print(f"  {i+1:2d}: '{gen_char}' vs '{exp_char}' {match_char}")

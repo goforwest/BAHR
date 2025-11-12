@@ -1,23 +1,25 @@
-from fastapi import FastAPI, Request, Header
-from fastapi.responses import JSONResponse, PlainTextResponse
+import time
+from typing import Optional
+
+from fastapi import FastAPI, Header, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
-import time
+from fastapi.responses import JSONResponse, PlainTextResponse
 
+from .api.v1.router import api_router
+from .config import settings
+from .db.redis import close_redis, get_redis
+from .exceptions import BahrException
+from .metrics.analysis_metrics import record_latency
 from .middleware.response_envelope import RequestIDMiddleware
 from .middleware.util_request_id import HEADER_NAME as REQUEST_ID_HEADER
-from .response_envelope import success, failure
-from .exceptions import BahrException
-from .config import settings
-from .metrics.analysis_metrics import record_latency
-from .api.v1.router import api_router
-from .db.redis import get_redis, close_redis
+from .response_envelope import failure, success
 
 try:
     from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 except Exception:
     CONTENT_TYPE_LATEST = "text/plain; version=0.0.4; charset=utf-8"
+
     def generate_latest():  # type: ignore
         return b""
 
@@ -95,7 +97,9 @@ async def handle_validation_error(request: Request, exc: RequestValidationError)
         details=[{"field": e.get("loc"), "issue": e.get("msg")} for e in exc.errors()],
     )
     headers = {REQUEST_ID_HEADER: getattr(request.state, "request_id", "")}
-    headers["Content-Language"] = "en" if (lang or "").lower().startswith("en") else "ar"
+    headers["Content-Language"] = (
+        "en" if (lang or "").lower().startswith("en") else "ar"
+    )
     return JSONResponse(env, status_code=422, headers=headers)
 
 
@@ -112,7 +116,9 @@ async def handle_bahr_exception(request: Request, exc: BahrException):
         details=[exc.context] if exc.context else None,
     )
     headers = {REQUEST_ID_HEADER: getattr(request.state, "request_id", "")}
-    headers["Content-Language"] = "en" if (lang or "").lower().startswith("en") else "ar"
+    headers["Content-Language"] = (
+        "en" if (lang or "").lower().startswith("en") else "ar"
+    )
     # Default 400; callers can adjust by raising HTTPException alternatively
     return JSONResponse(env, status_code=400, headers=headers)
 
@@ -129,7 +135,9 @@ async def handle_unknown_exception(request: Request, exc: Exception):
         details=[{"exception": str(exc)}],
     )
     headers = {REQUEST_ID_HEADER: getattr(request.state, "request_id", "")}
-    headers["Content-Language"] = "en" if (lang or "").lower().startswith("en") else "ar"
+    headers["Content-Language"] = (
+        "en" if (lang or "").lower().startswith("en") else "ar"
+    )
     return JSONResponse(env, status_code=500, headers=headers)
 
 

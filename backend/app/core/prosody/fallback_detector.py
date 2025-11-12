@@ -5,11 +5,12 @@ When primary detection fails, this module attempts alternative strategies
 to detect the meter, including pattern relaxation and statistical matching.
 """
 
-from typing import List, Optional, Tuple
+import logging
 from difflib import SequenceMatcher
+from typing import List, Optional, Tuple
+
 from .detector_v2 import BahrDetectorV2, DetectionResult, MatchQuality
 from .meters import Meter
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +30,7 @@ class FallbackDetector:
         self.primary_detector = primary_detector
 
     def detect_with_fallback(
-        self,
-        phonetic_pattern: str,
-        confidence_threshold: float = 0.75
+        self, phonetic_pattern: str, confidence_threshold: float = 0.75
     ) -> Optional[DetectionResult]:
         """
         Try multiple detection strategies in order of reliability.
@@ -47,15 +46,21 @@ class FallbackDetector:
         primary_results = self.primary_detector.detect(phonetic_pattern, top_k=3)
 
         if primary_results and primary_results[0].confidence >= confidence_threshold:
-            logger.info(f"[Fallback] Primary detection succeeded: {primary_results[0].meter_name_ar}")
+            logger.info(
+                f"[Fallback] Primary detection succeeded: {primary_results[0].meter_name_ar}"
+            )
             return primary_results[0]
 
-        logger.info(f"[Fallback] Primary detection weak (confidence={primary_results[0].confidence:.2%} if primary_results else 0), trying fallback strategies...")
+        logger.info(
+            f"[Fallback] Primary detection weak (confidence={primary_results[0].confidence:.2%} if primary_results else 0), trying fallback strategies..."
+        )
 
         # Strategy 1: Ultra-relaxed similarity matching (70% threshold)
         result = self._relaxed_similarity_match(phonetic_pattern)
         if result:
-            logger.info(f"[Fallback] Relaxed similarity matched: {result.meter_name_ar}")
+            logger.info(
+                f"[Fallback] Relaxed similarity matched: {result.meter_name_ar}"
+            )
             return result
 
         # Strategy 2: Length-based prediction
@@ -68,9 +73,7 @@ class FallbackDetector:
         return primary_results[0] if primary_results else None
 
     def _relaxed_similarity_match(
-        self,
-        phonetic_pattern: str,
-        threshold: float = 0.70
+        self, phonetic_pattern: str, threshold: float = 0.70
     ) -> Optional[DetectionResult]:
         """
         Find best match with very relaxed similarity threshold.
@@ -89,9 +92,7 @@ class FallbackDetector:
 
             for cached_pattern in valid_patterns:
                 similarity = SequenceMatcher(
-                    None,
-                    phonetic_pattern,
-                    cached_pattern
+                    None, phonetic_pattern, cached_pattern
                 ).ratio()
 
                 if similarity > best_similarity:
@@ -114,10 +115,16 @@ class FallbackDetector:
                     transformations = trans
                     break
 
-            match_quality = MatchQuality.MODERATE if best_similarity >= 0.80 else MatchQuality.WEAK
+            match_quality = (
+                MatchQuality.MODERATE if best_similarity >= 0.80 else MatchQuality.WEAK
+            )
 
-            explanation_ar = f"مطابقة تقريبية ({best_similarity:.0%}) - قد يكون النص يحتاج إلى تشكيل"
-            explanation_en = f"Approximate match ({best_similarity:.0%}) - text may need diacritics"
+            explanation_ar = (
+                f"مطابقة تقريبية ({best_similarity:.0%}) - قد يكون النص يحتاج إلى تشكيل"
+            )
+            explanation_en = (
+                f"Approximate match ({best_similarity:.0%}) - text may need diacritics"
+            )
 
             return DetectionResult(
                 meter_id=best_meter.id,
@@ -128,14 +135,13 @@ class FallbackDetector:
                 matched_pattern=best_cached_pattern,
                 input_pattern=phonetic_pattern,
                 transformations=transformations,
-                explanation=f"{explanation_ar} | {explanation_en}"
+                explanation=f"{explanation_ar} | {explanation_en}",
             )
 
         return None
 
     def _length_based_prediction(
-        self,
-        phonetic_pattern: str
+        self, phonetic_pattern: str
     ) -> Optional[DetectionResult]:
         """
         Predict meter based on pattern length and characteristics.
@@ -144,17 +150,17 @@ class FallbackDetector:
         Uses statistical knowledge about typical pattern lengths.
         """
         pattern_len = len(phonetic_pattern)
-        harakat_count = phonetic_pattern.count('/')
-        sukun_count = phonetic_pattern.count('o')
+        harakat_count = phonetic_pattern.count("/")
+        sukun_count = phonetic_pattern.count("o")
 
         # Typical pattern lengths for common meters (single hemistich)
         # Based on statistical analysis of the golden set
         METER_LENGTH_PROFILES = {
-            1: (20, 25, "الطويل"),      # at-Tawil: 20-25 chars
-            2: (16, 21, "الكامل"),      # al-Kamil: 16-21 chars
-            6: (16, 20, "المتقارب"),    # al-Mutaqarib: 16-20 chars
-            4: (18, 22, "الرمل"),       # ar-Ramal: 18-22 chars
-            3: (18, 22, "الوافر"),      # al-Wafir: 18-22 chars
+            1: (20, 25, "الطويل"),  # at-Tawil: 20-25 chars
+            2: (16, 21, "الكامل"),  # al-Kamil: 16-21 chars
+            6: (16, 20, "المتقارب"),  # al-Mutaqarib: 16-20 chars
+            4: (18, 22, "الرمل"),  # ar-Ramal: 18-22 chars
+            3: (18, 22, "الوافر"),  # al-Wafir: 18-22 chars
         }
 
         candidates = []
@@ -165,7 +171,9 @@ class FallbackDetector:
                 center = (min_len + max_len) / 2
                 deviation = abs(pattern_len - center)
                 max_deviation = (max_len - min_len) / 2
-                length_score = 1.0 - (deviation / max_deviation) if max_deviation > 0 else 1.0
+                length_score = (
+                    1.0 - (deviation / max_deviation) if max_deviation > 0 else 1.0
+                )
 
                 meter = self.primary_detector.meters[meter_id]
                 candidates.append((meter, length_score * 0.60))  # Max 60% confidence
@@ -176,7 +184,9 @@ class FallbackDetector:
             best_meter, confidence = candidates[0]
 
             explanation_ar = "تخمين بناءً على طول النمط - يُنصح بإضافة التشكيل"
-            explanation_en = "Prediction based on pattern length - diacritics recommended"
+            explanation_en = (
+                "Prediction based on pattern length - diacritics recommended"
+            )
 
             return DetectionResult(
                 meter_id=best_meter.id,
@@ -187,15 +197,14 @@ class FallbackDetector:
                 matched_pattern="",
                 input_pattern=phonetic_pattern,
                 transformations=["predicted"],
-                explanation=f"{explanation_ar} | {explanation_en}"
+                explanation=f"{explanation_ar} | {explanation_en}",
             )
 
         return None
 
 
 def detect_with_all_strategies(
-    detector: BahrDetectorV2,
-    phonetic_pattern: str
+    detector: BahrDetectorV2, phonetic_pattern: str
 ) -> Optional[DetectionResult]:
     """
     Convenience function to run all detection strategies.

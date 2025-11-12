@@ -4,6 +4,7 @@ Database session management.
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from app.config import settings
 
 # Create engine
@@ -12,7 +13,7 @@ engine = create_engine(
     echo=settings.database_echo,
     pool_pre_ping=True,
     pool_size=10,
-    max_overflow=20
+    max_overflow=20,
 )
 
 # Create session factory

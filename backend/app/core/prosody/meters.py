@@ -10,16 +10,18 @@ This module defines all 16 classical Arabic meters with their:
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Dict, Set, Optional, Tuple
-from .tafila import Tafila, TAFAIL_BASE
-from .zihafat import Zahaf, KHABN, TAYY, QABD, KAFF, ASB, IDMAR, KHABL, WAQS
-from .ilal import Ilah, HADHF, QAT, QASR, BATR, KASHF
+from typing import Dict, List, Optional, Set, Tuple
+
+from .ilal import BATR, HADHF, KASHF, QASR, QAT, Ilah
+from .tafila import TAFAIL_BASE, Tafila
+from .zihafat import ASB, IDMAR, KAFF, KHABL, KHABN, QABD, TAYY, WAQS, Zahaf
 
 
 class MeterTier(Enum):
     """
     Meter classification by frequency and implementation priority.
     """
+
     TIER_1 = 1  # Common meters (85% of poetry)
     TIER_2 = 2  # Medium frequency (10% of poetry)
     TIER_3 = 3  # Rare meters (5% of poetry)
@@ -35,6 +37,7 @@ class MeterRules:
         allowed_ilal: List of 'ilal allowed (for final position only)
         is_final: Whether this is the final position
     """
+
     allowed_zihafat: List[Zahaf] = field(default_factory=list)
     allowed_ilal: List[Ilah] = field(default_factory=list)
     is_final: bool = False
@@ -212,10 +215,12 @@ AL_TAWIL = Meter(
         1: MeterRules(allowed_zihafat=[QABD, KAFF]),
         2: MeterRules(allowed_zihafat=[QABD, KAFF]),
         3: MeterRules(allowed_zihafat=[QABD, KAFF]),
-        4: MeterRules(allowed_zihafat=[QABD, KAFF], allowed_ilal=[QASR, HADHF], is_final=True),
+        4: MeterRules(
+            allowed_zihafat=[QABD, KAFF], allowed_ilal=[QASR, HADHF], is_final=True
+        ),
     },
     description="أشهر البحور وأكثرها استخداماً في الشعر العربي",
-    example_verse="قِفَا نَبْكِ مِنْ ذِكْرَى حَبِيبٍ وَمَنْزِلِ"
+    example_verse="قِفَا نَبْكِ مِنْ ذِكْرَى حَبِيبٍ وَمَنْزِلِ",
 )
 
 # 2. الكامل (al-Kamil) - "The Perfect"
@@ -235,10 +240,12 @@ AL_KAMIL = Meter(
         1: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
         2: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
         3: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
-        4: MeterRules(allowed_zihafat=[IDMAR, WAQS], allowed_ilal=[HADHF, QAT], is_final=True),
+        4: MeterRules(
+            allowed_zihafat=[IDMAR, WAQS], allowed_ilal=[HADHF, QAT], is_final=True
+        ),
     },
     description="ثاني أشهر البحور، متوازن وسهل الحفظ",
-    example_verse="بَدَا لِيَ أَنَّ الدَّهْرَ عِنْدِي لَحْظَةٌ"
+    example_verse="بَدَا لِيَ أَنَّ الدَّهْرَ عِنْدِي لَحْظَةٌ",
 )
 
 # 3. البسيط (al-Basit) - "The Simple"
@@ -260,7 +267,7 @@ AL_BASIT = Meter(
         3: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL]),
         4: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[QAT], is_final=True),
     },
-    description="بحر واسع الانتشار، يصلح للفخر والحماسة"
+    description="بحر واسع الانتشار، يصلح للفخر والحماسة",
 )
 
 # 4. الوافر (al-Wafir) - "The Abundant"
@@ -280,7 +287,7 @@ AL_WAFIR = Meter(
         2: MeterRules(allowed_zihafat=[ASB]),
         3: MeterRules(allowed_zihafat=[QABD], allowed_ilal=[QAT], is_final=True),
     },
-    description="بحر موسيقي جميل، كثير الاستعمال في العصر الحديث"
+    description="بحر موسيقي جميل، كثير الاستعمال في العصر الحديث",
 )
 
 # 5. الرجز (al-Rajaz) - "The Trembling"
@@ -298,9 +305,13 @@ AL_RAJAZ = Meter(
     rules_by_position={
         1: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL]),
         2: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL]),
-        3: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL], allowed_ilal=[QAT, QASR], is_final=True),
+        3: MeterRules(
+            allowed_zihafat=[KHABN, TAYY, KHABL],
+            allowed_ilal=[QAT, QASR],
+            is_final=True,
+        ),
     },
-    description="بحر سهل بسيط، استخدم كثيراً في الأرجوزات التعليمية"
+    description="بحر سهل بسيط، استخدم كثيراً في الأرجوزات التعليمية",
 )
 
 # 6. الرمل (ar-Ramal) - "The Sand"
@@ -318,9 +329,11 @@ AR_RAMAL = Meter(
     rules_by_position={
         1: MeterRules(allowed_zihafat=[KHABN, KAFF]),
         2: MeterRules(allowed_zihafat=[KHABN, KAFF]),
-        3: MeterRules(allowed_zihafat=[KHABN, KAFF], allowed_ilal=[HADHF], is_final=True),
+        3: MeterRules(
+            allowed_zihafat=[KHABN, KAFF], allowed_ilal=[HADHF], is_final=True
+        ),
     },
-    description="بحر سلس رقيق، مناسب للغزل والرثاء"
+    description="بحر سلس رقيق، مناسب للغزل والرثاء",
 )
 
 # 7. الخفيف (al-Khafif) - "The Light"
@@ -340,7 +353,7 @@ AL_KHAFIF = Meter(
         2: MeterRules(allowed_zihafat=[KHABN, TAYY]),
         3: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF], is_final=True),
     },
-    description="بحر خفيف الوزن، مناسب للموشحات"
+    description="بحر خفيف الوزن، مناسب للموشحات",
 )
 
 # 8. المتقارب (al-Mutaqarib) - "The Convergent"
@@ -362,7 +375,7 @@ AL_MUTAQARIB = Meter(
         3: MeterRules(allowed_zihafat=[QABD]),
         4: MeterRules(allowed_zihafat=[QABD], allowed_ilal=[HADHF, QAT], is_final=True),
     },
-    description="بحر متقارب التفعيلات، سهل الحفظ"
+    description="بحر متقارب التفعيلات، سهل الحفظ",
 )
 
 # 9. الهزج (al-Hazaj) - "The Rhythmic"
@@ -384,7 +397,7 @@ AL_HAZAJ = Meter(
         2: MeterRules(allowed_zihafat=[QABD, KAFF]),
         3: MeterRules(allowed_zihafat=[QABD], allowed_ilal=[HADHF], is_final=True),
     },
-    description="بحر خفيف رشيق، يصلح للغناء (تام ومجزوء)"
+    description="بحر خفيف رشيق، يصلح للغناء (تام ومجزوء)",
 )
 
 # ============================================================================
@@ -406,10 +419,12 @@ AS_SARI = Meter(
     rules_by_position={
         1: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL]),
         2: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL]),
-        3: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[KASHF, QASR], is_final=True),
+        3: MeterRules(
+            allowed_zihafat=[KHABN], allowed_ilal=[KASHF, QASR], is_final=True
+        ),
     },
     description="بحر سريع الإيقاع، مناسب للحماسة والحكمة",
-    example_verse="يا دَهْرُ وَيْحَكَ ما أَبْقَيْتَ مِنْ أَحَدِ"
+    example_verse="يا دَهْرُ وَيْحَكَ ما أَبْقَيْتَ مِنْ أَحَدِ",
 )
 
 # 10b. السريع (مفعولات variant) - "The Fast (maf'ulat ending)"
@@ -430,7 +445,7 @@ AS_SARI_MAFOOLAT = Meter(
         3: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF], is_final=True),
     },
     description="نسخة السريع المنتهية بمفعولات بدلاً من فاعلن",
-    example_verse="لا تَعذُليهِ فَإِنَّ العَذلَ يولَعُهُ"
+    example_verse="لا تَعذُليهِ فَإِنَّ العَذلَ يولَعُهُ",
 )
 
 # 11. المديد (al-Madid) - "The Extended"
@@ -448,9 +463,11 @@ AL_MADID = Meter(
     rules_by_position={
         1: MeterRules(allowed_zihafat=[KHABN, KAFF]),
         2: MeterRules(allowed_zihafat=[KHABN]),
-        3: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF, QASR], is_final=True),
+        3: MeterRules(
+            allowed_zihafat=[KHABN], allowed_ilal=[HADHF, QASR], is_final=True
+        ),
     },
-    description="بحر رقيق عذب، مناسب للغزل والوصف"
+    description="بحر رقيق عذب، مناسب للغزل والوصف",
 )
 
 
@@ -475,7 +492,7 @@ AL_MUNSARIH = Meter(
         2: MeterRules(allowed_zihafat=[TAYY]),
         3: MeterRules(allowed_zihafat=[], allowed_ilal=[KASHF], is_final=True),
     },
-    description="بحر منساح السياق، قليل الاستعمال"
+    description="بحر منساح السياق، قليل الاستعمال",
 )
 
 # 13. المجتث (al-Mujtathth) - "The Uprooted"
@@ -493,7 +510,7 @@ AL_MUJTATHTH = Meter(
         1: MeterRules(allowed_zihafat=[KHABN]),
         2: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF], is_final=True),
     },
-    description='بحر نادر، "مجتث" من البسيط'
+    description='بحر نادر، "مجتث" من البسيط',
 )
 
 # 14. المقتضب (al-Muqtadab) - "The Condensed"
@@ -511,7 +528,7 @@ AL_MUQTADAB = Meter(
         1: MeterRules(allowed_zihafat=[TAYY]),
         2: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[QAT], is_final=True),
     },
-    description="بحر قليل الاستخدام، مقتضب من المنسرح"
+    description="بحر قليل الاستخدام، مقتضب من المنسرح",
 )
 
 # 15. المضارع (al-Mudari') - "The Resembling"
@@ -529,7 +546,7 @@ AL_MUDARI = Meter(
         1: MeterRules(allowed_zihafat=[QABD]),
         2: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF], is_final=True),
     },
-    description="بحر نادر الاستعمال، يضارع الهزج في الإيقاع"
+    description="بحر نادر الاستعمال، يضارع الهزج في الإيقاع",
 )
 
 # 16. المتدارك (al-Mutadarik) - "The Overtaking"
@@ -549,9 +566,11 @@ AL_MUTADARIK = Meter(
         1: MeterRules(allowed_zihafat=[KHABN]),
         2: MeterRules(allowed_zihafat=[KHABN]),
         3: MeterRules(allowed_zihafat=[KHABN]),
-        4: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF, QASR], is_final=True),
+        4: MeterRules(
+            allowed_zihafat=[KHABN], allowed_ilal=[HADHF, QASR], is_final=True
+        ),
     },
-    description='البحر السادس عشر، "استدركه الأخفش على الخليل"'
+    description='البحر السادس عشر، "استدركه الأخفش على الخليل"',
 )
 
 # ============================================================================
@@ -573,9 +592,11 @@ MAJZU_AL_KAMIL = Meter(
     ],
     rules_by_position={
         1: MeterRules(allowed_zihafat=[IDMAR]),
-        2: MeterRules(allowed_zihafat=[IDMAR], allowed_ilal=[HADHF, QAT], is_final=True),
+        2: MeterRules(
+            allowed_zihafat=[IDMAR], allowed_ilal=[HADHF, QAT], is_final=True
+        ),
     },
-    description="النسخة المجزوءة من بحر الكامل (تفعيلتان بدلاً من أربع)"
+    description="النسخة المجزوءة من بحر الكامل (تفعيلتان بدلاً من أربع)",
 )
 
 # 18. مجزوء الهزج (Majzū' al-Hazaj) - "Shortened Trilling"
@@ -591,9 +612,11 @@ MAJZU_AL_HAZAJ = Meter(
     ],
     rules_by_position={
         1: MeterRules(allowed_zihafat=[QABD, KAFF]),
-        2: MeterRules(allowed_zihafat=[QABD, KAFF], allowed_ilal=[HADHF], is_final=True),
+        2: MeterRules(
+            allowed_zihafat=[QABD, KAFF], allowed_ilal=[HADHF], is_final=True
+        ),
     },
-    description="النسخة المجزوءة من بحر الهزج (تفعيلتان بدلاً من ثلاث)"
+    description="النسخة المجزوءة من بحر الهزج (تفعيلتان بدلاً من ثلاث)",
 )
 
 # 19. الكامل (3 تفاعيل) - Medium length variant
@@ -611,9 +634,11 @@ AL_KAMIL_3 = Meter(
     rules_by_position={
         1: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
         2: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
-        3: MeterRules(allowed_zihafat=[IDMAR, WAQS], allowed_ilal=[HADHF, QAT], is_final=True),
+        3: MeterRules(
+            allowed_zihafat=[IDMAR, WAQS], allowed_ilal=[HADHF, QAT], is_final=True
+        ),
     },
-    description="نسخة الكامل بثلاث تفاعيل (متوسطة)"
+    description="نسخة الكامل بثلاث تفاعيل (متوسطة)",
 )
 
 
@@ -632,18 +657,15 @@ METERS_REGISTRY: Dict[int, Meter] = {
     7: AL_KHAFIF,
     11: AL_MUTAQARIB,
     12: AL_HAZAJ,
-
     # Tier 2: Medium Frequency (2)
     8: AS_SARI,
     9: AL_MADID,
-
     # Tier 3: Rare Meters (5)
     10: AL_MUNSARIH,
     13: AL_MUJTATHTH,
     14: AL_MUQTADAB,
     15: AL_MUDARI,
     16: AL_MUTADARIK,
-
     # مجزوء (Majzū') Variants - Shortened Forms
     17: MAJZU_AL_KAMIL,
     18: MAJZU_AL_HAZAJ,

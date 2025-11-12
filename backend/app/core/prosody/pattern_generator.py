@@ -5,12 +5,13 @@ This module generates all theoretically valid phonetic patterns for each meter
 by applying combinations of allowed Zihafat and 'Ilal according to the rules.
 """
 
-from typing import List, Set, Tuple, Optional
 from itertools import product
-from .tafila import Tafila
-from .zihafat import Zahaf
+from typing import List, Optional, Set, Tuple
+
 from .ilal import Ilah
 from .meters import Meter
+from .tafila import Tafila
+from .zihafat import Zahaf
 
 
 class PatternGenerator:
@@ -164,7 +165,9 @@ class PatternGenerator:
 
         return results
 
-    def _generate_position_variations_with_names(self) -> List[List[Tuple[Tafila, str]]]:
+    def _generate_position_variations_with_names(
+        self,
+    ) -> List[List[Tuple[Tafila, str]]]:
         """
         Generate position variations with transformation names.
 
@@ -216,8 +219,7 @@ class PatternGenerator:
         return variations
 
     def _deduplicate_with_names(
-        self,
-        tafail: List[Tuple[Tafila, str]]
+        self, tafail: List[Tuple[Tafila, str]]
     ) -> List[Tuple[Tafila, str]]:
         """Deduplicate tafa'il with names."""
         seen = set()
@@ -322,7 +324,7 @@ def print_generation_report():
         print(f"    Total valid patterns: {stats['theoretical_patterns']}")
         print()
 
-        total_patterns += stats['theoretical_patterns']
+        total_patterns += stats["theoretical_patterns"]
 
     print("=" * 80)
     print(f"TOTAL PATTERNS ACROSS ALL 16 METERS: {total_patterns}")
