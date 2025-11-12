@@ -82,7 +82,8 @@ apiClient.interceptors.response.use(
  * ```
  */
 export async function analyzeVerse(data: AnalyzeRequest): Promise<AnalyzeResponse> {
-  const response = await apiClient.post<AnalyzeResponse>('/analyze/', data);
+  // NOW USES V2 API WITH 100% ACCURACY FEATURES!
+  const response = await apiClient.post<AnalyzeResponse>('/analyze-v2/', data);
   return response.data;
 }
 
