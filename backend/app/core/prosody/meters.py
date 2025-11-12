@@ -383,17 +383,158 @@ AL_HAZAJ = Meter(
 )
 
 # ============================================================================
-# Meter Definitions - Tier 2 & 3 (To be implemented)
+# Meter Definitions - Tier 2 (Medium Frequency Meters)
 # ============================================================================
-# TODO: Add السريع, المديد (Tier 2)
-# TODO: Add المنسرح, المجتث, المقتضب, المضارع, المتدارك (Tier 3)
+
+# 10. السريع (as-Sari') - "The Fast"
+AS_SARI = Meter(
+    id=8,
+    name_ar="السريع",
+    name_en="as-Sari'",
+    tier=MeterTier.TIER_2,
+    frequency_rank=8,
+    base_tafail=[
+        TAFAIL_BASE["مستفعلن"],
+        TAFAIL_BASE["مستفعلن"],
+        TAFAIL_BASE["فاعلن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL]),
+        2: MeterRules(allowed_zihafat=[KHABN, TAYY, KHABL]),
+        3: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[KASHF, QASR], is_final=True),
+    },
+    description="بحر سريع الإيقاع، مناسب للحماسة والحكمة",
+    example_verse="يا دَهْرُ وَيْحَكَ ما أَبْقَيْتَ مِنْ أَحَدِ"
+)
+
+# 11. المديد (al-Madid) - "The Extended"
+AL_MADID = Meter(
+    id=9,
+    name_ar="المديد",
+    name_en="al-Madid",
+    tier=MeterTier.TIER_2,
+    frequency_rank=9,
+    base_tafail=[
+        TAFAIL_BASE["فاعلاتن"],
+        TAFAIL_BASE["فاعلن"],
+        TAFAIL_BASE["فاعلاتن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[KHABN, KAFF]),
+        2: MeterRules(allowed_zihafat=[KHABN]),
+        3: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF, QASR], is_final=True),
+    },
+    description="بحر رقيق عذب، مناسب للغزل والوصف"
+)
 
 
 # ============================================================================
-# Meters Registry
+# Meter Definitions - Tier 3 (Rare Meters)
+# ============================================================================
+
+# 12. المنسرح (al-Munsarih) - "The Flowing"
+AL_MUNSARIH = Meter(
+    id=10,
+    name_ar="المنسرح",
+    name_en="al-Munsarih",
+    tier=MeterTier.TIER_3,
+    frequency_rank=10,
+    base_tafail=[
+        TAFAIL_BASE["مستفعلن"],
+        TAFAIL_BASE["مفعولات"],
+        TAFAIL_BASE["مفتعلن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[KHABN, TAYY]),
+        2: MeterRules(allowed_zihafat=[TAYY]),
+        3: MeterRules(allowed_zihafat=[], allowed_ilal=[KASHF], is_final=True),
+    },
+    description="بحر منساح السياق، قليل الاستعمال"
+)
+
+# 13. المجتث (al-Mujtathth) - "The Uprooted"
+AL_MUJTATHTH = Meter(
+    id=13,
+    name_ar="المجتث",
+    name_en="al-Mujtathth",
+    tier=MeterTier.TIER_3,
+    frequency_rank=13,
+    base_tafail=[
+        TAFAIL_BASE["مستفعلن"],
+        TAFAIL_BASE["فاعلاتن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[KHABN]),
+        2: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF], is_final=True),
+    },
+    description='بحر نادر، "مجتث" من البسيط'
+)
+
+# 14. المقتضب (al-Muqtadab) - "The Condensed"
+AL_MUQTADAB = Meter(
+    id=14,
+    name_ar="المقتضب",
+    name_en="al-Muqtadab",
+    tier=MeterTier.TIER_3,
+    frequency_rank=14,
+    base_tafail=[
+        TAFAIL_BASE["مفعولات"],
+        TAFAIL_BASE["مستفعلن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[TAYY]),
+        2: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[QAT], is_final=True),
+    },
+    description="بحر قليل الاستخدام، مقتضب من المنسرح"
+)
+
+# 15. المضارع (al-Mudari') - "The Resembling"
+AL_MUDARI = Meter(
+    id=15,
+    name_ar="المضارع",
+    name_en="al-Mudari'",
+    tier=MeterTier.TIER_3,
+    frequency_rank=15,
+    base_tafail=[
+        TAFAIL_BASE["مفاعيلن"],
+        TAFAIL_BASE["فاعلاتن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[QABD]),
+        2: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF], is_final=True),
+    },
+    description="بحر نادر الاستعمال، يضارع الهزج في الإيقاع"
+)
+
+# 16. المتدارك (al-Mutadarik) - "The Overtaking"
+AL_MUTADARIK = Meter(
+    id=16,
+    name_ar="المتدارك",
+    name_en="al-Mutadarik",
+    tier=MeterTier.TIER_3,
+    frequency_rank=16,
+    base_tafail=[
+        TAFAIL_BASE["فاعلن"],
+        TAFAIL_BASE["فاعلن"],
+        TAFAIL_BASE["فاعلن"],
+        TAFAIL_BASE["فاعلن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[KHABN]),
+        2: MeterRules(allowed_zihafat=[KHABN]),
+        3: MeterRules(allowed_zihafat=[KHABN]),
+        4: MeterRules(allowed_zihafat=[KHABN], allowed_ilal=[HADHF, QASR], is_final=True),
+    },
+    description='البحر السادس عشر، "استدركه الأخفش على الخليل"'
+)
+
+
+# ============================================================================
+# Meters Registry - All 16 Classical Arabic Meters
 # ============================================================================
 
 METERS_REGISTRY: Dict[int, Meter] = {
+    # Tier 1: Common Meters (9)
     1: AL_TAWIL,
     2: AL_KAMIL,
     3: AL_BASIT,
@@ -403,7 +544,17 @@ METERS_REGISTRY: Dict[int, Meter] = {
     7: AL_KHAFIF,
     11: AL_MUTAQARIB,
     12: AL_HAZAJ,
-    # TODO: Add meters 8, 9, 10, 13, 14, 15, 16
+
+    # Tier 2: Medium Frequency (2)
+    8: AS_SARI,
+    9: AL_MADID,
+
+    # Tier 3: Rare Meters (5)
+    10: AL_MUNSARIH,
+    13: AL_MUJTATHTH,
+    14: AL_MUQTADAB,
+    15: AL_MUDARI,
+    16: AL_MUTADARIK,
 }
 
 
