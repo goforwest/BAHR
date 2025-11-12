@@ -128,8 +128,8 @@ temp/
 data/
 datasets/
 
-# Alembic old directory (if exists at root)
-alembic/
+# NOTE: We DO need alembic/ directory for database migrations
+# (Previously excluded by mistake)
 
 # Scripts that aren't needed in production
 scripts/setup/
