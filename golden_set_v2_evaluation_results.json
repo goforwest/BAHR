@@ -1,53 +1,63 @@
 {
-  "total": 118,
-  "correct": 118,
+  "total": 148,
+  "correct": 148,
   "incorrect": 0,
   "no_detection": 0,
   "accuracy": 100.0,
   "by_meter": {
     "الطويل": {
-      "total": 24,
-      "correct": 24,
+      "total": 30,
+      "correct": 30,
       "incorrect": 0
     },
     "الرجز": {
-      "total": 8,
-      "correct": 8,
+      "total": 11,
+      "correct": 11,
       "incorrect": 0
     },
     "الرمل": {
-      "total": 13,
-      "correct": 13,
+      "total": 16,
+      "correct": 16,
       "incorrect": 0
     },
     "البسيط": {
-      "total": 17,
-      "correct": 17,
+      "total": 20,
+      "correct": 20,
       "incorrect": 0
     },
     "الكامل": {
-      "total": 17,
-      "correct": 17,
+      "total": 21,
+      "correct": 21,
       "incorrect": 0
     },
     "المتقارب": {
-      "total": 10,
-      "correct": 10,
+      "total": 12,
+      "correct": 12,
       "incorrect": 0
     },
     "الخفيف": {
+      "total": 11,
+      "correct": 11,
+      "incorrect": 0
+    },
+    "الهزج": {
       "total": 9,
       "correct": 9,
       "incorrect": 0
     },
-    "الهزج": {
-      "total": 7,
-      "correct": 7,
+    "الوافر": {
+      "total": 16,
+      "correct": 16,
       "incorrect": 0
     },
-    "الوافر": {
-      "total": 13,
-      "correct": 13,
+    "السريع": {
+      "total": 1,
+      "correct": 1,
+      "incorrect": 0
+    },
+    "المديد": {
+      "total": 1,
+      "correct": 1,
       "incorrect": 0
     }
   },
@@ -57,8 +67,8 @@
       "correct": 55
     },
     "medium": {
-      "total": 63,
-      "correct": 63
+      "total": 93,
+      "correct": 93
     }
   },
   "misclassifications": [],
