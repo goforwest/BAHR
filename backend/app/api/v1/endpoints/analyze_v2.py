@@ -11,12 +11,15 @@ This endpoint uses BahrDetectorV2 which provides:
 
 import logging
 from fastapi import APIRouter, HTTPException, status
-from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, BahrInfo, RhymeInfo
+from app.schemas.analyze import (
+    AnalyzeRequest, AnalyzeResponse, BahrInfo, RhymeInfo,
+    AlternativeMeter, DetectionUncertainty
+)
 from app.core.normalization import normalize_arabic_text
 from app.core.taqti3 import perform_taqti3
 from app.core.prosody.detector_v2 import BahrDetectorV2
 from app.core.prosody.fallback_detector import detect_with_all_strategies
-from app.core.prosody.phoneme_based_detector import detect_meter_from_text
+from app.core.prosody.phoneme_based_detector import detect_meter_from_text, detect_with_phoneme_fitness
 from app.core.quality import analyze_verse_quality
 from app.core.phonetics import text_to_phonetic_pattern
 from app.core.rhyme import analyze_verse_rhyme
@@ -147,6 +150,8 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
         # NOTE: We do bahr detection FIRST so we can use it for accurate taqti3
         bahr_info = None
         confidence = 0.0
+        alternative_meters_list = []
+        detection_uncertainty_info = None
 
         if request.detect_bahr:
             try:
@@ -210,6 +215,91 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                         )
 
                 if detection_result:
+                    # MULTI-CANDIDATE DETECTION: Get top 3 candidates when using hybrid detection
+                    # (Skip for golden set evaluation with precomputed patterns)
+                    alternative_meters_list = []
+                    detection_uncertainty_info = None
+
+                    if not request.precomputed_pattern:
+                        # Only for real user input (hybrid detection path)
+                        try:
+                            from app.core.normalization import has_diacritics
+                            has_tashkeel = has_diacritics(normalized_text)
+
+                            # Get top 3 candidates for comparison
+                            all_candidates = detect_with_phoneme_fitness(
+                                normalized_text,
+                                has_tashkeel,
+                                bahr_detector_v2,
+                                top_k=3,
+                                use_hybrid_scoring=True
+                            )
+
+                            # Determine if detection is uncertain
+                            is_uncertain = False
+                            reason = None
+                            top_diff = None
+
+                            if detection_result.confidence < 0.90:
+                                is_uncertain = True
+                                reason = "low_confidence"
+                                logger.info(f"[V2] Uncertain: low confidence ({detection_result.confidence:.2%})")
+                            elif len(all_candidates) >= 2:
+                                top_diff = all_candidates[0][2] - all_candidates[1][2]  # score diff
+                                # Show as uncertain if:
+                                # 1. Very close race (diff < 2%) - always show alternatives
+                                # 2. Moderately close race (diff < 5%) AND confidence not very high (< 97%)
+                                if top_diff < 0.02 or (top_diff < 0.05 and detection_result.confidence < 0.97):
+                                    is_uncertain = True
+                                    reason = "close_candidates"
+                                    logger.info(
+                                        f"[V2] Uncertain: close candidates "
+                                        f"({all_candidates[0][1]}: {all_candidates[0][2]:.2%} vs "
+                                        f"{all_candidates[1][1]}: {all_candidates[1][2]:.2%}, diff: {top_diff:.2%})"
+                                    )
+
+                            # Build alternative meters list if uncertain
+                            if is_uncertain and len(all_candidates) > 1:
+                                from app.core.prosody.meters import METERS_REGISTRY
+
+                                for meter_id, name_ar, score, pattern in all_candidates[1:]:
+                                    meter = METERS_REGISTRY.get(meter_id)
+                                    if meter:
+                                        # Get transformations for this alternative (simplified - just show "base")
+                                        # Full transformation tracking would require re-running detector
+                                        alternative_meters_list.append(AlternativeMeter(
+                                            id=meter_id,
+                                            name_ar=name_ar,
+                                            name_en=meter.name_en,
+                                            confidence=score,
+                                            matched_pattern=pattern,
+                                            transformations=["base"],  # Simplified for alternatives
+                                            confidence_diff=all_candidates[0][2] - score
+                                        ))
+
+                                logger.info(
+                                    f"[V2] Added {len(alternative_meters_list)} alternative meter(s): "
+                                    f"{[m.name_ar for m in alternative_meters_list]}"
+                                )
+
+                            # Build detection uncertainty info
+                            if is_uncertain or len(all_candidates) >= 2:
+                                detection_uncertainty_info = DetectionUncertainty(
+                                    is_uncertain=is_uncertain,
+                                    reason=reason,
+                                    top_diff=top_diff if len(all_candidates) >= 2 else None,
+                                    recommendation="add_diacritics" if not has_tashkeel and is_uncertain else None
+                                )
+
+                                logger.info(
+                                    f"[V2] Detection uncertainty: is_uncertain={is_uncertain}, "
+                                    f"reason={reason}, recommendation={detection_uncertainty_info.recommendation}"
+                                )
+
+                        except Exception as e:
+                            logger.warning(f"[V2] Multi-candidate detection failed: {e}", exc_info=True)
+                            # Continue with single detection result
+
                     # Extract explanation parts (bilingual)
                     explanation_full = detection_result.explanation
                     if " | " in explanation_full:
@@ -350,6 +440,8 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
             taqti3=taqti3_result,
             bahr=bahr_info,
             rhyme=rhyme_info,
+            alternative_meters=alternative_meters_list if alternative_meters_list else None,
+            detection_uncertainty=detection_uncertainty_info,
             errors=[],
             suggestions=suggestions if request.suggest_corrections else [],
             score=score
