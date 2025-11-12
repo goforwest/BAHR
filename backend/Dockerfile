@@ -28,43 +28,34 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements/base.txt requirements/production.txt ./requirements/
 COPY requirements.txt ./
 
-# Install Python dependencies to /install prefix
+# Install Python dependencies to /install directory
 RUN set -ex && \
     pip install --upgrade pip setuptools wheel && \
-    # Create target directory explicitly
-    mkdir -p /install && \
-    # Install all requirements first (including torch with CUDA by default)
-    pip install --target=/install --no-warn-script-location \
-    -r requirements/production.txt && \
-    # List what was installed for debugging
-    echo "=== Installed packages in /install ===" && \
-    ls -la /install/ | head -20 && \
-    # Verify critical packages in builder stage
-    /usr/local/bin/python -c "import sys; sys.path.insert(0, '/install'); import uvicorn, fastapi; print('✓ Builder: uvicorn and fastapi verified')" && \
-    # NOW replace PyTorch CUDA with CPU-only version (keeps all deps)
-    pip install --target=/install --no-warn-script-location --upgrade \
-    --extra-index-url https://download.pytorch.org/whl/cpu \
-    torch==2.9.0+cpu && \
-    # Verify torch is CPU version
-    /usr/local/bin/python -c "import sys; sys.path.insert(0, '/install'); import torch; print(f'✓ Builder: PyTorch {torch.__version__} installed')" && \
-    # Remove pip cache and unnecessary files
+    # Install all requirements to /usr/local first (default location)
+    pip install -r requirements/production.txt && \
+    # Verify packages are installed and importable
+    python -c "import uvicorn, fastapi, torch; print(f'✓ Installed: uvicorn, fastapi, torch {torch.__version__}')" && \
+    # NOW upgrade PyTorch to CPU-only version (replaces CUDA with CPU)
+    pip install --upgrade --extra-index-url https://download.pytorch.org/whl/cpu torch==2.9.0+cpu && \
+    python -c "import torch; print(f'✓ PyTorch upgraded to: {torch.__version__}')" && \
+    # Remove pip cache
     rm -rf /root/.cache/pip && \
-    find /install -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
-    find /install -type f -name "*.pyc" -delete && \
-    find /install -type f -name "*.pyo" -delete && \
     # Remove test files and documentation from packages (saves ~800 MB)
-    find /install -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
-    find /install -type d -name "test" -exec rm -rf {} + 2>/dev/null || true && \
-    find /install -type d -name "docs" -exec rm -rf {} + 2>/dev/null || true && \
-    find /install -name "*.md" -delete 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -type d -name "test" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -type d -name "docs" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -name "*.md" -delete 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -type f -name "*.pyc" -delete && \
+    find /usr/local/lib/python3.11/site-packages -type f -name "*.pyo" -delete && \
     # Remove large unused model files from transformers (saves ~300 MB)
-    find /install -path "*/transformers/models/*" -name "*.ckpt" -delete 2>/dev/null || true && \
-    find /install -path "*/transformers/models/*" -name "*.bin" -size +10M -delete 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -path "*/transformers/models/*" -name "*.ckpt" -delete 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -path "*/transformers/models/*" -name "*.bin" -size +10M -delete 2>/dev/null || true && \
     # Remove unnecessary torch files
-    find /install -path "*/torch/test" -exec rm -rf {} + 2>/dev/null || true && \
-    find /install -path "*/torch/include" -exec rm -rf {} + 2>/dev/null || true && \
-    echo "=== Final /install directory ===" && \
-    ls -la /install/ | head -20
+    find /usr/local/lib/python3.11/site-packages -path "*/torch/test" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -path "*/torch/include" -exec rm -rf {} + 2>/dev/null || true && \
+    echo "=== Final package directory ===" && \
+    du -sh /usr/local/lib/python3.11/site-packages
 
 # =============================================================================
 # Stage 2: Runtime - Minimal production image
@@ -92,8 +83,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Copy installed Python packages from builder (--target installs to /install directly)
-COPY --from=builder /install /usr/local/lib/python3.11/site-packages
+# Copy installed Python packages from builder
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+# Copy binaries (for uvicorn executable, etc.)
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy ONLY application code (no tests, docs, scripts, etc.)
 COPY app ./app
