@@ -257,6 +257,17 @@ TAFAIL_BASE = {
         components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
     ),
 
+    # فعِلن - Alternative notation: Modified form of فاعلن (with خبن)
+    # Letter-based notation used in classical prosody texts (especially المتدارك)
+    # Represents: فَ (/) + عِ (/) + لُ (/) + نْ (o) = ///o
+    "فعِلن": Tafila(
+        name="فعِلن",
+        phonetic="///o",
+        structure="three_mutaharrik+sakin",
+        syllable_count=4,
+        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.SABAB_THAQIL]
+    ),
+
     # مفاعلن - Modified form of مفاعيلن (with قبض - removing 5th sakin)
     # Very common in الطويل final position
     "مفاعلن": Tafila(
