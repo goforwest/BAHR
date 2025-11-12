@@ -15,6 +15,7 @@ from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, BahrInfo, Rhyme
 from app.core.normalization import normalize_arabic_text
 from app.core.taqti3 import perform_taqti3
 from app.core.prosody.detector_v2 import BahrDetectorV2
+from app.core.prosody.fallback_detector import detect_with_all_strategies
 from app.core.quality import analyze_verse_quality
 from app.core.phonetics import text_to_phonetic_pattern
 from app.core.rhyme import analyze_verse_rhyme
@@ -181,14 +182,24 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                 # Use BahrDetectorV2 with 100% accuracy features:
                 # 1. Smart disambiguation (resolves ties between overlapping patterns)
                 # 2. Expected meter support (provides targeted disambiguation when known)
-                detection_results = bahr_detector_v2.detect(
-                    phonetic_pattern,
-                    top_k=1,
-                    expected_meter_ar=request.expected_meter  # Enables targeted disambiguation if provided
-                )
+                # 3. Fallback detection for undiacritized text (relaxed matching)
 
-                if detection_results:
-                    detection_result = detection_results[0]
+                # Try with expected meter first if provided (for 100% accuracy mode)
+                if request.expected_meter:
+                    detection_results = bahr_detector_v2.detect(
+                        phonetic_pattern,
+                        top_k=1,
+                        expected_meter_ar=request.expected_meter
+                    )
+                    detection_result = detection_results[0] if detection_results else None
+                else:
+                    # Use fallback detection which tries multiple strategies
+                    detection_result = detect_with_all_strategies(
+                        bahr_detector_v2,
+                        phonetic_pattern
+                    )
+
+                if detection_result:
                     # Extract explanation parts (bilingual)
                     explanation_full = detection_result.explanation
                     if " | " in explanation_full:
