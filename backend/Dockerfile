@@ -93,7 +93,7 @@ RUN pip install --upgrade pip && \
     pip install --prefix=/install --no-warn-script-location -r requirements.txt
 
 # =============================================================================
-# Stage 4: Production Image
+# Stage 4: Production Image (DEFAULT - MUST BE LAST FOR RAILWAY)
 # =============================================================================
 FROM python:3.11-slim as production
 
@@ -143,23 +143,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 
 # Production startup command with Gunicorn
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4", "--log-level", "info"]
-
-# =============================================================================
-# Stage 5: Testing Image (optional)
-# =============================================================================
-FROM development as testing
-
-LABEL description="BAHR Backend API - Testing Environment"
-
-# Install additional testing tools
-RUN pip install pytest-xdist pytest-benchmark
-
-# Copy test data
-COPY tests/ tests/
-COPY pytest.ini ./
-
-# Default command runs tests
-CMD ["pytest", "-v", "--cov=app", "--cov-report=html", "--cov-report=term"]
 
 # =============================================================================
 # BUILD INSTRUCTIONS

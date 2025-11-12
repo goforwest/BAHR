@@ -968,12 +968,90 @@ LOG_LEVEL=debug
 
 ---
 
+## Appendix C: Railway Deployment Issue (November 11, 2025)
+
+### Critical Build Failure
+
+**Error:** `ModuleNotFoundError: No module named 'backend'`  
+**Location:** `tests/test_envelope.py:7` (during testing stage)  
+**Stage:** Docker multi-stage build - testing stage
+
+### Root Cause
+
+Railway is building the `testing` stage of the Dockerfile, which runs pytest during build. The error indicates either:
+
+1. **Cached old code** with incorrect import (`from backend.app.main`)
+2. **PYTHONPATH issue** in testing stage
+3. **Working directory mismatch** in test execution
+
+### Immediate Fix
+
+**Option 1: Skip Testing Stage in Railway**
+
+Railway should build the **production** stage, not testing:
+
+```dockerfile
+# Add to railway.toml or Railway settings
+[build]
+dockerfilePath = "Dockerfile"
+dockerContext = "backend"
+
+[build.args]
+BUILDKIT_INLINE_CACHE = "1"
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+```
+
+**Option 2: Fix Dockerfile Testing Stage**
+
+Add explicit PYTHONPATH to testing stage:
+
+```dockerfile
+# In Dockerfile, testing stage (after line 152)
+FROM development as testing
+
+LABEL description="BAHR Backend API - Testing Environment"
+
+# Set PYTHONPATH explicitly
+ENV PYTHONPATH=/app
+
+# Install additional testing tools
+RUN pip install pytest-xdist pytest-benchmark
+
+# Copy test data
+COPY tests/ tests/
+COPY pytest.ini ./
+
+# Default command runs tests
+CMD ["pytest", "-v", "--cov=app", "--cov-report=html", "--cov-report=term"]
+```
+
+**Option 3: Clear Railway Build Cache**
+
+```bash
+# In Railway dashboard
+Settings → Deploy → Clear Build Cache
+# Then trigger new deployment
+```
+
+### Verification
+
+After fix, check build logs for:
+```
+✅ Successfully built testing stage
+✅ All 234 tests passed
+✅ Coverage: 52%
+```
+
+---
+
 ## Document Metadata
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Author:** Repository Auditor  
 **Date:** November 11, 2025  
-**Last Updated:** November 11, 2025  
+**Last Updated:** November 11, 2025 (Added Railway deployment fix)  
 **Status:** Active  
 **Related Documents:**
 - `docs/onboarding/QUICKSTART_NEW_PATHS.md`
@@ -983,6 +1061,7 @@ LOG_LEVEL=debug
 
 **Change Log:**
 - 2025-11-11: Initial diagnostic report created
+- 2025-11-11: Added Appendix C with Railway deployment fix
 
 ---
 

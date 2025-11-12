@@ -1,0 +1,49 @@
+# =============================================================================
+# BAHR - Testing Dockerfile
+# =============================================================================
+# This Dockerfile is specifically for running tests in CI/CD or locally
+# Usage: docker build -f Dockerfile.test -t bahr-backend:test .
+#        docker run bahr-backend:test
+
+FROM python:3.11-slim
+
+LABEL description="BAHR Backend API - Testing Environment"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    make \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt ./
+COPY requirements/ ./requirements/
+
+# Install Python dependencies including test tools
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt && \
+    pip install pytest httpx prometheus-client pytest-xdist pytest-benchmark pytest-cov
+
+# Copy application code
+COPY . .
+
+# Create non-root user
+RUN useradd -m -u 1000 -s /bin/bash testuser && \
+    chown -R testuser:testuser /app
+
+# Switch to non-root user
+USER testuser
+
+# Default command runs all tests with coverage
+CMD ["pytest", "-v", "--cov=app", "--cov-report=html", "--cov-report=term", "--cov-report=xml"]
