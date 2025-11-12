@@ -48,14 +48,18 @@ async def startup_event():
         await get_redis()
         print("✓ Redis connection initialized")
     except Exception as e:
-        print(f"✗ Redis connection failed: {e}")
+        print(f"⚠️  Redis connection failed (app will continue without caching): {e}")
+        # App continues - Redis is optional for basic functionality
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
     """Close Redis connection on shutdown."""
-    await close_redis()
-    print("✓ Redis connection closed")
+    try:
+        await close_redis()
+        print("✓ Redis connection closed")
+    except Exception:
+        pass  # Redis might not have been initialized
 
 
 @app.get("/health")
