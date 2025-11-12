@@ -153,8 +153,30 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                     phonetic_pattern = request.precomputed_pattern
                     logger.info(f"[V2] Using pre-computed pattern: {phonetic_pattern}")
                 else:
-                    phonetic_pattern = text_to_phonetic_pattern(normalized_text)
-                    logger.info(f"[V2] Extracted phonetic pattern: {phonetic_pattern}")
+                    # Split verse into hemistichs if needed (detector expects single hemistich)
+                    import re
+
+                    # Try explicit separators first: *** or 3+ spaces
+                    hemistichs = re.split(r'\s*[*×•]{2,}\s*|\s{3,}', normalized_text)
+
+                    if len(hemistichs) >= 2:
+                        # Found explicit separator
+                        first_hemistich = hemistichs[0].strip()
+                    else:
+                        # No explicit separator - split at midpoint by words
+                        # Arabic verses typically have equal-length hemistichs
+                        words = normalized_text.strip().split()
+                        if len(words) > 8:  # If verse has many words, likely has 2 hemistichs
+                            mid = len(words) // 2
+                            first_hemistich = ' '.join(words[:mid])
+                            logger.info(f"[V2] No separator found, splitting at midpoint: {mid} words")
+                        else:
+                            # Short text, use as-is
+                            first_hemistich = normalized_text
+
+                    # Extract pattern for first hemistich
+                    phonetic_pattern = text_to_phonetic_pattern(first_hemistich)
+                    logger.info(f"[V2] Extracted phonetic pattern from first hemistich: {phonetic_pattern}")
 
                 # Use BahrDetectorV2 with 100% accuracy features:
                 # 1. Smart disambiguation (resolves ties between overlapping patterns)
