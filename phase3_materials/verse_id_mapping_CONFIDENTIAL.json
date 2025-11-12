@@ -1,0 +1,110 @@
+{
+  "mapping_note": "CONFIDENTIAL - Do NOT share with annotators. This maps anonymized verse IDs to actual dataset IDs.",
+  "randomization_seed": 42,
+  "mapping": {
+    "V001": {
+      "actual_id": "mutadarik_synthetic_009",
+      "source": "synthetic",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "///o///o///o///o",
+      "expected_tafail": ["فعلن", "فعلن", "فعلن", "فعلن"],
+      "notes": "Maximal khabn - all positions"
+    },
+    "V002": {
+      "actual_id": "mutadarik_synthetic_006",
+      "source": "synthetic",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "/o//o///o/o//o/o//",
+      "expected_tafail": ["فاعلن", "فعلن", "فاعلن", "فاعل"],
+      "notes": "Mixed ziḥāfāt with حذف ending"
+    },
+    "V003": {
+      "actual_id": "mutadarik_synthetic_007",
+      "source": "synthetic",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "/o//o/o//o///o/o/",
+      "expected_tafail": ["فاعلن", "فاعلن", "فعلن", "فاع"],
+      "notes": "Rare qaṣr ending variant"
+    },
+    "V004": {
+      "actual_id": "mutadarik_synthetic_010",
+      "source": "synthetic",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "/o//o///o/o//o///o",
+      "expected_tafail": ["فاعلن", "فعلن", "فاعلن", "فعلن"],
+      "notes": "Alternating khabn pattern"
+    },
+    "V005": {
+      "actual_id": "mutadarik_synthetic_012",
+      "source": "synthetic",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "///o/o//o///o/o//o",
+      "expected_tafail": ["فعلن", "فاعلن", "فعلن", "فاعلن"],
+      "notes": "Partial khabn positions 1,3"
+    },
+    "V006": {
+      "actual_id": "mutadarik_synthetic_013",
+      "source": "synthetic",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "///o///o///o/o//o",
+      "expected_tafail": ["فعلن", "فعلن", "فعلن", "فاعلن"],
+      "notes": "Triple khabn positions 1,2,3"
+    },
+    "V007": {
+      "actual_id": "mutadarik_synthetic_014",
+      "source": "synthetic",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "/o//o/o//o///o/o//o",
+      "expected_tafail": ["فاعلن", "فاعلن", "فعلن", "فاعلن"],
+      "notes": "Single khabn position 3"
+    },
+    "V008": {
+      "actual_id": "mutadarik_synthetic_015",
+      "source": "synthetic",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "/o//o///o/o//o/o/",
+      "expected_tafail": ["فاعلن", "فعلن", "فاعلن", "فاع"],
+      "notes": "Mixed khabn + qaṣr ending"
+    },
+    "V009": {
+      "actual_id": "mutadarik_shamela_001",
+      "source": "classical",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "///o///o///o///o",
+      "expected_tafail": ["فعلن", "فعلن", "فعلن", "فعلن"],
+      "notes": "Classical - التبريزي example, maximal khabn"
+    },
+    "V010": {
+      "actual_id": "mutadarik_shamela_002",
+      "source": "classical",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "///o///o///o///o",
+      "expected_tafail": ["فعلن", "فعلن", "فعلن", "فعلن"],
+      "notes": "Classical - التبريزي, مجزوء with القطع"
+    },
+    "V011": {
+      "actual_id": "mutadarik_shamela_003",
+      "source": "classical",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "///o///o///o///o",
+      "expected_tafail": ["فعلن", "فعلن", "فعلن", "فعلن"],
+      "notes": "Classical - التبريزي third example"
+    },
+    "V012": {
+      "actual_id": "mutadarik_shamela_004",
+      "source": "classical",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "/o//o/o//o/o//o/o//o",
+      "expected_tafail": ["فاعلن", "فاعلن", "فاعلن", "فاعلن"],
+      "notes": "Classical - محمود مصطفى, canonical form"
+    },
+    "V013": {
+      "actual_id": "mutadarik_shamela_005",
+      "source": "classical",
+      "expected_meter": "المتدارك",
+      "expected_pattern": "///o///o///o///o",
+      "expected_tafail": ["فعلن", "فعلن", "فعلن", "فعلن"],
+      "notes": "Classical - Ibn al-Farid (Sufi poetry)"
+    }
+  }
+}
