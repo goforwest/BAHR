@@ -146,20 +146,31 @@ async def cache_delete(key: str) -> bool:
         return False
 
 
-def generate_cache_key(text: str) -> str:
+def generate_cache_key(
+    text: str,
+    detect_bahr: bool = True,
+    suggest_corrections: bool = False,
+    analyze_rhyme: bool = True,
+) -> str:
     """
-    Generate cache key from text using SHA256 hash.
+    Generate cache key from text and request parameters using SHA256 hash.
 
     Args:
         text: Normalized text to hash
+        detect_bahr: Whether bahr detection was requested
+        suggest_corrections: Whether corrections were requested
+        analyze_rhyme: Whether rhyme analysis was requested
 
     Returns:
         Cache key string
 
     Example:
-        >>> key = generate_cache_key("إذا غامرت في شرف مروم")
+        >>> key = generate_cache_key("إذا غامرت في شرف مروم", detect_bahr=True)
         >>> key
         'analysis:abc123...'
     """
-    text_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    # Include request parameters in cache key to avoid returning
+    # cached results with different analysis options
+    cache_data = f"{text}|{detect_bahr}|{suggest_corrections}|{analyze_rhyme}"
+    text_hash = hashlib.sha256(cache_data.encode("utf-8")).hexdigest()
     return f"analysis:{text_hash}"

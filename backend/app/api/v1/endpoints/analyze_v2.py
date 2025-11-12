@@ -134,7 +134,10 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
 
         # Step 2: Check Redis cache
         cache_key = generate_cache_key(
-            normalized_text + "_v2"
+            normalized_text + "_v2",
+            detect_bahr=request.detect_bahr,
+            suggest_corrections=request.suggest_corrections,
+            analyze_rhyme=request.analyze_rhyme,
         )  # Different cache for v2
         cached_result = None
 

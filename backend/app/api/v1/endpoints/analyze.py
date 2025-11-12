@@ -104,7 +104,12 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             )
 
         # Step b: Check Redis cache (with graceful degradation)
-        cache_key = generate_cache_key(normalized_text)
+        cache_key = generate_cache_key(
+            normalized_text,
+            detect_bahr=request.detect_bahr,
+            suggest_corrections=request.suggest_corrections,
+            analyze_rhyme=request.analyze_rhyme,
+        )
         cached_result = None
 
         try:
