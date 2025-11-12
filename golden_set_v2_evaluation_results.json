@@ -1,0 +1,120 @@
+{
+  "total": 182,
+  "correct": 182,
+  "incorrect": 0,
+  "no_detection": 0,
+  "accuracy": 100.0,
+  "by_meter": {
+    "الطويل": {
+      "total": 30,
+      "correct": 30,
+      "incorrect": 0
+    },
+    "الرجز": {
+      "total": 11,
+      "correct": 11,
+      "incorrect": 0
+    },
+    "الرمل": {
+      "total": 16,
+      "correct": 16,
+      "incorrect": 0
+    },
+    "البسيط": {
+      "total": 21,
+      "correct": 21,
+      "incorrect": 0
+    },
+    "الكامل": {
+      "total": 21,
+      "correct": 21,
+      "incorrect": 0
+    },
+    "المتقارب": {
+      "total": 12,
+      "correct": 12,
+      "incorrect": 0
+    },
+    "الخفيف": {
+      "total": 12,
+      "correct": 12,
+      "incorrect": 0
+    },
+    "الهزج": {
+      "total": 9,
+      "correct": 9,
+      "incorrect": 0
+    },
+    "الوافر": {
+      "total": 16,
+      "correct": 16,
+      "incorrect": 0
+    },
+    "السريع": {
+      "total": 10,
+      "correct": 10,
+      "incorrect": 0
+    },
+    "المديد": {
+      "total": 5,
+      "correct": 5,
+      "incorrect": 0
+    },
+    "المنسرح": {
+      "total": 5,
+      "correct": 5,
+      "incorrect": 0
+    },
+    "المجتث": {
+      "total": 1,
+      "correct": 1,
+      "incorrect": 0
+    },
+    "المقتضب": {
+      "total": 1,
+      "correct": 1,
+      "incorrect": 0
+    },
+    "المضارع": {
+      "total": 1,
+      "correct": 1,
+      "incorrect": 0
+    },
+    "السريع (مفعولات)": {
+      "total": 2,
+      "correct": 2,
+      "incorrect": 0
+    },
+    "الكامل (3 تفاعيل)": {
+      "total": 2,
+      "correct": 2,
+      "incorrect": 0
+    },
+    "الكامل (مجزوء)": {
+      "total": 4,
+      "correct": 4,
+      "incorrect": 0
+    },
+    "الهزج (مجزوء)": {
+      "total": 3,
+      "correct": 3,
+      "incorrect": 0
+    }
+  },
+  "by_difficulty": {
+    "easy": {
+      "total": 55,
+      "correct": 55
+    },
+    "medium": {
+      "total": 125,
+      "correct": 125
+    },
+    "hard": {
+      "total": 2,
+      "correct": 2
+    }
+  },
+  "misclassifications": [],
+  "failed_scansions": []
+}

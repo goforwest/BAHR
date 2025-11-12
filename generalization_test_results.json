@@ -1,0 +1,80 @@
+{
+  "total": 30,
+  "correct": 30,
+  "incorrect": 0,
+  "no_detection": 0,
+  "accuracy": 100.0,
+  "by_meter": {
+    "الطويل": {
+      "total": 6,
+      "correct": 6,
+      "incorrect": 0
+    },
+    "الرمل": {
+      "total": 3,
+      "correct": 3,
+      "incorrect": 0
+    },
+    "البسيط": {
+      "total": 3,
+      "correct": 3,
+      "incorrect": 0
+    },
+    "الوافر": {
+      "total": 3,
+      "correct": 3,
+      "incorrect": 0
+    },
+    "الكامل": {
+      "total": 4,
+      "correct": 4,
+      "incorrect": 0
+    },
+    "المتقارب": {
+      "total": 2,
+      "correct": 2,
+      "incorrect": 0
+    },
+    "الخفيف": {
+      "total": 2,
+      "correct": 2,
+      "incorrect": 0
+    },
+    "الهزج": {
+      "total": 2,
+      "correct": 2,
+      "incorrect": 0
+    },
+    "الرجز": {
+      "total": 3,
+      "correct": 3,
+      "incorrect": 0
+    },
+    "السريع": {
+      "total": 1,
+      "correct": 1,
+      "incorrect": 0
+    },
+    "المديد": {
+      "total": 1,
+      "correct": 1,
+      "incorrect": 0
+    }
+  },
+  "by_era": {
+    "modern": {
+      "total": 3,
+      "correct": 3
+    },
+    "classical": {
+      "total": 26,
+      "correct": 26
+    },
+    "contemporary": {
+      "total": 1,
+      "correct": 1
+    }
+  },
+  "misclassifications": [],
+  "failed_scansions": []
+}

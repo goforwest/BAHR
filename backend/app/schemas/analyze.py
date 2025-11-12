@@ -81,12 +81,17 @@ class AnalyzeRequest(BaseModel):
 class BahrInfo(BaseModel):
     """
     Information about a detected meter (bahr).
-    
+
     Attributes:
         id: Unique identifier for the meter
         name_ar: Arabic name of the meter
         name_en: English transliteration
         confidence: Detection confidence score (0.0 to 1.0)
+        match_quality: Quality of match (exact, strong, moderate, weak) - NEW in v2
+        matched_pattern: The exact phonetic pattern that matched - NEW in v2
+        transformations: List of zihafat/ilal applied at each position - NEW in v2
+        explanation_ar: Arabic explanation of the match - NEW in v2
+        explanation_en: English explanation of the match - NEW in v2
     """
     id: int = Field(..., description="Unique identifier for the meter")
     name_ar: str = Field(..., description="Arabic name of the meter")
@@ -97,7 +102,29 @@ class BahrInfo(BaseModel):
         le=1.0,
         description="Detection confidence score"
     )
-    
+
+    # NEW: Explainability fields from BahrDetectorV2
+    match_quality: Optional[str] = Field(
+        None,
+        description="Match quality: exact, strong, moderate, or weak"
+    )
+    matched_pattern: Optional[str] = Field(
+        None,
+        description="The exact phonetic pattern that matched"
+    )
+    transformations: Optional[List[str]] = Field(
+        None,
+        description="Zihafat/Ilal applied at each position (e.g., ['base', 'قبض', 'base', 'حذف'])"
+    )
+    explanation_ar: Optional[str] = Field(
+        None,
+        description="Arabic explanation of how the match was made"
+    )
+    explanation_en: Optional[str] = Field(
+        None,
+        description="English explanation of how the match was made"
+    )
+
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -105,7 +132,12 @@ class BahrInfo(BaseModel):
                     "id": 1,
                     "name_ar": "الطويل",
                     "name_en": "at-Tawil",
-                    "confidence": 0.95
+                    "confidence": 0.97,
+                    "match_quality": "strong",
+                    "matched_pattern": "/o////o/o/o/o//o//o/o/o",
+                    "transformations": ["base", "قبض", "base", "base"],
+                    "explanation_ar": "مطابقة مع زحافات: قبض",
+                    "explanation_en": "Match with variations: qabd"
                 }
             ]
         }
