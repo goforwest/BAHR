@@ -28,26 +28,39 @@ export default function AnalyzePage() {
     trackPageView('/analyze');
   }, [trackPageView]);
 
-  const handleSubmit = (text: string) => {
+  const handleSubmit = (text: string, precomputedPattern?: string, expectedMeter?: string) => {
     setLastSubmittedText(text);
-    
-    // Track analysis submission
+
+    // Track analysis submission (V2 Enhanced)
     track('analyze_submit', {
       verse_length: text.length,
       has_diacritics: /[\u064B-\u0652]/.test(text),
+      using_advanced_features: !!(precomputedPattern || expectedMeter),
+      has_precomputed_pattern: !!precomputedPattern,
+      has_expected_meter: !!expectedMeter,
     });
-    
+
     mutate(
-      { text, detect_bahr: true, suggest_corrections: true },
+      {
+        text,
+        detect_bahr: true,
+        suggest_corrections: true,
+        analyze_rhyme: true, // V2: Enable rhyme analysis
+        precomputed_pattern: precomputedPattern, // V2: 100% accuracy mode
+        expected_meter: expectedMeter, // V2: Smart disambiguation
+      },
       {
         onSuccess: (data) => {
           setResult(data);
           showSuccess('تم تحليل البيت الشعري بنجاح');
-          
-          // Track successful analysis
+
+          // Track successful analysis (V2 Enhanced)
           track('analyze_success', {
             bahr_detected: data.bahr?.name_ar || 'unknown',
+            match_quality: data.bahr?.match_quality,
             score: data.score,
+            has_rhyme: !!data.rhyme,
+            using_v2_features: !!(precomputedPattern || expectedMeter),
           });
         },
         onError: (err) => {
