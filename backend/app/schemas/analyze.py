@@ -34,7 +34,15 @@ class AnalyzeRequest(BaseModel):
         default=True,
         description="Whether to analyze rhyme (qafiyah)"
     )
-    
+    precomputed_pattern: Optional[str] = Field(
+        default=None,
+        description="Pre-computed phonetic pattern (optional, for advanced users). Format: /=haraka, o=sakin. Example: '/o////o/o/o/o//o//o/'"
+    )
+    expected_meter: Optional[str] = Field(
+        default=None,
+        description="Expected meter name in Arabic (optional, enables smart disambiguation). Example: 'الطويل'"
+    )
+
     @field_validator('text')
     @classmethod
     def validate_arabic(cls, v: str) -> str:

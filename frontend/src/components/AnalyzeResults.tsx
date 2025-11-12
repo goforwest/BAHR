@@ -104,18 +104,20 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
 
       {/* Bahr Card */}
       {bahr && (
-        <motion.div 
+        <motion.div
           variants={itemVariants}
           whileHover="hover"
           initial="initial"
           className="bg-white shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
         >
           <h3 className="text-sm font-medium text-gray-500 mb-3">البحر الشعري</h3>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-baseline justify-between">
               <span className="text-xl font-bold text-gray-900">{bahr.name_ar}</span>
               <span className="text-sm text-gray-500 font-mono">{bahr.name_en}</span>
             </div>
+
+            {/* Confidence */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-gray-600">نسبة الثقة</span>
@@ -130,6 +132,86 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
                 />
               </div>
             </div>
+
+            {/* Match Quality (V2 NEW) */}
+            {bahr.match_quality && (
+              <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                <span className="text-sm font-medium text-gray-600">جودة المطابقة</span>
+                <span
+                  className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                    bahr.match_quality === 'exact'
+                      ? 'bg-green-100 text-green-800'
+                      : bahr.match_quality === 'strong'
+                      ? 'bg-blue-100 text-blue-800'
+                      : bahr.match_quality === 'moderate'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}
+                >
+                  {bahr.match_quality === 'exact'
+                    ? 'مطابقة تامة'
+                    : bahr.match_quality === 'strong'
+                    ? 'مطابقة قوية'
+                    : bahr.match_quality === 'moderate'
+                    ? 'مطابقة متوسطة'
+                    : 'مطابقة ضعيفة'}
+                </span>
+              </div>
+            )}
+
+            {/* Transformations (V2 NEW) */}
+            {bahr.transformations && bahr.transformations.length > 0 && (
+              <div className="pt-2 border-t border-gray-100">
+                <span className="text-sm font-medium text-gray-600 mb-2 block">الزحافات والعلل</span>
+                <div className="flex flex-wrap gap-2">
+                  {bahr.transformations.map((transform, idx) => (
+                    <span
+                      key={idx}
+                      className={`text-xs px-2 py-1 rounded ${
+                        transform === 'base'
+                          ? 'bg-gray-100 text-gray-700'
+                          : 'bg-purple-100 text-purple-800 font-medium'
+                      }`}
+                    >
+                      {transform === 'base' ? 'أصلية' : transform}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Explanation (V2 NEW) */}
+            {bahr.explanation_ar && (
+              <div className="pt-2 border-t border-gray-100">
+                <span className="text-sm font-medium text-gray-600 mb-1 block">التفسير</span>
+                <p className="text-sm text-gray-700 leading-relaxed" dir="rtl">
+                  {bahr.explanation_ar}
+                </p>
+                {bahr.explanation_en && (
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                    {bahr.explanation_en}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Matched Pattern (V2 NEW - Advanced) */}
+            {bahr.matched_pattern && (
+              <details className="pt-2 border-t border-gray-100">
+                <summary className="text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-800">
+                  التفاصيل التقنية
+                </summary>
+                <div className="mt-2 bg-gray-50 p-3 rounded">
+                  <p className="text-xs text-gray-600 mb-1">النمط الصوتي:</p>
+                  <code className="text-xs font-mono text-gray-800 block bg-white p-2 rounded border border-gray-200">
+                    {bahr.matched_pattern}
+                  </code>
+                  <p className="text-xs text-gray-500 mt-2">
+                    / = حركة (متحرك) | o = سكون (ساكن)
+                  </p>
+                </div>
+              </details>
+            )}
           </div>
         </motion.div>
       )}
@@ -168,6 +250,56 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
           </p>
         </div>
       </motion.div>
+
+      {/* Rhyme Card (V2 NEW) */}
+      {result.rhyme && (
+        <motion.div
+          variants={itemVariants}
+          whileHover="hover"
+          initial="initial"
+          className="bg-white shadow-lg rounded-lg p-6 transition-shadow hover:shadow-xl"
+        >
+          <h3 className="text-sm font-medium text-gray-500 mb-3">القافية</h3>
+          <div className="space-y-3">
+            {/* Rawi */}
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-600">حرف الروي</span>
+              <span className="text-2xl font-bold text-purple-900">{result.rhyme.rawi}</span>
+            </div>
+
+            {/* Rhyme Types */}
+            {result.rhyme.rhyme_types && result.rhyme.rhyme_types.length > 0 && (
+              <div>
+                <span className="text-sm font-medium text-gray-600 mb-2 block">نوع القافية</span>
+                <div className="flex flex-wrap gap-2">
+                  {result.rhyme.rhyme_types.map((type, idx) => (
+                    <span
+                      key={idx}
+                      className="text-xs px-3 py-1 rounded-full bg-purple-100 text-purple-800 font-medium"
+                    >
+                      {type}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Description */}
+            {result.rhyme.description_ar && (
+              <div className="pt-2 border-t border-gray-100">
+                <p className="text-sm text-gray-700 leading-relaxed" dir="rtl">
+                  {result.rhyme.description_ar}
+                </p>
+                {result.rhyme.description_en && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {result.rhyme.description_en}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
 
       {/* Errors and Suggestions */}
       {result.errors && result.errors.length > 0 && (
