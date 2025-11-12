@@ -1,0 +1,139 @@
+{
+  "analysis_date": "2025-11-12",
+  "dataset": "golden_set_v1_0_with_patterns.jsonl",
+  "dataset_size": 258,
+  "overall_accuracy": 1.0,
+  "correct_count": 258,
+  "certification_status": "CERTIFIED - 100% ACCURACY",
+  "statistical_validation": {
+    "perfect_accuracy": true,
+    "wilson_ci_95_lower": 0.9857,
+    "wilson_ci_95_upper": 1.0,
+    "meter_bias": "NONE - All meters at 100%",
+    "confidence_mean": 0.9226782945736434,
+    "confidence_median": 0.968,
+    "confidence_min": 0.765
+  },
+  "per_meter_stats": {
+    "الطويل": {
+      "accuracy": 1.0,
+      "correct": 42,
+      "total": 42,
+      "mean_confidence": 0.8809285714285715
+    },
+    "الرجز": {
+      "accuracy": 1.0,
+      "correct": 12,
+      "total": 12,
+      "mean_confidence": 0.9304999999999999
+    },
+    "الرمل": {
+      "accuracy": 1.0,
+      "correct": 18,
+      "total": 18,
+      "mean_confidence": 0.9403333333333335
+    },
+    "البسيط": {
+      "accuracy": 1.0,
+      "correct": 22,
+      "total": 22,
+      "mean_confidence": 0.8174090909090911
+    },
+    "الكامل": {
+      "accuracy": 1.0,
+      "correct": 26,
+      "total": 26,
+      "mean_confidence": 0.8211153846153849
+    },
+    "المتقارب": {
+      "accuracy": 1.0,
+      "correct": 15,
+      "total": 15,
+      "mean_confidence": 0.9186
+    },
+    "الخفيف": {
+      "accuracy": 1.0,
+      "correct": 13,
+      "total": 13,
+      "mean_confidence": 0.973
+    },
+    "الهزج": {
+      "accuracy": 1.0,
+      "correct": 9,
+      "total": 9,
+      "mean_confidence": 0.9236666666666667
+    },
+    "الوافر": {
+      "accuracy": 1.0,
+      "correct": 19,
+      "total": 19,
+      "mean_confidence": 0.9545263157894738
+    },
+    "السريع": {
+      "accuracy": 1.0,
+      "correct": 11,
+      "total": 11,
+      "mean_confidence": 0.9227272727272727
+    },
+    "المديد": {
+      "accuracy": 1.0,
+      "correct": 11,
+      "total": 11,
+      "mean_confidence": 0.9772727272727273
+    },
+    "المنسرح": {
+      "accuracy": 1.0,
+      "correct": 7,
+      "total": 7,
+      "mean_confidence": 0.9500000000000001
+    },
+    "المجتث": {
+      "accuracy": 1.0,
+      "correct": 6,
+      "total": 6,
+      "mean_confidence": 1.0
+    },
+    "المقتضب": {
+      "accuracy": 1.0,
+      "correct": 4,
+      "total": 4,
+      "mean_confidence": 0.95
+    },
+    "المضارع": {
+      "accuracy": 1.0,
+      "correct": 4,
+      "total": 4,
+      "mean_confidence": 0.975
+    },
+    "المتدارك": {
+      "accuracy": 1.0,
+      "correct": 19,
+      "total": 19,
+      "mean_confidence": 1.028947368421053
+    },
+    "السريع (مفعولات)": {
+      "accuracy": 1.0,
+      "correct": 5,
+      "total": 5,
+      "mean_confidence": 0.99
+    },
+    "الكامل (3 تفاعيل)": {
+      "accuracy": 1.0,
+      "correct": 5,
+      "total": 5,
+      "mean_confidence": 1.0373999999999999
+    },
+    "الكامل (مجزوء)": {
+      "accuracy": 1.0,
+      "correct": 5,
+      "total": 5,
+      "mean_confidence": 0.969
+    },
+    "الهزج (مجزوء)": {
+      "accuracy": 1.0,
+      "correct": 5,
+      "total": 5,
+      "mean_confidence": 0.9937999999999999
+    }
+  }
+}
