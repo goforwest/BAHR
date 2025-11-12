@@ -96,3 +96,4 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--worker
 # 3. Test: docker run -p 8000:8000 bahr-backend:railway
 # 4. Expected size: 1.0-1.5 GB (well under 4 GB Railway limit)
 # =============================================================================
+# trigger rebuild
