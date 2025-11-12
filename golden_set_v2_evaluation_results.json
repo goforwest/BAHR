@@ -1,6 +1,6 @@
 {
-  "total": 148,
-  "correct": 148,
+  "total": 182,
+  "correct": 182,
   "incorrect": 0,
   "no_detection": 0,
   "accuracy": 100.0,
@@ -21,8 +21,8 @@
       "incorrect": 0
     },
     "البسيط": {
-      "total": 20,
-      "correct": 20,
+      "total": 21,
+      "correct": 21,
       "incorrect": 0
     },
     "الكامل": {
@@ -36,8 +36,8 @@
       "incorrect": 0
     },
     "الخفيف": {
-      "total": 11,
-      "correct": 11,
+      "total": 12,
+      "correct": 12,
       "incorrect": 0
     },
     "الهزج": {
@@ -51,13 +51,53 @@
       "incorrect": 0
     },
     "السريع": {
+      "total": 10,
+      "correct": 10,
+      "incorrect": 0
+    },
+    "المديد": {
+      "total": 5,
+      "correct": 5,
+      "incorrect": 0
+    },
+    "المنسرح": {
+      "total": 5,
+      "correct": 5,
+      "incorrect": 0
+    },
+    "المجتث": {
       "total": 1,
       "correct": 1,
       "incorrect": 0
     },
-    "المديد": {
+    "المقتضب": {
       "total": 1,
       "correct": 1,
+      "incorrect": 0
+    },
+    "المضارع": {
+      "total": 1,
+      "correct": 1,
+      "incorrect": 0
+    },
+    "السريع (مفعولات)": {
+      "total": 2,
+      "correct": 2,
+      "incorrect": 0
+    },
+    "الكامل (3 تفاعيل)": {
+      "total": 2,
+      "correct": 2,
+      "incorrect": 0
+    },
+    "الكامل (مجزوء)": {
+      "total": 4,
+      "correct": 4,
+      "incorrect": 0
+    },
+    "الهزج (مجزوء)": {
+      "total": 3,
+      "correct": 3,
       "incorrect": 0
     }
   },
@@ -67,8 +107,12 @@
       "correct": 55
     },
     "medium": {
-      "total": 93,
-      "correct": 93
+      "total": 125,
+      "correct": 125
+    },
+    "hard": {
+      "total": 2,
+      "correct": 2
     }
   },
   "misclassifications": [],
