@@ -24,7 +24,8 @@ sentry-sdk[fastapi]==1.40.0
 # Performance & Caching
 # ============================================================================
 # Production-grade connection pooling
-psycopg2==2.9.9
+# Use psycopg2-binary from base requirements; avoid duplicating/building from source
+# (psycopg2-binary is already pinned in requirements/base.txt)
 
 # ============================================================================
 # Security
