@@ -57,7 +57,7 @@ export default function AnalyzePage() {
           // Track successful analysis (V2 Enhanced)
           track('analyze_success', {
             bahr_detected: data.bahr?.name_ar || 'unknown',
-            match_quality: data.bahr?.match_quality,
+            match_quality: data.bahr?.match_quality || 'unknown',
             score: data.score,
             has_rhyme: !!data.rhyme,
             using_v2_features: !!(precomputedPattern || expectedMeter),
