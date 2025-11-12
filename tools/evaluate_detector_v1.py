@@ -52,7 +52,12 @@ def evaluate_detector(golden_set_path):
     detector = BahrDetectorV2()
     print(f"✅ Detector ready")
     print(f"✅ Pattern cache: {sum(len(p) for p in detector.pattern_cache.values())} total patterns")
-    if USE_V2:
+
+    # Check for pre-computed patterns
+    n_precomputed = sum(1 for v in golden_verses if v.get('prosody_precomputed', {}).get('pattern'))
+    if n_precomputed > 0:
+        print(f"✅ Using pre-computed patterns for {n_precomputed}/{len(golden_verses)} verses ({n_precomputed/len(golden_verses)*100:.1f}%)")
+    elif USE_V2:
         print(f"✅ Using prosody-aware converter v2 (letter-based notation)")
     else:
         print(f"⚠️  Using original converter (syllable-based)")
@@ -79,14 +84,18 @@ def evaluate_detector(golden_set_path):
         text = verse['text']
         expected_meter = verse['meter']
 
-        # Convert text to phonetic pattern (using v2 if available)
-        try:
-            if USE_V2:
-                phonetic_pattern = text_to_pattern_v2(text, has_tashkeel=True)
-            else:
-                phonetic_pattern = text_to_phonetic_pattern(text, has_tashkeel=True)
-        except Exception as e:
-            phonetic_pattern = None
+        # Check for pre-computed pattern first
+        if verse.get('prosody_precomputed', {}).get('pattern'):
+            phonetic_pattern = verse['prosody_precomputed']['pattern']
+        else:
+            # Convert text to phonetic pattern (using v2 if available)
+            try:
+                if USE_V2:
+                    phonetic_pattern = text_to_pattern_v2(text, has_tashkeel=True)
+                else:
+                    phonetic_pattern = text_to_phonetic_pattern(text, has_tashkeel=True)
+            except Exception as e:
+                phonetic_pattern = None
 
         # Detect
         if phonetic_pattern:
@@ -297,7 +306,15 @@ def evaluate_detector(golden_set_path):
 
 
 def main():
-    golden_set_path = Path('/home/user/BAHR/dataset/evaluation/golden_set_v1_0_mutadarik.jsonl')
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Evaluate BahrDetectorV2 on golden set')
+    parser.add_argument('golden_set', nargs='?',
+                       default='/home/user/BAHR/dataset/evaluation/golden_set_v1_0_mutadarik.jsonl',
+                       help='Path to golden set JSONL file')
+    args = parser.parse_args()
+
+    golden_set_path = Path(args.golden_set)
 
     if not golden_set_path.exists():
         print(f"Error: Golden set not found at {golden_set_path}")
