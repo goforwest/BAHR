@@ -134,3 +134,20 @@ alembic/
 # Scripts that aren't needed in production
 scripts/setup/
 scripts/testing/
+
+# Downloaded Python packages (should not be in repo)
+*.whl
+*.tar.gz
+*.egg
+*.zip
+
+# Test and verification scripts
+test-*.sh
+verify-*.sh
+*-test.sh
+
+# Railway/deployment configs (not needed in container)
+railway.toml
+railway.json
+nixpacks.toml
+Procfile
