@@ -177,21 +177,37 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                             phonetic_pattern
                         )
                 else:
-                    # Extract pattern for detection
-                    # Use full text (not split) to get better pattern matching
-                    import re
+                    # Use HYBRID detection (combines fitness + similarity)
+                    # This is the recommended approach that solves the pattern mismatch issue
+                    from app.core.normalization import has_diacritics
+                    has_tashkeel = has_diacritics(normalized_text)
 
-                    logger.info(f"[V2] Using pattern-based detection with enhanced fallback")
+                    logger.info(f"[V2] Using hybrid detection (fitness + similarity, has_tashkeel={has_tashkeel})")
 
-                    # Extract pattern from full text
-                    phonetic_pattern = text_to_phonetic_pattern(normalized_text)
-                    logger.info(f"[V2] Extracted phonetic pattern: {phonetic_pattern}")
-
-                    # Use enhanced fallback detection which includes frequency-based tie-breaking
-                    detection_result = detect_with_all_strategies(
+                    # Try hybrid detection first
+                    detection_result = detect_meter_from_text(
+                        normalized_text,
+                        has_tashkeel,
                         bahr_detector_v2,
-                        phonetic_pattern
+                        min_score=0.50,  # 50% minimum score
+                        use_hybrid=True  # Enable hybrid scoring
                     )
+
+                    if detection_result:
+                        logger.info(
+                            f"[V2] Hybrid detection successful: {detection_result.meter_name_ar} "
+                            f"(confidence: {detection_result.confidence:.2%})"
+                        )
+                    else:
+                        # Fallback to traditional pattern-based detection if hybrid fails
+                        logger.info("[V2] Hybrid detection failed, trying pattern-based fallback")
+                        phonetic_pattern = text_to_phonetic_pattern(normalized_text)
+                        logger.info(f"[V2] Extracted phonetic pattern: {phonetic_pattern}")
+
+                        detection_result = detect_with_all_strategies(
+                            bahr_detector_v2,
+                            phonetic_pattern
+                        )
 
                 if detection_result:
                     # Extract explanation parts (bilingual)

@@ -84,7 +84,8 @@ def detect_with_phoneme_fitness(
     text: str,
     has_tashkeel: bool,
     detector: BahrDetectorV2,
-    top_k: int = 3
+    top_k: int = 3,
+    use_hybrid_scoring: bool = True
 ) -> List[Tuple[int, str, float, str]]:
     """
     Detect meter using phoneme-based fitness matching.
@@ -92,17 +93,22 @@ def detect_with_phoneme_fitness(
     Instead of comparing extracted patterns directly, this method:
     1. Extracts phonemes from text
     2. Tests fitness of all cached patterns for each meter
-    3. Returns meters with best-fitting patterns
+    3. Optionally combines fitness with pattern similarity (hybrid scoring)
+    4. Returns meters with best scores
 
     Args:
         text: Arabic text (normalized)
         has_tashkeel: Whether text has diacritical marks
         detector: Initialized BahrDetectorV2 instance
         top_k: Number of top results to return
+        use_hybrid_scoring: If True, combines fitness and pattern similarity
 
     Returns:
-        List of (meter_id, meter_name_ar, fitness_score, best_pattern) tuples
+        List of (meter_id, meter_name_ar, score, best_pattern) tuples
     """
+    from app.core.phonetics import text_to_phonetic_pattern
+    from difflib import SequenceMatcher
+
     # Extract phonemes
     try:
         phonemes = extract_phonemes(text, has_tashkeel=has_tashkeel)
@@ -111,6 +117,14 @@ def detect_with_phoneme_fitness(
 
     if not phonemes:
         return []
+
+    # Also extract pattern if using hybrid scoring
+    extracted_pattern = None
+    if use_hybrid_scoring:
+        try:
+            extracted_pattern = text_to_phonetic_pattern(text, has_tashkeel=has_tashkeel)
+        except Exception:
+            pass
 
     # Test fitness for each meter
     meter_scores = []
@@ -121,13 +135,32 @@ def detect_with_phoneme_fitness(
 
         # Find best-fitting pattern for this meter
         best_fitness = 0.0
+        best_similarity = 0.0
         best_pattern = None
 
         for pattern in cached_patterns:
+            # Calculate fitness (phoneme-based)
             fitness = calculate_pattern_fitness(phonemes, pattern)
 
-            if fitness > best_fitness:
-                best_fitness = fitness
+            # Calculate similarity (pattern-based) if available
+            similarity = 0.0
+            if extracted_pattern:
+                similarity = SequenceMatcher(None, extracted_pattern, pattern).ratio()
+
+            # Hybrid score: weighted combination of fitness and similarity
+            if use_hybrid_scoring and extracted_pattern:
+                # Give more weight to similarity for diacritized text (more accurate patterns)
+                # Give more weight to fitness for undiacritized text (patterns less reliable)
+                if has_tashkeel:
+                    score = (similarity * 0.65) + (fitness * 0.35)
+                else:
+                    score = (similarity * 0.50) + (fitness * 0.50)
+            else:
+                score = fitness
+
+            if score > best_fitness or (score == best_fitness and similarity > best_similarity):
+                best_fitness = score
+                best_similarity = similarity
                 best_pattern = pattern
 
         if best_fitness > 0.0 and best_pattern:
@@ -137,22 +170,60 @@ def detect_with_phoneme_fitness(
                     meter_id,
                     meter.name_ar,
                     best_fitness,
-                    best_pattern
+                    best_pattern,
+                    best_similarity
                 ))
 
-    # Sort by fitness score (descending), then by meter tier (prefer common meters for ties)
-    # This is critical for breaking ties when multiple meters have similar fitness
-    meter_scores_with_tier = []
-    for meter_id, meter_name, fitness, pattern in meter_scores:
+    # CRITICAL: Smart frequency-based tie-breaking
+    # Only apply frequency boost when scores are close (competitive range)
+    # This prevents over-boosting while helping الطويل when appropriate
+
+    if not meter_scores:
+        return []
+
+    # Find the highest score
+    max_score = max(score for _, _, score, _, _ in meter_scores)
+
+    # Competitive threshold: meters within 10% of the top score are "competing"
+    competitive_threshold = max_score - 0.10
+
+    meter_scores_with_ranking = []
+    for meter_id, meter_name, score, pattern, similarity in meter_scores:
         meter = METERS_REGISTRY.get(meter_id)
-        tier_value = meter.tier.value if meter else 999  # Lower tier value = more common
-        meter_scores_with_tier.append((meter_id, meter_name, fitness, pattern, tier_value))
+        tier_value = meter.tier.value if meter else 999
+        freq_rank = meter.frequency_rank if meter else 999
 
-    # Sort by: 1) fitness (descending), 2) tier (ascending - prefer common meters)
-    meter_scores_with_tier.sort(key=lambda x: (-x[2], x[4]))
+        # Only apply frequency boost if meter is competitive (within 10% of top score)
+        if score >= competitive_threshold:
+            # Calculate frequency boost for competitive meters only
+            # الطويل (rank 1) is by far the most common meter in classical Arabic poetry
+            if freq_rank == 1:
+                freq_boost = 0.08  # +8% for الطويل when competitive
+            elif freq_rank == 2:
+                freq_boost = 0.06  # +6% for الكامل when competitive
+            elif freq_rank <= 5:
+                freq_boost = 0.03  # +3% for ranks 3-5 when competitive
+            elif freq_rank <= 10:
+                freq_boost = 0.01  # +1% for ranks 6-10 when competitive
+            else:
+                freq_boost = 0.0
+        else:
+            # Not competitive - no boost
+            freq_boost = 0.0
 
-    # Remove tier from results
-    meter_scores = [(mid, name, fit, pat) for mid, name, fit, pat, _ in meter_scores_with_tier]
+        # Apply frequency boost to score
+        boosted_score = min(1.0, score + freq_boost)
+
+        meter_scores_with_ranking.append((
+            meter_id, meter_name, boosted_score, pattern,
+            tier_value, freq_rank, similarity, score  # Keep original score for reference
+        ))
+
+    # Sort by: boosted_score (desc), tier (asc), freq_rank (asc)
+    meter_scores_with_ranking.sort(key=lambda x: (-x[2], x[4], x[5]))
+
+    # Remove ranking info from results, return boosted score
+    meter_scores = [(mid, name, boosted, pat) for mid, name, boosted, pat, _, _, _, _ in meter_scores_with_ranking]
 
     # Return top K
     return meter_scores[:top_k]
@@ -162,32 +233,38 @@ def detect_meter_from_text(
     text: str,
     has_tashkeel: bool,
     detector: BahrDetectorV2,
-    min_fitness: float = 0.50
+    min_score: float = 0.50,
+    use_hybrid: bool = True
 ) -> Optional[DetectionResult]:
     """
-    Detect meter from Arabic text using phoneme fitness.
+    Detect meter from Arabic text using hybrid scoring (fitness + similarity).
 
-    This is the main entry point for phoneme-based detection.
-    It provides a DetectionResult compatible with the standard API.
+    This is the main entry point for enhanced phoneme-based detection.
+    It combines phoneme fitness with pattern similarity for better accuracy.
 
     Args:
         text: Arabic text (normalized)
         has_tashkeel: Whether text has diacritical marks
         detector: Initialized BahrDetectorV2 instance
-        min_fitness: Minimum fitness threshold (default: 0.50 = 50%)
+        min_score: Minimum score threshold (default: 0.50 = 50%)
+        use_hybrid: Whether to use hybrid scoring (default: True)
 
     Returns:
         DetectionResult for best match, or None if no good match
     """
-    results = detect_with_phoneme_fitness(text, has_tashkeel, detector, top_k=1)
+    results = detect_with_phoneme_fitness(
+        text, has_tashkeel, detector,
+        top_k=1,
+        use_hybrid_scoring=use_hybrid
+    )
 
     if not results:
         return None
 
-    meter_id, meter_name_ar, fitness, best_pattern = results[0]
+    meter_id, meter_name_ar, score, best_pattern = results[0]
 
-    # Check if fitness meets minimum threshold
-    if fitness < min_fitness:
+    # Check if score meets minimum threshold
+    if score < min_score:
         return None
 
     # Get meter details
@@ -195,26 +272,26 @@ def detect_meter_from_text(
     if not meter:
         return None
 
-    # Convert fitness to confidence (fitness already in 0-1 range)
-    confidence = fitness
+    # Convert score to confidence
+    confidence = score
 
-    # Determine match quality based on fitness
-    if fitness >= 0.90:
+    # Determine match quality based on score
+    if score >= 0.85:
         match_quality = MatchQuality.EXACT
-        explanation_ar = "تطابق ممتاز"
-        explanation_en = "Excellent match"
-    elif fitness >= 0.75:
+        explanation_ar = "تطابق ممتاز (مزيج من التشابه الهيكلي والصوتي)"
+        explanation_en = "Excellent match (hybrid structural + phonetic)"
+    elif score >= 0.70:
         match_quality = MatchQuality.STRONG
         explanation_ar = "تطابق قوي"
         explanation_en = "Strong match"
-    elif fitness >= 0.60:
+    elif score >= 0.55:
         match_quality = MatchQuality.MODERATE
         explanation_ar = "تطابق جيد"
         explanation_en = "Moderate match"
     else:
         match_quality = MatchQuality.WEAK
-        explanation_ar = "تطابق ضعيف"
-        explanation_en = "Weak match"
+        explanation_ar = "تطابق ضعيف - يُنصح بإضافة التشكيل"
+        explanation_en = "Weak match - diacritics recommended"
 
     # Create detection result
     return DetectionResult(
@@ -224,7 +301,7 @@ def detect_meter_from_text(
         confidence=confidence,
         match_quality=match_quality,
         matched_pattern=best_pattern,
-        input_pattern="<phoneme-based>",  # Not using direct pattern matching
+        input_pattern="<hybrid-scoring>",  # Using combined fitness + similarity
         transformations=[],
         explanation=f"{explanation_ar} | {explanation_en}"
     )
