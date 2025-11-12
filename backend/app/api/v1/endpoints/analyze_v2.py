@@ -10,16 +10,18 @@ This endpoint uses BahrDetectorV2 which provides:
 """
 
 import logging
+
 from fastapi import APIRouter, HTTPException, status
-from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, BahrInfo, RhymeInfo
+
 from app.core.normalization import normalize_arabic_text
-from app.core.taqti3 import perform_taqti3
+from app.core.phonetics import text_to_phonetic_pattern
 from app.core.prosody.detector_v2 import BahrDetectorV2
 from app.core.prosody.fallback_detector import detect_with_all_strategies
 from app.core.quality import analyze_verse_quality
-from app.core.phonetics import text_to_phonetic_pattern
 from app.core.rhyme import analyze_verse_rhyme
+from app.core.taqti3 import perform_taqti3
 from app.db.redis import cache_get, cache_set, generate_cache_key
+from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, BahrInfo, RhymeInfo
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,9 @@ router = APIRouter()
 
 # Initialize BahrDetectorV2 (singleton)
 bahr_detector_v2 = BahrDetectorV2()
-logger.info(f"BahrDetectorV2 initialized: {bahr_detector_v2.get_statistics()['total_meters']} meters, {bahr_detector_v2.get_statistics()['total_patterns']} patterns")
+logger.info(
+    f"BahrDetectorV2 initialized: {bahr_detector_v2.get_statistics()['total_meters']} meters, {bahr_detector_v2.get_statistics()['total_patterns']} patterns"
+)
 
 
 @router.post(
@@ -74,18 +78,18 @@ logger.info(f"BahrDetectorV2 initialized: {bahr_detector_v2.get_statistics()['to
                             "matched_pattern": "/o////o/o/o/o//o//o/o/o",
                             "transformations": ["base", "قبض", "base", "base"],
                             "explanation_ar": "مطابقة مع زحافات: قبض في الموضع الثاني",
-                            "explanation_en": "Match with variations: qabd at position 2"
+                            "explanation_en": "Match with variations: qabd at position 2",
                         },
                         "errors": [],
                         "suggestions": ["✓ التقطيع دقيق ومتسق مع بحر الطويل"],
-                        "score": 97.0
+                        "score": 97.0,
                     }
                 }
-            }
+            },
         },
         400: {"description": "Invalid input"},
-        500: {"description": "Server error"}
-    }
+        500: {"description": "Server error"},
+    },
 )
 async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
     """
@@ -113,23 +117,25 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                 request.text,
                 remove_tashkeel=False,  # Keep diacritics for accurate analysis
                 normalize_hamzas=True,
-                normalize_alefs=True
+                normalize_alefs=True,
             )
         except Exception as e:
             logger.error(f"Text normalization failed: {e}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Failed to normalize text: {str(e)}"
+                detail=f"Failed to normalize text: {str(e)}",
             )
 
         if not normalized_text or not normalized_text.strip():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Text is empty after normalization"
+                detail="Text is empty after normalization",
             )
 
         # Step 2: Check Redis cache
-        cache_key = generate_cache_key(normalized_text + "_v2")  # Different cache for v2
+        cache_key = generate_cache_key(
+            normalized_text + "_v2"
+        )  # Different cache for v2
         cached_result = None
 
         try:
@@ -158,7 +164,7 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                     import re
 
                     # Try explicit separators first: *** or 3+ spaces
-                    hemistichs = re.split(r'\s*[*×•]{2,}\s*|\s{3,}', normalized_text)
+                    hemistichs = re.split(r"\s*[*×•]{2,}\s*|\s{3,}", normalized_text)
 
                     if len(hemistichs) >= 2:
                         # Found explicit separator
@@ -167,17 +173,23 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                         # No explicit separator - split at midpoint by words
                         # Arabic verses typically have equal-length hemistichs
                         words = normalized_text.strip().split()
-                        if len(words) > 8:  # If verse has many words, likely has 2 hemistichs
+                        if (
+                            len(words) > 8
+                        ):  # If verse has many words, likely has 2 hemistichs
                             mid = len(words) // 2
-                            first_hemistich = ' '.join(words[:mid])
-                            logger.info(f"[V2] No separator found, splitting at midpoint: {mid} words")
+                            first_hemistich = " ".join(words[:mid])
+                            logger.info(
+                                f"[V2] No separator found, splitting at midpoint: {mid} words"
+                            )
                         else:
                             # Short text, use as-is
                             first_hemistich = normalized_text
 
                     # Extract pattern for first hemistich
                     phonetic_pattern = text_to_phonetic_pattern(first_hemistich)
-                    logger.info(f"[V2] Extracted phonetic pattern from first hemistich: {phonetic_pattern}")
+                    logger.info(
+                        f"[V2] Extracted phonetic pattern from first hemistich: {phonetic_pattern}"
+                    )
 
                 # Use BahrDetectorV2 with 100% accuracy features:
                 # 1. Smart disambiguation (resolves ties between overlapping patterns)
@@ -189,29 +201,39 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                     detection_results = bahr_detector_v2.detect(
                         phonetic_pattern,
                         top_k=1,
-                        expected_meter_ar=request.expected_meter
+                        expected_meter_ar=request.expected_meter,
                     )
-                    detection_result = detection_results[0] if detection_results else None
+                    detection_result = (
+                        detection_results[0] if detection_results else None
+                    )
                 else:
                     # Use fallback detection which tries multiple strategies
                     detection_result = detect_with_all_strategies(
-                        bahr_detector_v2,
-                        phonetic_pattern
+                        bahr_detector_v2, phonetic_pattern
                     )
 
                 if detection_result:
                     # Extract explanation parts (bilingual)
                     explanation_full = detection_result.explanation
                     if " | " in explanation_full:
-                        explanation_ar, explanation_en = explanation_full.split(" | ", 1)
+                        explanation_ar, explanation_en = explanation_full.split(
+                            " | ", 1
+                        )
                     else:
                         explanation_ar = explanation_full
                         explanation_en = explanation_full
 
                     # Safely extract match_quality value (handle None or missing attribute)
                     match_quality_value = None
-                    if hasattr(detection_result, 'match_quality') and detection_result.match_quality:
-                        match_quality_value = detection_result.match_quality.value if hasattr(detection_result.match_quality, 'value') else str(detection_result.match_quality)
+                    if (
+                        hasattr(detection_result, "match_quality")
+                        and detection_result.match_quality
+                    ):
+                        match_quality_value = (
+                            detection_result.match_quality.value
+                            if hasattr(detection_result.match_quality, "value")
+                            else str(detection_result.match_quality)
+                        )
 
                     bahr_info = BahrInfo(
                         id=detection_result.meter_id,
@@ -223,7 +245,7 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                         matched_pattern=detection_result.matched_pattern,
                         transformations=detection_result.transformations,
                         explanation_ar=explanation_ar.strip(),
-                        explanation_en=explanation_en.strip()
+                        explanation_en=explanation_en.strip(),
                     )
                     confidence = detection_result.confidence
 
@@ -246,15 +268,17 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
             if bahr_info and bahr_info.id:
                 # Use detected bahr for accurate taqti3
                 taqti3_result = perform_taqti3(
-                    normalized_text,
-                    normalize=False,
-                    bahr_id=bahr_info.id
+                    normalized_text, normalize=False, bahr_id=bahr_info.id
                 )
-                logger.info(f"[V2] Taqti3 with detected bahr {bahr_info.name_ar}: {taqti3_result}")
+                logger.info(
+                    f"[V2] Taqti3 with detected bahr {bahr_info.name_ar}: {taqti3_result}"
+                )
             else:
                 # Fallback to pattern matching if no bahr detected
                 taqti3_result = perform_taqti3(normalized_text, normalize=False)
-                logger.info(f"[V2] Taqti3 without bahr (pattern matching): {taqti3_result}")
+                logger.info(
+                    f"[V2] Taqti3 without bahr (pattern matching): {taqti3_result}"
+                )
 
             if not taqti3_result or not taqti3_result.strip():
                 logger.warning("Taqti3 returned empty result")
@@ -279,7 +303,7 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                 bahr_name_ar=bahr_info.name_ar if bahr_info else None,
                 meter_confidence=confidence,
                 detected_pattern=phonetic_pattern,
-                expected_pattern=""
+                expected_pattern="",
             )
 
             score = quality_score.overall
@@ -289,9 +313,13 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
             if bahr_info and bahr_info.transformations:
                 non_base = [t for t in bahr_info.transformations if t != "base"]
                 if not non_base:
-                    suggestions.append(f"✓ التقطيع دقيق ومتسق مع بحر {bahr_info.name_ar} (الصيغة الأساسية)")
+                    suggestions.append(
+                        f"✓ التقطيع دقيق ومتسق مع بحر {bahr_info.name_ar} (الصيغة الأساسية)"
+                    )
                 elif len(non_base) <= 2:
-                    suggestions.append(f"✓ التقطيع جيد مع زحافات معتادة: {', '.join(non_base)}")
+                    suggestions.append(
+                        f"✓ التقطيع جيد مع زحافات معتادة: {', '.join(non_base)}"
+                    )
                 else:
                     suggestions.append(f"⚠️ عدة زحافات مطبقة: {', '.join(non_base)}")
 
@@ -321,14 +349,16 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
         rhyme_info = None
         if request.analyze_rhyme:
             try:
-                rhyme_pattern, rhyme_desc_ar, rhyme_desc_en = analyze_verse_rhyme(request.text)
+                rhyme_pattern, rhyme_desc_ar, rhyme_desc_en = analyze_verse_rhyme(
+                    request.text
+                )
 
                 rhyme_info = RhymeInfo(
                     rawi=rhyme_pattern.qafiyah.rawi,
                     rawi_vowel=rhyme_pattern.qafiyah.rawi_vowel,
                     rhyme_types=[rt.value for rt in rhyme_pattern.rhyme_types],
                     description_ar=rhyme_desc_ar,
-                    description_en=rhyme_desc_en
+                    description_en=rhyme_desc_en,
                 )
 
                 if request.suggest_corrections:
@@ -347,7 +377,7 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
             rhyme=rhyme_info,
             errors=[],
             suggestions=suggestions if request.suggest_corrections else [],
-            score=score
+            score=score,
         )
 
         # Step 8: Cache result (TTL: 24 hours)
@@ -365,13 +395,10 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
         raise
     except ValueError as e:
         logger.error(f"Validation error: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
         logger.error(f"Unexpected error during analysis: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occurred during analysis. Please try again."
+            detail="An unexpected error occurred during analysis. Please try again.",
         )

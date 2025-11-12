@@ -1,10 +1,14 @@
 """FastAPI middleware for injecting request_id and normalizing envelopes.
 Attach early in stack. The actual endpoint handlers should use helpers in response_envelope.py.
 """
+
 from typing import Callable
+
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
+
 from .util_request_id import ensure_request_id
+
 
 class RequestIDMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Response:

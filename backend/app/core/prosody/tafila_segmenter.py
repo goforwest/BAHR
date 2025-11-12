@@ -10,26 +10,27 @@ Instead of: text → pattern → cache match → meter
 """
 
 import sys
-from typing import List, Tuple, Optional, Dict
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple
 
 # Handle imports for both module use and standalone testing
 try:
-    from .meters import Meter, METERS_REGISTRY, get_meter_by_name
+    from ..phonetics import Phoneme, extract_phonemes
+    from .meters import METERS_REGISTRY, Meter, get_meter_by_name
     from .tafila import Tafila, get_tafila
-    from ..phonetics import extract_phonemes, Phoneme
 except ImportError:
     # Standalone mode
-    sys.path.insert(0, '/home/user/BAHR/backend')
-    from app.core.prosody.meters import Meter, METERS_REGISTRY, get_meter_by_name
+    sys.path.insert(0, "/home/user/BAHR/backend")
+    from app.core.phonetics import Phoneme, extract_phonemes
+    from app.core.prosody.meters import METERS_REGISTRY, Meter, get_meter_by_name
     from app.core.prosody.tafila import Tafila, get_tafila
-    from app.core.phonetics import extract_phonemes, Phoneme
 
 
 @dataclass
 class TafilaMatch:
     """Represents a matched tafila in text."""
+
     tafila: Tafila
     phonemes: List[Phoneme]
     start_idx: int
@@ -44,6 +45,7 @@ class TafilaMatch:
 @dataclass
 class MeterMatch:
     """Represents a complete meter match for a verse."""
+
     meter: Meter
     tafail_sequence: List[TafilaMatch]
     overall_confidence: float
@@ -86,7 +88,7 @@ class TafilaSegmenter:
                 base_tafila = meter.get_tafila_at_position(position)
 
                 # Add base form
-                library[base_tafila.phonetic].append((base_tafila, 'base'))
+                library[base_tafila.phonetic].append((base_tafila, "base"))
 
                 # Add variations from zihafat
                 allowed_zihafat = meter.get_allowed_zihafat(position)
@@ -110,10 +112,7 @@ class TafilaSegmenter:
         return library
 
     def phonemes_to_pattern_segment(
-        self,
-        phonemes: List[Phoneme],
-        start: int,
-        length: int
+        self, phonemes: List[Phoneme], start: int, length: int
     ) -> str:
         """
         Convert a segment of phonemes to prosodic pattern.
@@ -128,23 +127,21 @@ class TafilaSegmenter:
             phoneme = phonemes[i]
 
             if phoneme.has_shadda:
-                pattern += 'o'  # First (sakin)
+                pattern += "o"  # First (sakin)
 
             if phoneme.is_long_vowel():
-                pattern += '/o'
+                pattern += "/o"
             elif phoneme.is_sukun():
-                pattern += 'o'
-            elif phoneme.vowel in ['a', 'u', 'i']:
-                pattern += '/'
-            elif phoneme.vowel in ['an', 'un', 'in']:
-                pattern += '/o'
+                pattern += "o"
+            elif phoneme.vowel in ["a", "u", "i"]:
+                pattern += "/"
+            elif phoneme.vowel in ["an", "un", "in"]:
+                pattern += "/o"
 
         return pattern
 
     def find_tafila_matches(
-        self,
-        phonemes: List[Phoneme],
-        start_idx: int
+        self, phonemes: List[Phoneme], start_idx: int
     ) -> List[TafilaMatch]:
         """
         Find all possible tafail starting at the given phoneme index.
@@ -172,28 +169,27 @@ class TafilaSegmenter:
             if segment_pattern in self.tafila_library:
                 for tafila, variation in self.tafila_library[segment_pattern]:
                     # Calculate confidence based on variation
-                    if variation == 'base':
+                    if variation == "base":
                         confidence = 1.0
-                    elif 'common' in variation.lower():
+                    elif "common" in variation.lower():
                         confidence = 0.95
                     else:
                         confidence = 0.85
 
-                    matches.append(TafilaMatch(
-                        tafila=tafila,
-                        phonemes=phonemes[start_idx:start_idx+length],
-                        start_idx=start_idx,
-                        end_idx=start_idx+length,
-                        confidence=confidence,
-                        variations_applied=[variation]
-                    ))
+                    matches.append(
+                        TafilaMatch(
+                            tafila=tafila,
+                            phonemes=phonemes[start_idx : start_idx + length],
+                            start_idx=start_idx,
+                            end_idx=start_idx + length,
+                            confidence=confidence,
+                            variations_applied=[variation],
+                        )
+                    )
 
         return matches
 
-    def segment_verse(
-        self,
-        phonemes: List[Phoneme]
-    ) -> List[List[TafilaMatch]]:
+    def segment_verse(self, phonemes: List[Phoneme]) -> List[List[TafilaMatch]]:
         """
         Segment verse into possible tafila sequences.
 
@@ -228,9 +224,7 @@ class TafilaSegmenter:
         return dp[n]
 
     def match_meter(
-        self,
-        tafila_sequence: List[TafilaMatch],
-        meter: Meter
+        self, tafila_sequence: List[TafilaMatch], meter: Meter
     ) -> Optional[float]:
         """
         Check if a tafila sequence matches a meter's structure.
@@ -265,9 +259,7 @@ class TafilaSegmenter:
         return None
 
     def detect_meter(
-        self,
-        text: str,
-        has_tashkeel: bool = True
+        self, text: str, has_tashkeel: bool = True
     ) -> Optional[MeterMatch]:
         """
         Detect meter from Arabic text using tafila segmentation.
@@ -312,7 +304,7 @@ class TafilaSegmenter:
                         meter=meter,
                         tafail_sequence=segmentation,
                         overall_confidence=confidence,
-                        match_quality=self._assess_quality(confidence)
+                        match_quality=self._assess_quality(confidence),
                     )
 
         return best_match
@@ -320,13 +312,13 @@ class TafilaSegmenter:
     def _assess_quality(self, confidence: float) -> str:
         """Assess match quality from confidence score."""
         if confidence >= 0.95:
-            return 'exact'
+            return "exact"
         elif confidence >= 0.85:
-            return 'strong'
+            return "strong"
         elif confidence >= 0.75:
-            return 'moderate'
+            return "moderate"
         else:
-            return 'weak'
+            return "weak"
 
 
 def detect_meter_v3(text: str, has_tashkeel: Optional[bool] = None) -> Optional[Dict]:
@@ -362,30 +354,33 @@ def detect_meter_v3(text: str, has_tashkeel: Optional[bool] = None) -> Optional[
         return None
 
     return {
-        'meter_id': match.meter.id,
-        'meter_name_ar': match.meter.name_ar,
-        'meter_name_en': match.meter.name_en,
-        'confidence': match.overall_confidence,
-        'match_quality': match.match_quality,
-        'tafail_count': len(match.tafail_sequence),
-        'tafail_names': [t.tafila.name for t in match.tafail_sequence],
-        'method': 'tafila_segmentation'
+        "meter_id": match.meter.id,
+        "meter_name_ar": match.meter.name_ar,
+        "meter_name_en": match.meter.name_en,
+        "confidence": match.overall_confidence,
+        "match_quality": match.match_quality,
+        "tafail_count": len(match.tafail_sequence),
+        "tafail_names": [t.tafila.name for t in match.tafail_sequence],
+        "method": "tafila_segmentation",
     }
 
 
 if __name__ == "__main__":
     # Demo
     import sys
-    sys.path.insert(0, '/home/user/BAHR/backend')
 
-    print("="*80)
+    sys.path.insert(0, "/home/user/BAHR/backend")
+
+    print("=" * 80)
     print("TAFILA SEGMENTATION DEMO (Option B)")
-    print("="*80)
+    print("=" * 80)
     print()
 
     segmenter = TafilaSegmenter()
 
-    print(f"Tafila library size: {sum(len(v) for v in segmenter.tafila_library.values())} patterns")
+    print(
+        f"Tafila library size: {sum(len(v) for v in segmenter.tafila_library.values())} patterns"
+    )
     print()
 
     # Test verses
@@ -404,7 +399,9 @@ if __name__ == "__main__":
             print(f"✅ Detected: {match.meter.name_ar}")
             print(f"   Confidence: {match.overall_confidence:.2%}")
             print(f"   Quality: {match.match_quality}")
-            print(f"   Tafail: {' + '.join(t.tafila.name for t in match.tafail_sequence)}")
+            print(
+                f"   Tafail: {' + '.join(t.tafila.name for t in match.tafail_sequence)}"
+            )
             print(f"   Match: {'✅' if match.meter.name_ar == expected else '❌'}")
         else:
             print(f"❌ No detection")

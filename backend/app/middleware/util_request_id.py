@@ -1,8 +1,11 @@
 """Utility for managing request IDs."""
-from fastapi import Request
+
 import uuid
 
+from fastapi import Request
+
 HEADER_NAME = "X-Request-ID"
+
 
 def ensure_request_id(request: Request) -> None:
     rid = request.headers.get(HEADER_NAME)

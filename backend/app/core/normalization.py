@@ -3,26 +3,25 @@ Arabic text normalization for prosodic analysis.
 """
 
 import re
-from typing import Optional
 import unicodedata
-
+from typing import Optional
 
 # Unicode ranges for Arabic
 ARABIC_DIACRITICS = [
-    '\u064B',  # Tanween Fath
-    '\u064C',  # Tanween Damm
-    '\u064D',  # Tanween Kasr
-    '\u064E',  # Fatha
-    '\u064F',  # Damma
-    '\u0650',  # Kasra
-    '\u0651',  # Shadda
-    '\u0652',  # Sukun
-    '\u0653',  # Maddah
-    '\u0654',  # Hamza above
-    '\u0655',  # Hamza below
-    '\u0656',  # Subscript Alef
-    '\u0657',  # Inverted Damma
-    '\u0658',  # Mark Noon Ghunna
+    "\u064b",  # Tanween Fath
+    "\u064c",  # Tanween Damm
+    "\u064d",  # Tanween Kasr
+    "\u064e",  # Fatha
+    "\u064f",  # Damma
+    "\u0650",  # Kasra
+    "\u0651",  # Shadda
+    "\u0652",  # Sukun
+    "\u0653",  # Maddah
+    "\u0654",  # Hamza above
+    "\u0655",  # Hamza below
+    "\u0656",  # Subscript Alef
+    "\u0657",  # Inverted Damma
+    "\u0658",  # Mark Noon Ghunna
 ]
 
 
@@ -41,7 +40,7 @@ def remove_diacritics(text: str) -> str:
         "مرحبا"
     """
     for diacritic in ARABIC_DIACRITICS:
-        text = text.replace(diacritic, '')
+        text = text.replace(diacritic, "")
     return text
 
 
@@ -64,15 +63,15 @@ def normalize_hamza(text: str) -> str:
         "ومن"
     """
     # Hamza on alef variants → alef
-    text = text.replace('أ', 'ا')
-    text = text.replace('إ', 'ا')
-    text = text.replace('آ', 'ا')
+    text = text.replace("أ", "ا")
+    text = text.replace("إ", "ا")
+    text = text.replace("آ", "ا")
 
     # Hamza on waw → waw
-    text = text.replace('ؤ', 'و')
+    text = text.replace("ؤ", "و")
 
     # Hamza on ya → ya
-    text = text.replace('ئ', 'ي')
+    text = text.replace("ئ", "ي")
 
     return text
 
@@ -95,10 +94,10 @@ def normalize_alef(text: str) -> str:
         >>> normalize_alef("موسى")
         "موسي"
     """
-    text = text.replace('ى', 'ي')  # Alef maksura → ya
-    text = text.replace('أ', 'ا')
-    text = text.replace('إ', 'ا')
-    text = text.replace('آ', 'ا')
+    text = text.replace("ى", "ي")  # Alef maksura → ya
+    text = text.replace("أ", "ا")
+    text = text.replace("إ", "ا")
+    text = text.replace("آ", "ا")
 
     return text
 
@@ -117,7 +116,7 @@ def remove_tatweel(text: str) -> str:
         >>> remove_tatweel("مـــرحبا")
         "مرحبا"
     """
-    return text.replace('\u0640', '')
+    return text.replace("\u0640", "")
 
 
 def normalize_whitespace(text: str) -> str:
@@ -135,7 +134,7 @@ def normalize_whitespace(text: str) -> str:
         "مرحبا بك"
     """
     # Replace multiple spaces/tabs/newlines with single space
-    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r"\s+", " ", text)
     return text.strip()
 
 
@@ -143,7 +142,7 @@ def normalize_arabic_text(
     text: str,
     remove_tashkeel: bool = False,
     normalize_hamzas: bool = True,
-    normalize_alefs: bool = True
+    normalize_alefs: bool = True,
 ) -> str:
     """
     Main normalization function for Arabic text.
@@ -169,20 +168,20 @@ def normalize_arabic_text(
     # Edge case: None input
     if text is None:
         raise ValueError("Text cannot be None")
-    
+
     # Edge case: Non-string input
     if not isinstance(text, str):
         raise ValueError(f"Text must be a string, got {type(text).__name__}")
-    
+
     if not text or not text.strip():
         raise ValueError("Text cannot be empty")
 
     # Edge case: Text too short (less than 2 characters)
     if len(text.strip()) < 2:
         raise ValueError("Text must contain at least 2 characters")
-    
+
     # Check if text contains Arabic
-    if not any('\u0600' <= c <= '\u06FF' for c in text):
+    if not any("\u0600" <= c <= "\u06ff" for c in text):
         raise ValueError("Text must contain Arabic characters")
 
     # Normalize whitespace

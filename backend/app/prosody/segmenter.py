@@ -1,6 +1,7 @@
 """Phonetic segmentation for Arabic prosody (simplified).
 Segments into rough syllable units based on consonant/vowel heuristics.
 """
+
 from dataclasses import dataclass
 from typing import List
 

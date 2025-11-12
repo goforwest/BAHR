@@ -5,10 +5,11 @@ implemented subset. Expands easily later without breaking imports.
 
 Referenced in: ARCHITECTURE_OVERVIEW.md (Environment Catalog)
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
 
 
 def _get(name: str, default: str | None = None, required: bool = False) -> str:
@@ -25,18 +26,22 @@ class Settings:
     analysis_engine_version: str = _get("ANALYSIS_ENGINE_VERSION", "1.0.0")
     log_level: str = _get("LOG_LEVEL", "INFO")
     secret_key: str = _get("SECRET_KEY", "dev-insecure-key", required=False)
-    
+
     # CORS configuration (ADR-003: Explicit CORS origins)
     cors_origins: list[str] = None
-    
+
     def __post_init__(self):
         """Initialize CORS origins from environment or defaults."""
         if self.cors_origins is None:
-            cors_str = _get("CORS_ORIGINS", "http://localhost:3000,http://localhost:8000")
+            cors_str = _get(
+                "CORS_ORIGINS", "http://localhost:3000,http://localhost:8000"
+            )
             self.cors_origins = [origin.strip() for origin in cors_str.split(",")]
-    
+
     # Future (placeholders, not yet wired in code):
-    database_url: str = _get("DATABASE_URL", "postgresql://bahr_user:bahr_password@localhost:5432/bahr_db")
+    database_url: str = _get(
+        "DATABASE_URL", "postgresql://bahr_user:bahr_password@localhost:5432/bahr_db"
+    )
     database_echo: bool = _get("DATABASE_ECHO", "false").lower() == "true"
     redis_url: str = _get("REDIS_URL", "redis://localhost:6379/0")
     cache_ttl: int = int(_get("CACHE_TTL", "86400"))  # 24 hours in seconds

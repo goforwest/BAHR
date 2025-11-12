@@ -7,9 +7,10 @@ Enhancements (2025-11-08):
  - Added ability to propagate performance meta (processing_time_ms, cached) on failures.
  - Centralized error message lookup by code for consistent translations.
 """
-from typing import Any, Optional, Dict, List, Tuple
+
 import time
 import uuid
+from typing import Any, Dict, List, Optional, Tuple
 
 # Supported languages
 SUPPORTED_LANGS = {"ar", "en"}
@@ -45,11 +46,14 @@ ERROR_MESSAGES: Dict[str, Tuple[str, str]] = {
 API_VERSION = "1.0.0"
 ANALYSIS_ENGINE_VERSION = "1.0.0"  # bump when algorithm changes
 
+
 def now_ts() -> int:
     return int(time.time())
 
+
 def generate_request_id() -> str:
     return uuid.uuid4().hex[:12]
+
 
 def success(
     data: Any,
@@ -70,6 +74,7 @@ def success(
         "error": None,
         "meta": meta,
     }
+
 
 def failure(
     code: str,
@@ -105,9 +110,7 @@ def failure(
                 else ERROR_MESSAGES[code][1]
             )
         else:
-            resolved_message = (
-                "حدث خطأ" if lang_final == "ar" else "An error occurred"
-            )
+            resolved_message = "حدث خطأ" if lang_final == "ar" else "An error occurred"
 
     meta = {
         "request_id": request_id or generate_request_id(),
@@ -135,6 +138,7 @@ def failure(
         "error": error_obj,
         "meta": meta,
     }
+
 
 __all__ = [
     "success",

@@ -14,24 +14,23 @@ Import all models here for easy access:
     from app.models import User, Meter, Tafila, Analysis, AnalysisCache
 """
 
+from .analysis import Analysis, AnalysisMode
 from .base import Base, TimestampMixin
-from .user import User, UserRole, PrivacyLevel
+from .cache import AnalysisCache
 from .meter import Meter, MeterType
 from .tafila import Tafila
-from .analysis import Analysis, AnalysisMode
-from .cache import AnalysisCache
+from .user import PrivacyLevel, User, UserRole
 
 __all__ = [
-    'Base',
-    'TimestampMixin',
-    'User',
-    'UserRole',
-    'PrivacyLevel',
-    'Meter',
-    'MeterType',
-    'Tafila',
-    'Analysis',
-    'AnalysisMode',
-    'AnalysisCache',
+    "Base",
+    "TimestampMixin",
+    "User",
+    "UserRole",
+    "PrivacyLevel",
+    "Meter",
+    "MeterType",
+    "Tafila",
+    "Analysis",
+    "AnalysisMode",
+    "AnalysisCache",
 ]
-
