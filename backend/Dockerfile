@@ -32,17 +32,16 @@ COPY requirements.txt ./
 # IMPORTANT: torch is NOT in requirements.txt to avoid pip trying to replace CPU version with CUDA
 RUN set -ex && \
     pip install --upgrade pip setuptools wheel && \
-    # STEP 1: Install PyTorch CPU-only version FIRST
-    # Using --index-url (not --extra-index-url) to ONLY use CPU index for torch
-    # This prevents pip from seeing/installing the 2.6 GB CUDA version
-    pip install --index-url https://download.pytorch.org/whl/cpu torch==2.5.1+cpu && \
+    # STEP 1: Install PyTorch CPU-only version FIRST with --no-deps to avoid dependency issues
+    # Using --extra-index-url to add CPU index while keeping PyPI for dependencies
+    pip install --no-deps --extra-index-url https://download.pytorch.org/whl/cpu torch==2.5.1+cpu && \
     python -c "import torch; print(f'✓ PyTorch CPU installed: {torch.__version__}')" && \
     # STEP 2: Install all other requirements from production.txt
     # (torch is intentionally excluded from requirements to avoid conflicts)
     pip install -r requirements/production.txt && \
     # STEP 3: Verify all critical packages are installed and importable BEFORE cleanup
-    python -c "import uvicorn, fastapi, torch; print('✓ All packages installed and verified')" && \
-    # Remove pip cache
+    python -c "import uvicorn, fastapi, torch; print('✓ BEFORE cleanup - all packages work')" && \
+    # Remove pip cache (do this BEFORE other cleanup to avoid conflicts)
     rm -rf /root/.cache/pip && \
     # Remove test files and documentation from packages (saves ~800 MB)
     find /usr/local/lib/python3.11/site-packages -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
@@ -58,8 +57,14 @@ RUN set -ex && \
     # Remove unnecessary torch files
     find /usr/local/lib/python3.11/site-packages -path "*/torch/test" -exec rm -rf {} + 2>/dev/null || true && \
     find /usr/local/lib/python3.11/site-packages -path "*/torch/include" -exec rm -rf {} + 2>/dev/null || true && \
-    echo "=== Final package directory ===" && \
-    du -sh /usr/local/lib/python3.11/site-packages
+    # CRITICAL: Verify packages still work AFTER cleanup (catches if cleanup was too aggressive)
+    python -c "import uvicorn, fastapi, torch; print('✓ AFTER cleanup - packages still work')" && \
+    echo "=== Final package directory size ===" && \
+    du -sh /usr/local/lib/python3.11/site-packages && \
+    echo "=== Verifying key packages exist ===" && \
+    ls -la /usr/local/lib/python3.11/site-packages/ | grep -E "(uvicorn|fastapi|torch)" && \
+    echo "=== Checking binaries ===" && \
+    ls -la /usr/local/bin/ | grep uvicorn
 
 # =============================================================================
 # Stage 2: Runtime - Minimal production image
