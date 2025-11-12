@@ -1,6 +1,8 @@
 # بَحْر (BAHR) - Arabic Poetry Analysis Platform
 
+
 <div align="center">
+
 
 ![BAHR Logo](https://img.shields.io/badge/بَحْر-BAHR-blue?style=for-the-badge)
 
