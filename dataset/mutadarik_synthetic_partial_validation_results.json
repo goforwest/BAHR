@@ -1,0 +1,53 @@
+[
+  {
+    "verse_id": "mutadarik_synthetic_006",
+    "status": "PASSED",
+    "is_valid_mutadarik": true,
+    "confidence": 0.95,
+    "errors": [],
+    "warnings": [],
+    "checks": {
+      "tafail_count": true,
+      "valid_tafail": true,
+      "zihafat_compliance": true,
+      "ilal_compliance": true,
+      "pattern_match": true,
+      "rajaz_disambiguation": true
+    },
+    "detected_meter": "المتدارك",
+    "detected_pattern": "/o//o///o/o//o/o//",
+    "confusion_risk": {
+      "المتدارك": 0.95,
+      "الخفيف": 0.8694083333333333
+    },
+    "disambiguation_notes": "✓ Tafʿīla count = 4 (المتدارك uses 4 تفاعيل, الرجز typically uses 3) | ✓ Tafāʿīl match فاعلن pattern (characteristic of المتدارك) | ✓ Detection confidence: المتدارك (95.0%) > الرجز (0.0%)",
+    "recommendations": [
+      "✅ Verse is valid for golden set inclusion"
+    ]
+  },
+  {
+    "verse_id": "mutadarik_synthetic_007",
+    "status": "PASSED",
+    "is_valid_mutadarik": true,
+    "confidence": 0.95,
+    "errors": [],
+    "warnings": [],
+    "checks": {
+      "tafail_count": true,
+      "valid_tafail": true,
+      "zihafat_compliance": true,
+      "ilal_compliance": true,
+      "pattern_match": true,
+      "rajaz_disambiguation": true
+    },
+    "detected_meter": "المتدارك",
+    "detected_pattern": "/o//o/o//o///o/o/",
+    "confusion_risk": {
+      "المتدارك": 0.95
+    },
+    "disambiguation_notes": "✓ Tafʿīla count = 4 (المتدارك uses 4 تفاعيل, الرجز typically uses 3) | ✓ Tafāʿīl match فاعلن pattern (characteristic of المتدارك) | ✓ Detection confidence: المتدارك (95.0%) > الرجز (0.0%)",
+    "recommendations": [
+      "✅ Verse is valid for golden set inclusion"
+    ]
+  }
+]
