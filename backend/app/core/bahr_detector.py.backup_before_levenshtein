@@ -83,15 +83,6 @@ BAHRS_DATA = [
             "//o/////o///o////o/o///",        # golden_087: زهير بن أبي سلمى
             "//o////o///////o/o//o//",        # golden_089: طرفة بن العبد
             "//o////o/o///o//////o/oo",       # golden_100: الإمام علي
-            # New patterns from Golden Set v0.101 (golden_101-118)
-            "//o////o///o//o/o/////",         # golden_101: امرؤ القيس - قفا نبك
-            "//o/o//o/o/o///o/o///o//o",      # golden_102: لبيد - أرى كل حي
-            "//o////////////o////////o",      # golden_103: امرؤ القيس - بدت مثل
-            "//ooo////o/////ooo//o//o",       # golden_110: عنترة - واني لارجو
-            "//o//o//o////oo///////oo",       # golden_112: النابغة - فان تفق
-            "///o//////o///o///o//o",         # golden_114: عنترة - ولقد ذكرتك
-            "//o//////o///o//o////////",      # golden_115: حاتم الطائي - اذا المرء
-            "//////o///o//o///o//o",          # golden_116: ذو الرمة - وقفت على
         ],
         "variations": [
             "فعولن مفاعيلن فعولن مفاعلن",
@@ -119,10 +110,6 @@ BAHRS_DATA = [
             "//o///o//o////o//ooo//o//",      # golden_085: حكمة عربية
             "////////o/o////o////o",           # golden_086: شعر حكمي
             "//o///o/o/o/////o///////o",      # golden_098: حكمة عربية
-            # New patterns from Golden Set v0.101 (golden_101-118)
-            "/o/o//o///o//oo///o///o/",       # golden_108: ابن الرومي - قل للذين
-            "//o/o//o///o////o//o///o",       # golden_111: المتنبي - انا الذي
-            "/o////o/o/o///o///o//o",         # golden_113: أبو فراس - لا تسقني
         ],
         "variations": [
             "متفاعلن متفاعلن متفاعل",
@@ -148,8 +135,6 @@ BAHRS_DATA = [
             # New patterns from Golden Set v0.100 (golden_080-100)
             "//o/o////o/o//o/o/////o",        # golden_090: ابن زيدون
             "//o////o/o/o//o///o//",          # golden_097: حكمة عربية
-            # New patterns from Golden Set v0.101 (golden_101-118)
-            "/o//o///o////o/////",            # golden_109: المتنبي - من يهن
         ],
         "variations": [
             "مفاعلتن مفاعلتن مفاعلن",
@@ -174,9 +159,6 @@ BAHRS_DATA = [
             "//////////o////o//ooo",          # golden_094: إيليا أبو ماضي
             "//o///oo/o/o//o//////",          # golden_099: قيس بن الملوح (مجنون ليلى)
             "/o//o/////////o//o/o//o///o",    # golden_096: الإمام الشافعي
-            # New patterns from Golden Set v0.101 (golden_101-118)
-            "//o/o////o////o/////o/",         # golden_104: ابن الفارض - صفا كل
-            "//o////o//oo/////o//o/",         # golden_118: المتنبي - تجلدت
         ],
         "variations": [
             "فاعلاتن فاعلاتن فاعلن",
@@ -205,9 +187,6 @@ BAHRS_DATA = [
             # New patterns from Golden Set v0.100 (golden_080-100)
             "//o/o////o/o//o/////o//",        # golden_080: لبيد بن ربيعة
             "//o///////////o//o/o///",        # golden_092: شعر ديني
-            # New patterns from Golden Set v0.101 (golden_101-118)
-            "//o///o///o///o/////o",          # golden_105: أبو العتاهية - الا ليت
-            "//o///o/o//////o//o//o",         # golden_117: أبو نواس - الم تر
         ],
         "variations": [
             "مستفعلن فاعلن مستفعلن فعلن",

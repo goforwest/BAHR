@@ -4,7 +4,7 @@
 import json
 from collections import Counter
 
-with open('/Users/hamoudi/Desktop/Personal/BAHR/dataset/evaluation/golden_set_v0_20.jsonl') as f:
+with open('/Users/hamoudi/Desktop/Personal/BAHR/dataset/evaluation/golden_set_v0_100_complete.jsonl') as f:
     data = [json.loads(line) for line in f]
 
 print('=== GOLDEN SET ANALYSIS ===\n')

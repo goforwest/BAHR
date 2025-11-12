@@ -1,0 +1,252 @@
+{
+  "test_date": "2025-11-11",
+  "total_verses": 20,
+  "correct": 16,
+  "accuracy": 0.8,
+  "by_meter": {
+    "الطويل": {
+      "correct": 7,
+      "total": 10
+    },
+    "الرمل": {
+      "correct": 2,
+      "total": 2
+    },
+    "البسيط": {
+      "correct": 2,
+      "total": 2
+    },
+    "الكامل": {
+      "correct": 3,
+      "total": 4
+    },
+    "الخفيف": {
+      "correct": 1,
+      "total": 1
+    },
+    "الوافر": {
+      "correct": 1,
+      "total": 1
+    }
+  },
+  "failures": [
+    {
+      "verse_id": "test_006",
+      "text": "تَوَكَّلتُ في رِزقي عَلى اللَهِ خالِقي",
+      "poet": "الإمام الشافعي",
+      "expected": "الكامل",
+      "predicted": "الطويل",
+      "confidence": 0.9333333333333333,
+      "correct": false
+    },
+    {
+      "verse_id": "test_015",
+      "text": "إِذا المَرءُ لَم يُدنَس مِنَ اللُؤمِ عِرضُهُ",
+      "poet": "حاتم الطائي",
+      "expected": "الطويل",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": false
+    },
+    {
+      "verse_id": "test_019",
+      "text": "أَلا يا صَبا نَجدٍ مَتى هِجتَ مِن نَجدِ",
+      "poet": "أحمد شوقي",
+      "expected": "الطويل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": false
+    },
+    {
+      "verse_id": "test_020",
+      "text": "فَسِرتُ إِلَيها وَالظَلامُ مُرَوَّعٌ",
+      "poet": "امرؤ القيس",
+      "expected": "الطويل",
+      "predicted": "الوافر",
+      "confidence": 0.9545454545454546,
+      "correct": false
+    }
+  ],
+  "all_results": [
+    {
+      "verse_id": "test_001",
+      "text": "قِفا نَبكِ مِن ذِكرى حَبيبٍ وَمَنزِلِ",
+      "poet": "امرؤ القيس",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_002",
+      "text": "أَرى كُلَّ حَيٍّ هالِكاً وَابنَ هالِكٍ",
+      "poet": "لبيد بن ربيعة",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_003",
+      "text": "بَدَت مِثلَ قَرنِ الشَمسِ في رَونَقِ الضُحى",
+      "poet": "امرؤ القيس",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_004",
+      "text": "صَفا كُلُّ شَيءٍ لِلحَبيبِ المُحِبِّ",
+      "poet": "ابن الفارض",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_005",
+      "text": "أَلا لَيتَ الشَبابَ يَعودُ يَوماً",
+      "poet": "أبو العتاهية",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_006",
+      "text": "تَوَكَّلتُ في رِزقي عَلى اللَهِ خالِقي",
+      "poet": "الإمام الشافعي",
+      "expected": "الكامل",
+      "predicted": "الطويل",
+      "confidence": 0.9333333333333333,
+      "correct": false
+    },
+    {
+      "verse_id": "test_007",
+      "text": "يا مَن يَعِزُّ عَلَينا أَن نُفارِقَهُم",
+      "poet": "ابن زيدون",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_008",
+      "text": "قُل لِلَّذينَ تَفَرَّقوا أَينَ الوَفاءُ",
+      "poet": "ابن الرومي",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_009",
+      "text": "مَن يَهُن يَسهُل الهَوانُ عَلَيهِ",
+      "poet": "المتنبي",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_010",
+      "text": "وَإِنّي لَأَرجو اللَهَ حَتّى كَأَنَّني",
+      "poet": "عنترة بن شداد",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_011",
+      "text": "أَنا الَّذي نَظَرَ الأَعمى إِلى أَدَبي",
+      "poet": "المتنبي",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_012",
+      "text": "فَإِن تَفُق أَنا اِبنُ غَسّانَ فَاِعلَموا",
+      "poet": "النابغة الذبياني",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_013",
+      "text": "لا تَسقِني ماءَ الحَياةِ بِذِلَّةٍ",
+      "poet": "أبو فراس الحمداني",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_014",
+      "text": "وَلَقَد ذَكَرتُكِ وَالرِماحُ نَواهِلٌ",
+      "poet": "عنترة بن شداد",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_015",
+      "text": "إِذا المَرءُ لَم يُدنَس مِنَ اللُؤمِ عِرضُهُ",
+      "poet": "حاتم الطائي",
+      "expected": "الطويل",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": false
+    },
+    {
+      "verse_id": "test_016",
+      "text": "وَقَفتُ عَلى رَبعٍ لِمَيَّةَ ناقَتي",
+      "poet": "ذو الرمة",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_017",
+      "text": "أَلَم تَرَ أَنَّ اللَهَ أَعطاكَ صورَةً",
+      "poet": "أبو نواس",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_018",
+      "text": "تَجَلَّدتُ وَالأَيّامُ تَجري عَلَيَّ",
+      "poet": "أبو الطيب المتنبي",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "verse_id": "test_019",
+      "text": "أَلا يا صَبا نَجدٍ مَتى هِجتَ مِن نَجدِ",
+      "poet": "أحمد شوقي",
+      "expected": "الطويل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": false
+    },
+    {
+      "verse_id": "test_020",
+      "text": "فَسِرتُ إِلَيها وَالظَلامُ مُرَوَّعٌ",
+      "poet": "امرؤ القيس",
+      "expected": "الطويل",
+      "predicted": "الوافر",
+      "confidence": 0.9545454545454546,
+      "correct": false
+    }
+  ]
+}

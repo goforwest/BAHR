@@ -1,0 +1,1044 @@
+{
+  "test_date": "2025-11-11T14:54:16.513544",
+  "golden_set_version": "0.100",
+  "total_verses": 118,
+  "overall_accuracy": 0.9745762711864406,
+  "average_confidence": 0.9978268295887531,
+  "by_meter": {
+    "الطويل": {
+      "correct": 23,
+      "total": 24,
+      "accuracy": 0.9583333333333334
+    },
+    "الرجز": {
+      "correct": 7,
+      "total": 8,
+      "accuracy": 0.875
+    },
+    "الرمل": {
+      "correct": 13,
+      "total": 13,
+      "accuracy": 1.0
+    },
+    "البسيط": {
+      "correct": 17,
+      "total": 17,
+      "accuracy": 1.0
+    },
+    "الكامل": {
+      "correct": 16,
+      "total": 17,
+      "accuracy": 0.9411764705882353
+    },
+    "المتقارب": {
+      "correct": 10,
+      "total": 10,
+      "accuracy": 1.0
+    },
+    "الخفيف": {
+      "correct": 9,
+      "total": 9,
+      "accuracy": 1.0
+    },
+    "الهزج": {
+      "correct": 7,
+      "total": 7,
+      "accuracy": 1.0
+    },
+    "الوافر": {
+      "correct": 13,
+      "total": 13,
+      "accuracy": 1.0
+    }
+  },
+  "by_difficulty": {
+    "easy": {
+      "correct": 53,
+      "total": 55,
+      "accuracy": 0.9636363636363636
+    },
+    "medium": {
+      "correct": 62,
+      "total": 63,
+      "accuracy": 0.9841269841269841
+    }
+  },
+  "failed_verses": [
+    {
+      "verse_id": "golden_049",
+      "text": "أَنا الَّذي نَظَرَ الأَعمى إِلى أَدَبي",
+      "expected": "الرجز",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "difficulty": "medium",
+      "edge_case_type": "perfect_match",
+      "poet": "المتنبي"
+    },
+    {
+      "verse_id": "golden_106",
+      "text": "تَوَكَّلتُ في رِزقي عَلى اللَهِ خالِقي",
+      "expected": "الكامل",
+      "predicted": "الطويل",
+      "confidence": 0.9333333333333333,
+      "difficulty": "easy",
+      "edge_case_type": "perfect_match",
+      "poet": "الإمام الشافعي"
+    },
+    {
+      "verse_id": "golden_115",
+      "text": "إِذا المَرءُ لَم يُدنَس مِنَ اللُؤمِ عِرضُهُ",
+      "expected": "الطويل",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "difficulty": "easy",
+      "edge_case_type": "perfect_match",
+      "poet": "حاتم الطائي"
+    }
+  ],
+  "all_results": [
+    {
+      "verse_id": "golden_001",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_002",
+      "expected": "الرجز",
+      "predicted": "الرجز",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_003",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_004",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_005",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_006",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_007",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_008",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_009",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_010",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_011",
+      "expected": "الهزج",
+      "predicted": "الهزج",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_012",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_013",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_014",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_015",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_016",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_017",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_018",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_019",
+      "expected": "الرجز",
+      "predicted": "الرجز",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_020",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_021",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_022",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_023",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_024",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_025",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_026",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_027",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_028",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_029",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_030",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_031",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_032",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_033",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_034",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_035",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_036",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_037",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_038",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_039",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_040",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_041",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_042",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_043",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_044",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_045",
+      "expected": "الرجز",
+      "predicted": "الرجز",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_046",
+      "expected": "الرجز",
+      "predicted": "الرجز",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_047",
+      "expected": "الرجز",
+      "predicted": "الرجز",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_048",
+      "expected": "الرجز",
+      "predicted": "الرجز",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_049",
+      "expected": "الرجز",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": false,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_050",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_051",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_052",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_053",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_054",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_055",
+      "expected": "الهزج",
+      "predicted": "الهزج",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_056",
+      "expected": "الهزج",
+      "predicted": "الهزج",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_057",
+      "expected": "الهزج",
+      "predicted": "الهزج",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_058",
+      "expected": "الهزج",
+      "predicted": "الهزج",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_059",
+      "expected": "الهزج",
+      "predicted": "الهزج",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_060",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_061",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_062",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_063",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_064",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_065",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_066",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_067",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_068",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_069",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_070",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_071",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_072",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_073",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_074",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_075",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_076",
+      "expected": "الرجز",
+      "predicted": "الرجز",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_077",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_078",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_079",
+      "expected": "الهزج",
+      "predicted": "الهزج",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_080",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_081",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_082",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_083",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_084",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_085",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_086",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_087",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_088",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 0.88,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_089",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_090",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_091",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_092",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_093",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 0.9302325581395349,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_094",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_095",
+      "expected": "المتقارب",
+      "predicted": "المتقارب",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_096",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_097",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_098",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_099",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_100",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_101",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_102",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_103",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_104",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_105",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_106",
+      "expected": "الكامل",
+      "predicted": "الطويل",
+      "confidence": 0.9333333333333333,
+      "correct": false,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_107",
+      "expected": "الخفيف",
+      "predicted": "الخفيف",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_108",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_109",
+      "expected": "الوافر",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_110",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_111",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_112",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_113",
+      "expected": "الكامل",
+      "predicted": "الكامل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_114",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_115",
+      "expected": "الطويل",
+      "predicted": "الوافر",
+      "confidence": 1.0,
+      "correct": false,
+      "difficulty": "easy"
+    },
+    {
+      "verse_id": "golden_116",
+      "expected": "الطويل",
+      "predicted": "الطويل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_117",
+      "expected": "البسيط",
+      "predicted": "البسيط",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    },
+    {
+      "verse_id": "golden_118",
+      "expected": "الرمل",
+      "predicted": "الرمل",
+      "confidence": 1.0,
+      "correct": true,
+      "difficulty": "medium"
+    }
+  ]
+}

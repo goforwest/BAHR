@@ -1,63 +1,25 @@
 {
-  "dataset_name": "BAHR Golden Set v0.20",
-  "version": "0.20",
-  "created_date": "2025-11-09",
-  "last_updated": "2025-11-09T16:47:07.388652",
-  "total_verses": 20,
-  "description": "Gold standard dataset for Arabic prosody engine validation",
-  "meter_distribution": {
-    "الطويل": 4,
-    "الرجز": 2,
-    "الرمل": 2,
-    "البسيط": 4,
-    "الكامل": 4,
-    "المتقارب": 2,
-    "الخفيف": 1,
-    "الهزج": 1
+  "version": "0.101",
+  "total_verses": 118,
+  "update_date": "2025-11-11T14:33:34.240244",
+  "changes": "Added 18 authentic classical Arabic poetry verses to improve coverage",
+  "by_meter": {
+    "الطويل": 24,
+    "الرجز": 8,
+    "الرمل": 13,
+    "البسيط": 17,
+    "الكامل": 17,
+    "المتقارب": 10,
+    "الخفيف": 9,
+    "الهزج": 7,
+    "الوافر": 13
   },
-  "era_distribution": {
-    "classical": 20
+  "by_era": {
+    "classical": 114,
+    "modern": 4
   },
-  "edge_case_distribution": {
-    "perfect_match": 13,
-    "common_variations": 3,
-    "diacritics_test": 4
-  },
-  "difficulty_distribution": {
-    "easy": 8,
-    "medium": 12
-  },
-  "statistics": {
-    "avg_confidence": 0.9235000000000001,
-    "avg_syllable_count": 15.2,
-    "avg_tafail_count": 3.5,
-    "verses_with_poet": 13,
-    "high_confidence_verses": 11
-  },
-  "quality_metrics": {
-    "field_completeness": 1.0,
-    "annotation_completeness": 1.0,
-    "validation_status": "verified",
-    "ready_for_testing": true
-  },
-  "schema_version": "1.0",
-  "fields": [
-    "verse_id",
-    "text",
-    "normalized_text",
-    "meter",
-    "poet",
-    "source",
-    "era",
-    "confidence",
-    "notes",
-    "taqti3",
-    "expected_tafail",
-    "syllable_pattern",
-    "syllable_count",
-    "edge_case_type",
-    "difficulty_level",
-    "validation",
-    "metadata"
-  ]
+  "by_difficulty": {
+    "easy": 55,
+    "medium": 63
+  }
 }
