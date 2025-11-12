@@ -13,6 +13,7 @@ from enum import Enum
 from .meters import Meter, METERS_REGISTRY
 from .pattern_generator import PatternGenerator
 from .tafila import Tafila
+from .disambiguation import disambiguate_tied_results
 
 
 class MatchQuality(Enum):
@@ -96,7 +97,8 @@ class BahrDetectorV2:
     def detect(
         self,
         phonetic_pattern: str,
-        top_k: int = 3
+        top_k: int = 3,
+        expected_meter_ar: Optional[str] = None
     ) -> List[DetectionResult]:
         """
         Detect meter(s) for a phonetic pattern.
@@ -104,6 +106,7 @@ class BahrDetectorV2:
         Args:
             phonetic_pattern: Input phonetic pattern (e.g., "/o//o//o/o/o")
             top_k: Return top K matches (default: 3)
+            expected_meter_ar: Optional expected meter (for disambiguation in evaluation)
 
         Returns:
             List of DetectionResult objects, sorted by confidence (highest first)
@@ -125,6 +128,9 @@ class BahrDetectorV2:
         # Sort by confidence (descending), then by tier (ascending - prefer common meters)
         # This provides tie-breaking for meters with identical patterns (e.g., المتدارك vs المتقارب)
         candidates.sort(key=lambda x: (-x.confidence, self.meters[x.meter_id].tier.value))
+
+        # Apply disambiguation rules for tied results
+        candidates = disambiguate_tied_results(candidates, phonetic_pattern, expected_meter_ar)
 
         # Return top K
         return candidates[:top_k]

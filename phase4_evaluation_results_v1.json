@@ -1,0 +1,182 @@
+{
+  "overall": {
+    "accuracy": 100.0,
+    "correct": 258,
+    "incorrect": 0,
+    "no_detection": 0,
+    "total": 258
+  },
+  "per_meter": {
+    "الطويل": {
+      "correct": 42,
+      "total": 42,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "الرجز": {
+      "correct": 12,
+      "total": 12,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "الرمل": {
+      "correct": 18,
+      "total": 18,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "البسيط": {
+      "correct": 22,
+      "total": 22,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "الكامل": {
+      "correct": 26,
+      "total": 26,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "المتقارب": {
+      "correct": 15,
+      "total": 15,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "الخفيف": {
+      "correct": 13,
+      "total": 13,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "الهزج": {
+      "correct": 9,
+      "total": 9,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "الوافر": {
+      "correct": 19,
+      "total": 19,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "السريع": {
+      "correct": 11,
+      "total": 11,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "المديد": {
+      "correct": 11,
+      "total": 11,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "المنسرح": {
+      "correct": 7,
+      "total": 7,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "المجتث": {
+      "correct": 6,
+      "total": 6,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "المقتضب": {
+      "correct": 4,
+      "total": 4,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "المضارع": {
+      "correct": 4,
+      "total": 4,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "المتدارك": {
+      "correct": 19,
+      "total": 19,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "السريع (مفعولات)": {
+      "correct": 5,
+      "total": 5,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "الكامل (3 تفاعيل)": {
+      "correct": 5,
+      "total": 5,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "الكامل (مجزوء)": {
+      "correct": 5,
+      "total": 5,
+      "incorrect": [],
+      "no_detection": []
+    },
+    "الهزج (مجزوء)": {
+      "correct": 5,
+      "total": 5,
+      "incorrect": [],
+      "no_detection": []
+    }
+  },
+  "mutadarik": {
+    "accuracy": 100.0,
+    "total": 19,
+    "correct": 19,
+    "incorrect": [],
+    "no_detection": []
+  },
+  "confusion_matrix": {},
+  "coverage": {
+    "all_meters": [
+      "الطويل",
+      "المديد",
+      "البسيط",
+      "الوافر",
+      "الكامل",
+      "الهزج",
+      "الرجز",
+      "الرمل",
+      "السريع",
+      "المنسرح",
+      "الخفيف",
+      "المضارع",
+      "المقتضب",
+      "المجتث",
+      "المتقارب",
+      "المتدارك"
+    ],
+    "covered": [
+      "الكامل",
+      "المضارع",
+      "الخفيف",
+      "المتدارك",
+      "المقتضب",
+      "الكامل (مجزوء)",
+      "الكامل (3 تفاعيل)",
+      "الطويل",
+      "السريع (مفعولات)",
+      "الوافر",
+      "المديد",
+      "البسيط",
+      "المتقارب",
+      "الرمل",
+      "الرجز",
+      "الهزج (مجزوء)",
+      "الهزج",
+      "المجتث",
+      "السريع",
+      "المنسرح"
+    ],
+    "missing": []
+  }
+}
