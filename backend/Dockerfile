@@ -82,15 +82,23 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload
 # =============================================================================
 # Stage 3: Builder (for production)
 # =============================================================================
-FROM base as builder
+FROM python:3.11-slim as builder
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements (including modular requirements directory)
 COPY requirements.txt ./
 COPY requirements/ ./requirements/
 
-# Install dependencies to a specific location
+# Install dependencies to a specific location with optimizations
 RUN pip install --upgrade pip && \
-    pip install --prefix=/install --no-warn-script-location -r requirements.txt
+    pip install --prefix=/install --no-cache-dir --no-warn-script-location \
+    -r requirements/production.txt
 
 # =============================================================================
 # Stage 4: Production Image (DEFAULT - MUST BE LAST FOR RAILWAY)
@@ -123,8 +131,19 @@ WORKDIR /app
 # Copy installed dependencies from builder stage
 COPY --from=builder /install /usr/local
 
-# Copy application code
-COPY . .
+# Copy only necessary application files
+COPY app/ ./app/
+COPY database/ ./database/
+COPY alembic.ini ./
+COPY alembic/ ./alembic/
+
+# Clean up unnecessary files to reduce image size
+RUN find /usr/local -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local -type d -name "test" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local -type f -name "*.pyc" -delete && \
+    find /usr/local -type f -name "*.pyo" -delete && \
+    find /usr/local -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
+    rm -rf /root/.cache
 
 # Create non-root user for production
 RUN useradd -m -u 1000 -s /bin/sh appuser && \
