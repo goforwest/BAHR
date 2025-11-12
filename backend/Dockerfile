@@ -107,13 +107,14 @@ RUN useradd -m -u 1000 -s /bin/sh appuser && \
 
 USER appuser
 
-EXPOSE 8000
+EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl --fail http://localhost:8000/health || exit 1
+    CMD curl --fail http://localhost:${PORT:-8080}/health || exit 1
 
-# Production startup with optimized worker count
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4", "--log-level", "info"]
+# Production startup - Railway will override CMD with .railway.json startCommand
+# This CMD is for local Docker testing only (use port 8000 locally)
+CMD ["sh", "-c", "python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 4 --log-level info"]
 
 # =============================================================================
 # BUILD INSTRUCTIONS FOR RAILWAY
