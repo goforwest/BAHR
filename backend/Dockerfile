@@ -29,15 +29,19 @@ COPY requirements/base.txt requirements/production.txt ./requirements/
 COPY requirements.txt ./
 
 # Install Python dependencies - PyTorch CPU-only first, then everything else
+# IMPORTANT: torch is NOT in requirements.txt to avoid pip trying to replace CPU version with CUDA
 RUN set -ex && \
     pip install --upgrade pip setuptools wheel && \
-    # STEP 1: Install PyTorch CPU-only version FIRST (prevents CUDA version from being pulled)
-    # Use specific CPU index to avoid downloading 2.6 GB CUDA version
-    pip install --extra-index-url https://download.pytorch.org/whl/cpu torch==2.5.1+cpu && \
+    # STEP 1: Install PyTorch CPU-only version FIRST
+    # Using --index-url (not --extra-index-url) to ONLY use CPU index for torch
+    # This prevents pip from seeing/installing the 2.6 GB CUDA version
+    pip install --index-url https://download.pytorch.org/whl/cpu torch==2.5.1+cpu && \
     python -c "import torch; print(f'✓ PyTorch CPU installed: {torch.__version__}')" && \
-    # STEP 2: Install all other requirements (they'll use already-installed PyTorch)
+    # STEP 2: Install all other requirements from production.txt
+    # (torch is intentionally excluded from requirements to avoid conflicts)
     pip install -r requirements/production.txt && \
-    python -c "import uvicorn, fastapi; print('✓ All base packages installed')" && \
+    # STEP 3: Verify all critical packages are installed and importable BEFORE cleanup
+    python -c "import uvicorn, fastapi, torch; print('✓ All packages installed and verified')" && \
     # Remove pip cache
     rm -rf /root/.cache/pip && \
     # Remove test files and documentation from packages (saves ~800 MB)

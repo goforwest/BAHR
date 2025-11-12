@@ -75,8 +75,8 @@ email-validator==2.1.0
 # ============================================================================
 # Machine Learning & NLP (PyTorch)
 # ============================================================================
-# Note: CPU-only version installed in production for size optimization
+# NOTE: PyTorch is NOT listed here to avoid conflicts with CPU-only installation
+# PyTorch is installed separately in Dockerfile with --extra-index-url for CPU version
 # CUDA version: ~2.6 GB | CPU version: ~800 MB
-# Use --extra-index-url for CPU builds (see production.txt or Dockerfile)
-torch==2.5.1
+# See backend/Dockerfile line 36 for PyTorch installation
 
