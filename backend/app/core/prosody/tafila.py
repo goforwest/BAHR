@@ -210,7 +210,7 @@ TAFAIL_BASE = {
     # Used in: المنسرح, المقتضب
     "مفعولات": Tafila(
         name="مفعولات",
-        phonetic="/o/o//o",
+        phonetic="/o/o/o/",
         structure="watad_mafruq+sabab+sabab",
         syllable_count=4,
         components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF, TafilaStructure.SABAB_THAQIL]
