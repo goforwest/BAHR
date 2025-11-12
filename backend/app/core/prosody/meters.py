@@ -364,6 +364,8 @@ AL_MUTAQARIB = Meter(
 )
 
 # 9. الهزج (al-Hazaj) - "The Rhythmic"
+# Note: Supporting the 3-tafila تام version (complete form)
+# The 2-tafila مجزوء version (shortened) will still match with truncated patterns
 AL_HAZAJ = Meter(
     id=12,
     name_ar="الهزج",
@@ -373,13 +375,14 @@ AL_HAZAJ = Meter(
     base_tafail=[
         TAFAIL_BASE["مفاعيلن"],
         TAFAIL_BASE["مفاعيلن"],
-        # Note: Optional فعولن at end not included in base
+        TAFAIL_BASE["فعولن"],  # 3rd tafila for تام version
     ],
     rules_by_position={
         1: MeterRules(allowed_zihafat=[QABD, KAFF]),
-        2: MeterRules(allowed_zihafat=[QABD, KAFF], allowed_ilal=[HADHF], is_final=True),
+        2: MeterRules(allowed_zihafat=[QABD, KAFF]),
+        3: MeterRules(allowed_zihafat=[QABD], allowed_ilal=[HADHF], is_final=True),
     },
-    description="بحر خفيف رشيق، يصلح للغناء"
+    description="بحر خفيف رشيق، يصلح للغناء (تام ومجزوء)"
 )
 
 # ============================================================================

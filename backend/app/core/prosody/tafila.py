@@ -242,6 +242,40 @@ TAFAIL_BASE = {
         syllable_count=4,
         components=[TafilaStructure.SABAB_KHAFIF, TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
     ),
+
+    # ============================================================================
+    # Commonly Used Modified Forms (from Zihafat/Ilal)
+    # ============================================================================
+
+    # فعلن - Modified form of فاعلن (with حذف - removing last sabab)
+    # Used in final position in many meters
+    "فعلن": Tafila(
+        name="فعلن",
+        phonetic="//o",
+        structure="sabab+watad_modified",
+        syllable_count=2,
+        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
+    ),
+
+    # مفاعلن - Modified form of مفاعيلن (with قبض - removing 5th sakin)
+    # Very common in الطويل final position
+    "مفاعلن": Tafila(
+        name="مفاعلن",
+        phonetic="//o//o",
+        structure="sabab+sabab+watad_modified",
+        syllable_count=3,
+        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
+    ),
+
+    # فاعلان - Modified form of فاعلاتن (with حذف)
+    # Used in الرمل
+    "فاعلان": Tafila(
+        name="فاعلان",
+        phonetic="/o//o",
+        structure="watad+sabab_modified",
+        syllable_count=3,
+        components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF]
+    ),
 }
 
 
