@@ -15,6 +15,13 @@ sys.path.insert(0, '/home/user/BAHR/backend')
 
 from app.core.prosody.detector_v2 import BahrDetectorV2
 from app.core.phonetics import text_to_phonetic_pattern
+# Try new prosody-aware converter
+try:
+    from app.core.prosody_phonetics import prosodic_text_to_pattern as text_to_pattern_v2
+    USE_V2 = True
+except ImportError:
+    USE_V2 = False
+    text_to_pattern_v2 = text_to_phonetic_pattern
 
 
 def load_golden_set(file_path):
@@ -44,7 +51,12 @@ def evaluate_detector(golden_set_path):
     print(f"Initializing BahrDetectorV2...")
     detector = BahrDetectorV2()
     print(f"✅ Detector ready")
-    print(f"✅ Pattern cache: {sum(len(p) for p in detector.pattern_cache.values())} total patterns\n")
+    print(f"✅ Pattern cache: {sum(len(p) for p in detector.pattern_cache.values())} total patterns")
+    if USE_V2:
+        print(f"✅ Using prosody-aware converter v2 (letter-based notation)")
+    else:
+        print(f"⚠️  Using original converter (syllable-based)")
+    print()
 
     # Evaluate
     print(f"{'='*80}")
@@ -67,9 +79,12 @@ def evaluate_detector(golden_set_path):
         text = verse['text']
         expected_meter = verse['meter']
 
-        # Convert text to phonetic pattern
+        # Convert text to phonetic pattern (using v2 if available)
         try:
-            phonetic_pattern = text_to_phonetic_pattern(text, has_tashkeel=True)
+            if USE_V2:
+                phonetic_pattern = text_to_pattern_v2(text, has_tashkeel=True)
+            else:
+                phonetic_pattern = text_to_phonetic_pattern(text, has_tashkeel=True)
         except Exception as e:
             phonetic_pattern = None
 
@@ -164,7 +179,10 @@ def evaluate_detector(golden_set_path):
         print(f"\n❌ Incorrectly classified:")
         for v_id in mutadarik_stats['incorrect']:
             verse = next(v for v in golden_verses if v['verse_id'] == v_id)
-            phonetic_pattern = text_to_phonetic_pattern(verse['text'], has_tashkeel=True)
+            if USE_V2:
+                phonetic_pattern = text_to_pattern_v2(verse['text'], has_tashkeel=True)
+            else:
+                phonetic_pattern = text_to_phonetic_pattern(verse['text'], has_tashkeel=True)
             detections = detector.detect(phonetic_pattern, top_k=1)
             detection = detections[0] if detections else None
             print(f"   {v_id}: {verse['text'][:50]}...")
