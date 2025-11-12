@@ -19,6 +19,7 @@ WORKDIR /app
 
 # Install ONLY build dependencies needed for Python packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
     gcc \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/* \
@@ -39,23 +40,25 @@ RUN set -ex && \
     # Install all other requirements (they'll use already-installed PyTorch)
     pip install -r requirements/production.txt && \
     python -c "import uvicorn, fastapi; print('✓ All base packages installed')" && \
+    # Verify all packages work BEFORE cleanup
+    python -c "import uvicorn, fastapi, torch, camel_tools, psycopg2; print('✓ All critical packages verified')" && \
     # Remove pip cache to save space
     rm -rf /root/.cache/pip && \
-    # Remove test files and documentation from packages (saves ~800 MB)
-    find /usr/local/lib/python3.11/site-packages -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
-    find /usr/local/lib/python3.11/site-packages -type d -name "test" -exec rm -rf {} + 2>/dev/null || true && \
-    find /usr/local/lib/python3.11/site-packages -type d -name "docs" -exec rm -rf {} + 2>/dev/null || true && \
-    find /usr/local/lib/python3.11/site-packages -name "*.md" -delete 2>/dev/null || true && \
-    find /usr/local/lib/python3.11/site-packages -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
-    find /usr/local/lib/python3.11/site-packages -type f -name "*.pyc" -delete && \
-    find /usr/local/lib/python3.11/site-packages -type f -name "*.pyo" -delete && \
-    # Remove unnecessary torch files (keep dist-info for package discovery)
-    find /usr/local/lib/python3.11/site-packages -path "*/torch/test" -exec rm -rf {} + 2>/dev/null || true && \
-    find /usr/local/lib/python3.11/site-packages -path "*/torch/include" -exec rm -rf {} + 2>/dev/null || true && \
+    # Remove test and doc directories (use -path to avoid -delete issues)
+    find /usr/local/lib/python3.11/site-packages -type d -name "tests" -print0 | xargs -0 rm -rf 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -type d -name "test" -print0 | xargs -0 rm -rf 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -type d -name "docs" -print0 | xargs -0 rm -rf 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -type d -name "__pycache__" -print0 | xargs -0 rm -rf 2>/dev/null || true && \
+    # Remove .pyc/.pyo files (safe with -delete on files only)
+    find /usr/local/lib/python3.11/site-packages -type f -name "*.pyc" -delete 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages -type f -name "*.pyo" -delete 2>/dev/null || true && \
+    # Remove torch-specific test/include dirs (these are safe to delete)
+    find /usr/local/lib/python3.11/site-packages/torch -type d -name "test" -print0 2>/dev/null | xargs -0 rm -rf 2>/dev/null || true && \
+    find /usr/local/lib/python3.11/site-packages/torch -type d -name "include" -print0 2>/dev/null | xargs -0 rm -rf 2>/dev/null || true && \
     echo "=== Final package directory ===" && \
     du -sh /usr/local/lib/python3.11/site-packages && \
-    # Verify packages are importable in builder stage
-    python -c "import uvicorn, fastapi, torch; print('✓ Packages verified in builder stage')"
+    # Final verification that packages are still importable after cleanup
+    python -c "import uvicorn, fastapi, torch; print('✓ Packages still work after cleanup')"
 
 # =============================================================================
 # Stage 2: Runtime - Minimal production image
