@@ -148,7 +148,12 @@ def remove_at_index(pattern: str, index: int) -> str:
 
 def khabn_transform(pattern: str) -> str:
     """خبن - Remove 2nd sakin (index 1 in 0-indexed)."""
-    # Find 2nd sakin (o)
+    # Special case: فاعلن (/o//o) → فعِلن (///o) in letter-based notation
+    # This matches classical prosody texts (especially for المتدارك)
+    if pattern == "/o//o":
+        return "///o"
+
+    # General case: Find and remove 2nd sakin (o)
     sakin_count = 0
     for i, char in enumerate(pattern):
         if char == 'o':
