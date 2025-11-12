@@ -28,16 +28,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements/base.txt requirements/production.txt ./requirements/
 COPY requirements.txt ./
 
-# Install Python dependencies to /install directory
+# Install Python dependencies - PyTorch CPU-only first, then everything else
 RUN set -ex && \
     pip install --upgrade pip setuptools wheel && \
-    # Install all requirements to /usr/local first (default location)
+    # STEP 1: Install PyTorch CPU-only version FIRST (prevents CUDA version from being pulled)
+    # Use specific CPU index to avoid downloading 2.6 GB CUDA version
+    pip install --extra-index-url https://download.pytorch.org/whl/cpu torch==2.5.1+cpu && \
+    python -c "import torch; print(f'✓ PyTorch CPU installed: {torch.__version__}')" && \
+    # STEP 2: Install all other requirements (they'll use already-installed PyTorch)
     pip install -r requirements/production.txt && \
-    # Verify packages are installed and importable
-    python -c "import uvicorn, fastapi, torch; print(f'✓ Installed: uvicorn, fastapi, torch {torch.__version__}')" && \
-    # NOW upgrade PyTorch to CPU-only version (replaces CUDA with CPU)
-    pip install --upgrade --extra-index-url https://download.pytorch.org/whl/cpu torch==2.9.0+cpu && \
-    python -c "import torch; print(f'✓ PyTorch upgraded to: {torch.__version__}')" && \
+    python -c "import uvicorn, fastapi; print('✓ All base packages installed')" && \
     # Remove pip cache
     rm -rf /root/.cache/pip && \
     # Remove test files and documentation from packages (saves ~800 MB)
