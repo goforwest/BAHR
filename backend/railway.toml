@@ -7,7 +7,7 @@
 [build]
 # Use the Dockerfile in the backend directory
 builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
+dockerfilePath = "backend/Dockerfile"
 
 [deploy]
 # Start command for production
