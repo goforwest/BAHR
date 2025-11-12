@@ -141,25 +141,8 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
 
         logger.info(f"[V2] Cache miss for key: {cache_key}, performing analysis")
 
-        # Step 3: Perform taqti3 (scansion)
-        try:
-            taqti3_result = perform_taqti3(normalized_text, normalize=False)
-
-            if not taqti3_result or not taqti3_result.strip():
-                logger.warning("Taqti3 returned empty result")
-                taqti3_result = "غير محدد"
-
-        except ValueError as e:
-            logger.error(f"Taqti3 validation error: {e}")
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid verse structure: {str(e)}"
-            )
-        except Exception as e:
-            logger.error(f"Taqti3 processing failed: {e}", exc_info=True)
-            taqti3_result = "خطأ في التحليل"
-
-        # Step 4: Detect bahr using BahrDetectorV2 (with 100% accuracy features!)
+        # Step 3: Detect bahr using BahrDetectorV2 (with 100% accuracy features!)
+        # NOTE: We do bahr detection FIRST so we can use it for accurate taqti3
         bahr_info = None
         confidence = 0.0
 
@@ -216,6 +199,36 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
 
             except Exception as e:
                 logger.error(f"[V2] Bahr detection failed: {e}", exc_info=True)
+        else:
+            logger.info("[V2] Bahr detection skipped (detect_bahr=False)")
+
+        # Step 4: Perform taqti3 (scansion) AFTER bahr detection
+        # This allows us to use the detected meter for accurate tafail
+        try:
+            if bahr_info and bahr_info.id:
+                # Use detected bahr for accurate taqti3
+                taqti3_result = perform_taqti3(
+                    normalized_text,
+                    normalize=False,
+                    bahr_id=bahr_info.id
+                )
+                logger.info(f"[V2] Taqti3 with detected bahr {bahr_info.name_ar}: {taqti3_result}")
+            else:
+                # Fallback to pattern matching if no bahr detected
+                taqti3_result = perform_taqti3(normalized_text, normalize=False)
+                logger.info(f"[V2] Taqti3 without bahr (pattern matching): {taqti3_result}")
+
+            if not taqti3_result or not taqti3_result.strip():
+                logger.warning("Taqti3 returned empty result")
+                taqti3_result = "غير محدد"
+
+        except ValueError as e:
+            logger.error(f"Taqti3 validation error: {e}")
+            # Don't raise error, just set to fallback
+            taqti3_result = "غير محدد"
+        except Exception as e:
+            logger.error(f"Taqti3 processing failed: {e}", exc_info=True)
+            taqti3_result = "غير محدد"
 
         # Step 5: Enhanced quality analysis
         try:

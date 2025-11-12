@@ -189,24 +189,29 @@ class QualityAnalyzer:
     ) -> float:
         """
         Calculate how consistent the detected pattern is with expected pattern.
-        
+
         Uses character-by-character comparison with allowance for variations.
-        
+
         Args:
             detected_pattern: Actual phonetic pattern
             expected_pattern: Expected phonetic pattern for the meter
-            
+
         Returns:
             Consistency score (0-100)
         """
-        if not detected_pattern or not expected_pattern:
+        # If no expected pattern provided, assume pattern is valid (100%)
+        # This prevents penalizing verses when we don't have reference patterns
+        if not expected_pattern or expected_pattern.strip() == "":
+            return 100.0 if detected_pattern else 0.0
+
+        if not detected_pattern:
             return 0.0
-        
+
         # Use difflib-style matching
         from difflib import SequenceMatcher
         matcher = SequenceMatcher(None, detected_pattern, expected_pattern)
         similarity = matcher.ratio()
-        
+
         return similarity * 100
     
     def _calculate_length_score(
