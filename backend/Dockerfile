@@ -30,15 +30,16 @@ COPY requirements.txt ./
 
 # Install Python dependencies to /install prefix
 RUN pip install --upgrade pip setuptools wheel && \
-    # Create constraint file to force CPU-only PyTorch
-    echo "torch @ https://download.pytorch.org/whl/cpu/torch-2.9.0%2Bcpu-cp311-cp311-linux_x86_64.whl" > /tmp/constraints.txt && \
-    # Install all requirements with constraint (forces CPU torch from the start)
-    PIP_CONSTRAINT=/tmp/constraints.txt pip install --prefix=/install --no-warn-script-location \
+    # Install all requirements with PyTorch CPU index (standard PyTorch method)
+    pip install --prefix=/install --no-warn-script-location \
+    --extra-index-url https://download.pytorch.org/whl/cpu \
+    torch==2.9.0+cpu && \
+    pip install --prefix=/install --no-warn-script-location \
     -r requirements/production.txt && \
     # Verify critical packages are installed
-    /usr/local/bin/python -c "import sys; sys.path.insert(0, '/install/lib/python3.11/site-packages'); import uvicorn, fastapi; print('✓ Core packages verified')" && \
+    /usr/local/bin/python -c "import sys; sys.path.insert(0, '/install/lib/python3.11/site-packages'); import uvicorn, fastapi, torch; print('✓ Core packages verified'); print(f'PyTorch: {torch.__version__}')" && \
     # Remove pip cache and unnecessary files
-    rm -rf /root/.cache/pip /tmp/constraints.txt && \
+    rm -rf /root/.cache/pip && \
     find /install -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type f -name "*.pyo" -delete && \
