@@ -49,13 +49,13 @@ RUN set -ex && \
     find /usr/local/lib/python3.11/site-packages -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
     find /usr/local/lib/python3.11/site-packages -type f -name "*.pyc" -delete && \
     find /usr/local/lib/python3.11/site-packages -type f -name "*.pyo" -delete && \
-    # Remove .dist-info directories (optional, saves ~50-100 MB)
-    find /usr/local/lib/python3.11/site-packages -type d -name "*.dist-info" -exec rm -rf {} + 2>/dev/null || true && \
-    # Remove unnecessary torch files
+    # Remove unnecessary torch files (keep dist-info for package discovery)
     find /usr/local/lib/python3.11/site-packages -path "*/torch/test" -exec rm -rf {} + 2>/dev/null || true && \
     find /usr/local/lib/python3.11/site-packages -path "*/torch/include" -exec rm -rf {} + 2>/dev/null || true && \
     echo "=== Final package directory ===" && \
-    du -sh /usr/local/lib/python3.11/site-packages
+    du -sh /usr/local/lib/python3.11/site-packages && \
+    # Verify packages are importable in builder stage
+    python -c "import uvicorn, fastapi, torch; print('✓ Packages verified in builder stage')"
 
 # =============================================================================
 # Stage 2: Runtime - Minimal production image
