@@ -6,11 +6,8 @@
 
 [build]
 # Use the Dockerfile in the backend directory
-builder = "dockerfile"
+builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
-
-# Build only the production stage (skip development and testing)
-buildCommand = "docker build --target production -t bahr-backend:prod ."
 
 [deploy]
 # Start command for production
@@ -19,10 +16,6 @@ startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 4"
 # Health check endpoint
 healthcheckPath = "/health"
 healthcheckTimeout = 300
-
-# Restart policy
-restartPolicyType = "on-failure"
-restartPolicyMaxRetries = 10
 
 [env]
 # Railway automatically provides PORT
