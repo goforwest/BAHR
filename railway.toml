@@ -1,38 +1,15 @@
-# =============================================================================# =============================================================================
+# =============================================================================
+# Railway Configuration for BAHR Backend
+# =============================================================================
+# Root directory configuration pointing to backend service
+# Reference: https://docs.railway.app/deploy/config-as-code
 
-# Railway Configuration for BAHR Backend# Railway Configuration for BAHR Backend
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "backend/Dockerfile"
+dockerContext = "backend"
 
-# =============================================================================# =============================================================================
-
-# This file tells Railway how to build and deploy the backend service# This file tells Railway how to build and deploy the backend service
-
-# Reference: https://docs.railway.app/deploy/config-as-code# Reference: https://docs.railway.app/deploy/config-as-code
-
-
-
-[build][build]
-
-# Build from the backend directory using its Dockerfile# Use the Dockerfile in the backend directory
-
-builder = "DOCKERFILE"builder = "DOCKERFILE"
-
-dockerfilePath = "backend/Dockerfile"dockerfilePath = "backend/Dockerfile"
-
-
-
-[deploy][deploy]
-
-# Start command for production# Start command for production
-
-startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 4"startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 4"
-
-
-
-# Health check endpoint# Health check endpoint
-
-healthcheckPath = "/health"healthcheckPath = "/health"
-
-healthcheckTimeout = 300healthcheckTimeout = 300
-
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 4"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
