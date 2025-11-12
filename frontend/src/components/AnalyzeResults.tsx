@@ -1,12 +1,17 @@
 /**
  * Component to display verse analysis results.
  * Shows verse text, prosodic scansion (taqti3), detected meter (bahr), and quality score.
+ * Includes multi-candidate detection UI and feedback collection.
  */
 
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { AnalyzeResponse } from '@/types/analyze';
+import UncertaintyBanner from './UncertaintyBanner';
+import MultiCandidateView from './MultiCandidateView';
+import FeedbackDialog from './FeedbackDialog';
 
 interface AnalyzeResultsProps {
   result: AnalyzeResponse;
@@ -36,7 +41,36 @@ const itemVariants = {
 };
 
 export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
-  const { text, taqti3, bahr, score } = result;
+  const { text, taqti3, bahr, score, alternative_meters, detection_uncertainty } = result;
+
+  // State for feedback dialog
+  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
+  const [selectedMeter, setSelectedMeter] = useState<string | undefined>(
+    bahr?.name_ar
+  );
+
+  // Check if we should show multi-candidate view
+  const hasAlternatives = alternative_meters && alternative_meters.length > 0;
+  const isUncertain = detection_uncertainty?.is_uncertain;
+
+  const handleMeterSelected = (meterNameAr: string) => {
+    setSelectedMeter(meterNameAr);
+  };
+
+  const handleReportCorrectMeter = () => {
+    setShowFeedbackDialog(true);
+  };
+
+  const handleAddDiacritics = () => {
+    // Scroll back to input form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Could also trigger some hint/guide for adding diacritics
+  };
+
+  const handleLearnMore = () => {
+    // Open learn more link (could be a modal or external link)
+    window.open('https://ar.wikipedia.org/wiki/عروض_(شعر)', '_blank');
+  };
 
   return (
     <motion.div
@@ -104,8 +138,31 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
         </motion.div>
       )}
 
-      {/* Bahr Card */}
-      {bahr && (
+      {/* Uncertainty Banner - Show when detection is uncertain */}
+      {detection_uncertainty && isUncertain && (
+        <motion.div variants={itemVariants}>
+          <UncertaintyBanner
+            uncertainty={detection_uncertainty}
+            onAddDiacritics={handleAddDiacritics}
+            onLearnMore={handleLearnMore}
+          />
+        </motion.div>
+      )}
+
+      {/* Multi-Candidate View - Show when there are alternatives */}
+      {bahr && hasAlternatives && alternative_meters && (
+        <motion.div variants={itemVariants}>
+          <MultiCandidateView
+            topMeter={bahr}
+            alternatives={alternative_meters}
+            onMeterSelected={handleMeterSelected}
+            onReportCorrectMeter={handleReportCorrectMeter}
+          />
+        </motion.div>
+      )}
+
+      {/* Traditional Bahr Card - Show only when no alternatives */}
+      {bahr && !hasAlternatives && (
         <motion.div
           variants={itemVariants}
           whileHover="hover"
@@ -373,6 +430,18 @@ export function AnalyzeResults({ result, onReset }: AnalyzeResultsProps) {
             ))}
           </ul>
         </motion.div>
+      )}
+
+      {/* Feedback Dialog - Hidden until user clicks "Report Correct Meter" */}
+      {bahr && alternative_meters && (
+        <FeedbackDialog
+          isOpen={showFeedbackDialog}
+          onClose={() => setShowFeedbackDialog(false)}
+          text={text}
+          detectedMeter={bahr}
+          alternatives={alternative_meters}
+          selectedMeter={selectedMeter}
+        />
       )}
     </motion.div>
   );

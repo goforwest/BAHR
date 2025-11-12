@@ -1,0 +1,6 @@
+# Ignore feedback data files (user-generated content)
+feedback/
+*.jsonl
+
+# But keep the directory structure
+!.gitignore

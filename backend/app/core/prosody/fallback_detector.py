@@ -80,25 +80,46 @@ class FallbackDetector:
 
         This is useful for undiacritized text where the pattern might
         be significantly off but the meter is still identifiable.
+
+        Uses frequency-based tie-breaking to prefer common meters when
+        similarities are close (within 5% of each other).
         """
-        best_match = None
-        best_similarity = 0.0
-        best_meter = None
-        best_cached_pattern = None
+        # Collect all matches above threshold with meter frequency info
+        candidates: List[Tuple[float, Meter, str, int, int]] = []
 
         # Check all meters
         for meter_id, meter in self.primary_detector.meters.items():
             valid_patterns = self.primary_detector.pattern_cache[meter_id]
+            best_sim_for_meter = 0.0
+            best_pat_for_meter = None
 
             for cached_pattern in valid_patterns:
                 similarity = SequenceMatcher(
                     None, phonetic_pattern, cached_pattern
                 ).ratio()
 
-                if similarity > best_similarity:
-                    best_similarity = similarity
-                    best_cached_pattern = cached_pattern
-                    best_meter = meter
+                if similarity > best_sim_for_meter:
+                    best_sim_for_meter = similarity
+                    best_pat_for_meter = cached_pattern
+
+            if best_sim_for_meter >= threshold:
+                candidates.append((
+                    best_sim_for_meter,
+                    meter,
+                    best_pat_for_meter,
+                    meter.tier.value,  # Lower is better (Tier 1 = most common)
+                    meter.frequency_rank  # Lower is better (rank 1 = most frequent)
+                ))
+
+        if not candidates:
+            return None
+
+        # Sort by: 1) similarity (desc), 2) tier (asc), 3) frequency_rank (asc)
+        # This ensures that if similarities are close, we prefer الطويل and other common meters
+        candidates.sort(key=lambda x: (-x[0], x[3], x[4]))
+
+        # Get best match
+        best_similarity, best_meter, best_cached_pattern, _, _ = candidates[0]
 
         if best_similarity >= threshold and best_meter:
             # Calculate adjusted confidence

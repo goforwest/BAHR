@@ -4,7 +4,7 @@
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
-import type { AnalyzeRequest, AnalyzeResponse } from '@/types/analyze';
+import type { AnalyzeRequest, AnalyzeResponse, MeterFeedback, FeedbackResponse } from '@/types/analyze';
 
 /**
  * Base URL for the API - defaults to local development
@@ -89,10 +89,10 @@ export async function analyzeVerse(data: AnalyzeRequest): Promise<AnalyzeRespons
 
 /**
  * Get list of all available meters (bahrs)
- * 
+ *
  * @returns Promise resolving to array of meter data
  * @throws AxiosError if request fails
- * 
+ *
  * @example
  * ```typescript
  * const bahrs = await getBahrs();
@@ -102,6 +102,34 @@ export async function analyzeVerse(data: AnalyzeRequest): Promise<AnalyzeRespons
 export async function getBahrs(): Promise<unknown> {
   // Future: Add proper type when backend endpoint is implemented
   const response = await apiClient.get('/bahrs');
+  return response.data;
+}
+
+/**
+ * Submit meter detection feedback
+ *
+ * @param feedback - Feedback data including detected meter and user selection
+ * @returns Promise resolving to feedback submission response
+ * @throws AxiosError if request fails
+ *
+ * @example
+ * ```typescript
+ * const result = await submitMeterFeedback({
+ *   text: 'قفا نبك من ذكرى حبيب ومنزل',
+ *   normalized_text: 'قفا نبك من ذكري حبيب ومنزل',
+ *   detected_meter: 'الرجز',
+ *   detected_confidence: 0.9581,
+ *   user_selected_meter: 'الطويل',
+ *   alternatives_shown: ['الرجز', 'الطويل', 'السريع'],
+ *   has_tashkeel: false,
+ *   user_comment: 'This is the famous Mu\'allaqah verse',
+ *   timestamp: new Date().toISOString()
+ * });
+ * console.log(result.message); // "شكراً لملاحظاتك! | Thank you for your feedback!"
+ * ```
+ */
+export async function submitMeterFeedback(feedback: MeterFeedback): Promise<FeedbackResponse> {
+  const response = await apiClient.post<FeedbackResponse>('/feedback/meter', feedback);
   return response.data;
 }
 

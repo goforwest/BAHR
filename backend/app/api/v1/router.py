@@ -4,7 +4,7 @@ API v1 router aggregating all endpoints.
 
 from fastapi import APIRouter
 
-from .endpoints import analytics, analyze, analyze_v2
+from .endpoints import analytics, analyze, analyze_v2, feedback
 
 api_router = APIRouter()
 
@@ -18,3 +18,6 @@ api_router.include_router(
 
 # Include analytics endpoint
 api_router.include_router(analytics.router, prefix="/analytics", tags=["Analytics"])
+
+# Include feedback endpoint
+api_router.include_router(feedback.router, prefix="/feedback", tags=["Feedback"])
