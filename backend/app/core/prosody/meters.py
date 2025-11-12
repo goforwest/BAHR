@@ -229,11 +229,13 @@ AL_KAMIL = Meter(
         TAFAIL_BASE["متفاعلن"],
         TAFAIL_BASE["متفاعلن"],
         TAFAIL_BASE["متفاعلن"],
+        TAFAIL_BASE["متفاعلن"],
     ],
     rules_by_position={
         1: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
         2: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
-        3: MeterRules(allowed_zihafat=[IDMAR, WAQS], allowed_ilal=[HADHF, QAT], is_final=True),
+        3: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
+        4: MeterRules(allowed_zihafat=[IDMAR, WAQS], allowed_ilal=[HADHF, QAT], is_final=True),
     },
     description="ثاني أشهر البحور، متوازن وسهل الحفظ",
     example_verse="بَدَا لِيَ أَنَّ الدَّهْرَ عِنْدِي لَحْظَةٌ"
@@ -573,6 +575,26 @@ MAJZU_AL_HAZAJ = Meter(
     description="النسخة المجزوءة من بحر الهزج (تفعيلتان بدلاً من ثلاث)"
 )
 
+# 19. الكامل (3 تفاعيل) - Medium length variant
+AL_KAMIL_3 = Meter(
+    id=19,
+    name_ar="الكامل (3 تفاعيل)",
+    name_en="al-Kamil (3 tafail)",
+    tier=MeterTier.TIER_1,
+    frequency_rank=19,
+    base_tafail=[
+        TAFAIL_BASE["متفاعلن"],
+        TAFAIL_BASE["متفاعلن"],
+        TAFAIL_BASE["متفاعلن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
+        2: MeterRules(allowed_zihafat=[IDMAR, WAQS]),
+        3: MeterRules(allowed_zihafat=[IDMAR, WAQS], allowed_ilal=[HADHF, QAT], is_final=True),
+    },
+    description="نسخة الكامل بثلاث تفاعيل (متوسطة)"
+)
+
 
 # ============================================================================
 # Meters Registry - All Classical Arabic Meters (16 Base + مجزوء Variants)
@@ -604,6 +626,7 @@ METERS_REGISTRY: Dict[int, Meter] = {
     # مجزوء (Majzū') Variants - Shortened Forms
     17: MAJZU_AL_KAMIL,
     18: MAJZU_AL_HAZAJ,
+    19: AL_KAMIL_3,
 }
 
 

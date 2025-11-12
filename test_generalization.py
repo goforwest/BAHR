@@ -1,15 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-Test BahrDetectorV2 on Golden Set v0.101
+Test BahrDetectorV2 generalization on unseen verses.
 
-Evaluates the new rule-based detector on 118 annotated verses
-and compares performance to the v0.101 baseline (97.5% accuracy).
+This script evaluates the detector on a diverse set of verses NOT in the
+Golden Set to validate that it generalizes well beyond training data.
 """
 
 import sys
 import json
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import List, Dict
 from collections import defaultdict
 
 sys.path.insert(0, '/home/user/BAHR/backend')
@@ -17,8 +17,7 @@ sys.path.insert(0, '/home/user/BAHR/backend')
 from app.core.prosody.detector_v2 import BahrDetectorV2
 from app.core.prosody.tafila import TAFAIL_BASE
 
-
-# Meter name mapping (Arabic to ID)
+# Meter name mapping
 METER_NAME_TO_ID = {
     "الطويل": 1,
     "الكامل": 2,
@@ -36,12 +35,11 @@ METER_NAME_TO_ID = {
     "المقتضب": 14,
     "المضارع": 15,
     "المتدارك": 16,
-    # مجزوء variants
     "الكامل (مجزوء)": 17,
     "الهزج (مجزوء)": 18,
 }
 
-# Meter variant mapping: maps مجزوء variants to their base meter
+# Meter variant mapping
 METER_VARIANT_BASE = {
     17: 2,  # مجزوء الكامل (2 تفاعيل) → الكامل
     18: 12,  # مجزوء الهزج (2 تفاعيل) → الهزج
@@ -49,8 +47,8 @@ METER_VARIANT_BASE = {
 }
 
 
-def load_golden_set(file_path: str) -> List[Dict]:
-    """Load golden set JSONL file."""
+def load_test_set(file_path: str) -> List[Dict]:
+    """Load generalization test set."""
     verses = []
     with open(file_path, 'r', encoding='utf-8') as f:
         for line in f:
@@ -59,13 +57,8 @@ def load_golden_set(file_path: str) -> List[Dict]:
     return verses
 
 
-def evaluate_detector(detector: BahrDetectorV2, verses: List[Dict]) -> Dict:
-    """
-    Evaluate detector on golden set verses.
-
-    Returns:
-        Dictionary with evaluation results
-    """
+def evaluate_generalization(detector: BahrDetectorV2, verses: List[Dict]) -> Dict:
+    """Evaluate detector on generalization test set."""
     results = {
         "total": len(verses),
         "correct": 0,
@@ -73,7 +66,7 @@ def evaluate_detector(detector: BahrDetectorV2, verses: List[Dict]) -> Dict:
         "no_detection": 0,
         "accuracy": 0.0,
         "by_meter": defaultdict(lambda: {"total": 0, "correct": 0, "incorrect": 0}),
-        "by_difficulty": defaultdict(lambda: {"total": 0, "correct": 0}),
+        "by_era": defaultdict(lambda: {"total": 0, "correct": 0}),
         "misclassifications": [],
         "failed_scansions": [],
     }
@@ -84,13 +77,13 @@ def evaluate_detector(detector: BahrDetectorV2, verses: List[Dict]) -> Dict:
         expected_meter_ar = verse["meter"]
         expected_meter_id = METER_NAME_TO_ID.get(expected_meter_ar)
         expected_tafail = verse.get("expected_tafail", [])
-        difficulty = verse.get("difficulty_level", "unknown")
+        era = verse.get("era", "unknown")
 
         if not expected_meter_id:
             print(f"Warning: Unknown meter '{expected_meter_ar}' for {verse_id}")
             continue
 
-        # Build phonetic pattern from expected tafail (expert annotations)
+        # Build phonetic pattern from expected tafail
         try:
             pattern_parts = []
             for tafila_name in expected_tafail:
@@ -110,12 +103,11 @@ def evaluate_detector(detector: BahrDetectorV2, verses: List[Dict]) -> Dict:
                 "verse_id": verse_id,
                 "text": text,
                 "expected_meter": expected_meter_ar,
-                "expected_tafail": expected_tafail,
                 "error": str(e)
             })
             results["no_detection"] += 1
             results["by_meter"][expected_meter_ar]["total"] += 1
-            results["by_difficulty"][difficulty]["total"] += 1
+            results["by_era"][era]["total"] += 1
             continue
 
         # Detect meter
@@ -123,48 +115,47 @@ def evaluate_detector(detector: BahrDetectorV2, verses: List[Dict]) -> Dict:
 
         # Update statistics
         results["by_meter"][expected_meter_ar]["total"] += 1
-        results["by_difficulty"][difficulty]["total"] += 1
+        results["by_era"][era]["total"] += 1
 
         if result is None:
             results["no_detection"] += 1
             results["misclassifications"].append({
                 "verse_id": verse_id,
                 "text": text,
+                "poet": verse.get("poet", "unknown"),
+                "era": era,
                 "expected_meter": expected_meter_ar,
                 "detected_meter": "None",
                 "confidence": 0.0,
-                "phonetic_pattern": phonetic_pattern,
-                "difficulty": difficulty
+                "phonetic_pattern": phonetic_pattern
             })
         else:
-            # Check if detected meter matches expected
-            # Accept either exact match OR مجزوء variant of the base meter
+            # Check if correct (accept مجزوء variants)
             is_correct = False
 
             if result.meter_id == expected_meter_id:
-                # Exact match
                 is_correct = True
             elif result.meter_id in METER_VARIANT_BASE:
-                # Detected a مجزوء variant - check if it's a variant of the expected base
                 if METER_VARIANT_BASE[result.meter_id] == expected_meter_id:
                     is_correct = True
 
             if is_correct:
                 results["correct"] += 1
                 results["by_meter"][expected_meter_ar]["correct"] += 1
-                results["by_difficulty"][difficulty]["correct"] += 1
+                results["by_era"][era]["correct"] += 1
             else:
                 results["incorrect"] += 1
                 results["by_meter"][expected_meter_ar]["incorrect"] += 1
                 results["misclassifications"].append({
                     "verse_id": verse_id,
                     "text": text,
+                    "poet": verse.get("poet", "unknown"),
+                    "era": era,
                     "expected_meter": expected_meter_ar,
                     "detected_meter": result.meter_name_ar,
                     "confidence": result.confidence,
                     "phonetic_pattern": phonetic_pattern,
-                    "explanation": result.explanation,
-                    "difficulty": difficulty
+                    "explanation": result.explanation
                 })
 
     # Calculate accuracy
@@ -174,182 +165,157 @@ def evaluate_detector(detector: BahrDetectorV2, verses: List[Dict]) -> Dict:
     return results
 
 
-def print_evaluation_report(results: Dict):
-    """Print comprehensive evaluation report."""
-    print("=" * 100)
-    print("GOLDEN SET v0.101 EVALUATION REPORT - BahrDetectorV2")
-    print("=" * 100)
+def print_generalization_report(results: Dict):
+    """Print formatted generalization test report."""
+    print("\n")
+    print("╔" + "═" * 94 + "╗")
+    print("║" + " " * 25 + "BahrDetectorV2 - Generalization Test Report" + " " * 26 + "║")
+    print("╚" + "═" * 94 + "╝")
     print()
 
     # Overall results
+    print("=" * 96)
     print("OVERALL RESULTS")
-    print("-" * 100)
+    print("-" * 96)
     print(f"Total verses tested: {results['total']}")
     print(f"Correct detections:  {results['correct']} ({results['correct']/results['total']*100:.2f}%)")
     print(f"Incorrect:           {results['incorrect']} ({results['incorrect']/results['total']*100:.2f}%)")
     print(f"No detection:        {results['no_detection']} ({results['no_detection']/results['total']*100:.2f}%)")
     print()
     print(f"📊 ACCURACY: {results['accuracy']:.2f}%")
-    print(f"🎯 TARGET:   97.50% (v0.101 baseline)")
+    print(f"🎯 TARGET:   95.00%")
     print()
 
-    if results['accuracy'] >= 97.5:
+    if results['accuracy'] >= 95.0:
         print("✅ TARGET ACHIEVED!")
-    elif results['accuracy'] >= 95.0:
-        print("⚠️  Close to target (within 2.5%)")
+    elif results['accuracy'] >= 90.0:
+        print("⚠️  Close to target (within 5%)")
     else:
         print("❌ Below target")
-    print()
 
     # Results by meter
-    print("RESULTS BY METER")
-    print("-" * 100)
-    print(f"{'Meter':<15} {'Total':>6} {'Correct':>8} {'Incorrect':>10} {'Accuracy':>10}")
-    print("-" * 100)
+    print("\nRESULTS BY METER")
+    print("-" * 96)
+    print(f"{'Meter':<20} {'Total':>6}  {'Correct':>8}  {'Incorrect':>10}   {'Accuracy':>8}")
+    print("-" * 96)
 
-    for meter_name in sorted(results['by_meter'].keys()):
-        stats = results['by_meter'][meter_name]
+    for meter, stats in sorted(results['by_meter'].items()):
         total = stats['total']
         correct = stats['correct']
         incorrect = stats['incorrect']
         accuracy = (correct / total * 100) if total > 0 else 0
+        print(f"{meter:<20} {total:>6}  {correct:>8}  {incorrect:>10}   {accuracy:>7.1f}%")
 
-        print(f"{meter_name:<15} {total:>6} {correct:>8} {incorrect:>10} {accuracy:>9.1f}%")
+    # Results by era
+    print("\nRESULTS BY ERA")
+    print("-" * 96)
+    print(f"{'Era':<20} {'Total':>6}  {'Correct':>8}   {'Accuracy':>8}")
+    print("-" * 96)
 
-    print()
-
-    # Results by difficulty
-    print("RESULTS BY DIFFICULTY")
-    print("-" * 100)
-    print(f"{'Difficulty':<15} {'Total':>6} {'Correct':>8} {'Accuracy':>10}")
-    print("-" * 100)
-
-    for difficulty in ["easy", "medium", "hard"]:
-        if difficulty in results['by_difficulty']:
-            stats = results['by_difficulty'][difficulty]
-            total = stats['total']
-            correct = stats['correct']
-            accuracy = (correct / total * 100) if total > 0 else 0
-            print(f"{difficulty:<15} {total:>6} {correct:>8} {accuracy:>9.1f}%")
-
-    print()
+    for era, stats in sorted(results['by_era'].items()):
+        total = stats['total']
+        correct = stats['correct']
+        accuracy = (correct / total * 100) if total > 0 else 0
+        print(f"{era:<20} {total:>6}  {correct:>8}   {accuracy:>7.1f}%")
 
     # Misclassifications
     if results['misclassifications']:
-        print("MISCLASSIFICATIONS")
-        print("-" * 100)
+        print("\nMISCLASSIFICATIONS")
+        print("-" * 96)
         print(f"Total misclassifications: {len(results['misclassifications'])}")
         print()
 
-        for i, error in enumerate(results['misclassifications'][:10], 1):
-            print(f"{i}. {error['verse_id']}")
-            print(f"   Text: {error['text']}")
-            print(f"   Expected: {error['expected_meter']}")
-            print(f"   Detected: {error['detected_meter']} (confidence: {error.get('confidence', 0):.2%})")
-            if 'explanation' in error:
-                print(f"   Explanation: {error['explanation']}")
-            print(f"   Pattern: {error.get('phonetic_pattern', 'N/A')}")
-            print(f"   Difficulty: {error.get('difficulty', 'unknown')}")
+        for i, mis in enumerate(results['misclassifications'][:10], 1):  # Show first 10
+            print(f"{i}. {mis['verse_id']}")
+            print(f"   Text: {mis['text']}")
+            print(f"   Poet: {mis['poet']} ({mis['era']})")
+            print(f"   Expected: {mis['expected_meter']}")
+            print(f"   Detected: {mis['detected_meter']} (confidence: {mis['confidence']:.2%})")
+            print(f"   Pattern: {mis['phonetic_pattern']}")
             print()
 
         if len(results['misclassifications']) > 10:
-            print(f"... and {len(results['misclassifications']) - 10} more misclassifications")
+            print(f"   ... and {len(results['misclassifications']) - 10} more")
             print()
 
     # Failed scansions
     if results['failed_scansions']:
-        print("FAILED SCANSIONS")
-        print("-" * 100)
+        print("\nFAILED SCANSIONS")
+        print("-" * 96)
         print(f"Total failed scansions: {len(results['failed_scansions'])}")
         print()
 
-        for i, error in enumerate(results['failed_scansions'][:5], 1):
-            print(f"{i}. {error['verse_id']}")
-            print(f"   Text: {error['text']}")
-            print(f"   Expected: {error['expected_meter']}")
-            print(f"   Error: {error['error']}")
+        for i, fail in enumerate(results['failed_scansions'][:5], 1):  # Show first 5
+            print(f"{i}. {fail['verse_id']}")
+            print(f"   Text: {fail['text']}")
+            print(f"   Expected: {fail['expected_meter']}")
+            print(f"   Error: {fail['error']}")
             print()
 
-    print("=" * 100)
+    print("=" * 96)
+    print()
+
+    # Summary message
+    if results['accuracy'] >= 95.0:
+        print("✅ Generalization test PASSED!")
+        print(f"   Detector achieves {results['accuracy']:.2f}% accuracy on unseen verses.")
+    else:
+        print("⚠️  Generalization test completed with some issues.")
+        print(f"   Review misclassifications to identify edge cases.")
+
+    print()
 
 
 def main():
-    """Run golden set evaluation."""
+    """Run generalization evaluation."""
+    print("Loading generalization test set...")
+    test_file = Path("/home/user/BAHR/dataset/evaluation/generalization_test_set.jsonl")
+
+    if not test_file.exists():
+        print(f"Error: Test file not found: {test_file}")
+        return
+
+    verses = load_test_set(test_file)
+    print(f"✓ Loaded {len(verses)} test verses")
     print()
-    print("╔" + "═" * 98 + "╗")
-    print("║" + " " * 25 + "BahrDetectorV2 - Golden Set v0.101 Evaluation" + " " * 28 + "║")
-    print("╚" + "═" * 98 + "╝")
-    print()
 
-    # Load golden set
-    golden_set_path = "/home/user/BAHR/dataset/evaluation/golden_set_v0_101_complete.jsonl"
-    print(f"Loading golden set from: {golden_set_path}")
-
-    try:
-        verses = load_golden_set(golden_set_path)
-        print(f"✓ Loaded {len(verses)} verses")
-        print()
-    except Exception as e:
-        print(f"✗ Failed to load golden set: {e}")
-        return 1
-
-    # Initialize detector
     print("Initializing BahrDetectorV2...")
-    try:
-        detector = BahrDetectorV2()
-        stats = detector.get_statistics()
-        print(f"✓ Detector initialized")
-        print(f"  - {stats['total_meters']} meters loaded")
-        print(f"  - {stats['total_patterns']} valid patterns")
-        print()
-    except Exception as e:
-        print(f"✗ Failed to initialize detector: {e}")
-        return 1
-
-    # Run evaluation
-    print("Running evaluation on all verses...")
-    print("(This may take a moment...)")
+    detector = BahrDetectorV2()
+    stats = detector.get_statistics()
+    print("✓ Detector initialized")
+    print(f"  - {stats['total_meters']} meters loaded")
+    print(f"  - {stats['total_patterns']} patterns")
     print()
 
-    try:
-        results = evaluate_detector(detector, verses)
-    except Exception as e:
-        print(f"✗ Evaluation failed: {e}")
-        import traceback
-        traceback.print_exc()
-        return 1
+    print("Running generalization evaluation...")
+    print("(This tests on NEW verses not in the Golden Set)")
+    print()
+
+    results = evaluate_generalization(detector, verses)
 
     # Print report
-    print_evaluation_report(results)
+    print_generalization_report(results)
 
-    # Save results to file
-    output_file = "/home/user/BAHR/golden_set_v2_evaluation_results.json"
+    # Save results
+    output_file = Path("/home/user/BAHR/generalization_test_results.json")
     with open(output_file, 'w', encoding='utf-8') as f:
-        # Convert defaultdict to regular dict for JSON serialization
-        serializable_results = {
+        # Convert defaultdict to regular dict for JSON
+        results_json = {
             "total": results["total"],
             "correct": results["correct"],
             "incorrect": results["incorrect"],
             "no_detection": results["no_detection"],
             "accuracy": results["accuracy"],
             "by_meter": dict(results["by_meter"]),
-            "by_difficulty": dict(results["by_difficulty"]),
+            "by_era": dict(results["by_era"]),
             "misclassifications": results["misclassifications"],
             "failed_scansions": results["failed_scansions"]
         }
-        json.dump(serializable_results, f, ensure_ascii=False, indent=2)
+        json.dump(results_json, f, ensure_ascii=False, indent=2)
 
     print(f"Results saved to: {output_file}")
     print()
 
-    # Return exit code based on success
-    if results['accuracy'] >= 97.5:
-        print("🎉 Evaluation completed successfully! Target achieved.")
-        return 0
-    else:
-        print("⚠️  Evaluation completed. Target not achieved yet.")
-        return 0  # Still return 0, but with warning
-
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
