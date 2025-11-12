@@ -72,3 +72,11 @@ httpx==0.27.2
 # ============================================================================
 email-validator==2.1.0
 
+# ============================================================================
+# Machine Learning & NLP (PyTorch)
+# ============================================================================
+# Note: CPU-only version installed in production for size optimization
+# CUDA version: ~2.6 GB | CPU version: ~800 MB
+# Use --extra-index-url for CPU builds (see production.txt or Dockerfile)
+torch==2.5.1
+
