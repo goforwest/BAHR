@@ -1,0 +1,505 @@
+{
+  "overall": {
+    "accuracy": 0.3875968992248062,
+    "correct": 1,
+    "incorrect": 10,
+    "no_detection": 247,
+    "total": 258
+  },
+  "per_meter": {
+    "الطويل": {
+      "correct": 0,
+      "total": 42,
+      "incorrect": [
+        "golden_024",
+        "golden_116",
+        "golden_121"
+      ],
+      "no_detection": [
+        "golden_001",
+        "golden_007",
+        "golden_015",
+        "golden_020",
+        "golden_021",
+        "golden_022",
+        "golden_023",
+        "golden_060",
+        "golden_061",
+        "golden_081",
+        "golden_082",
+        "golden_083",
+        "golden_087",
+        "golden_089",
+        "golden_100",
+        "golden_101",
+        "golden_102",
+        "golden_103",
+        "golden_110",
+        "golden_112",
+        "golden_114",
+        "golden_115",
+        "golden_119",
+        "golden_120",
+        "golden_122",
+        "golden_123",
+        "golden_147",
+        "golden_216",
+        "golden_217",
+        "golden_218",
+        "golden_219",
+        "golden_220",
+        "golden_221",
+        "golden_222",
+        "golden_223",
+        "golden_224",
+        "golden_235",
+        "golden_236",
+        "golden_244"
+      ]
+    },
+    "الرجز": {
+      "correct": 0,
+      "total": 12,
+      "incorrect": [],
+      "no_detection": [
+        "golden_002",
+        "golden_019",
+        "golden_045",
+        "golden_046",
+        "golden_047",
+        "golden_048",
+        "golden_049",
+        "golden_076",
+        "golden_143",
+        "golden_144",
+        "golden_148",
+        "golden_237"
+      ]
+    },
+    "الرمل": {
+      "correct": 0,
+      "total": 18,
+      "incorrect": [
+        "golden_126"
+      ],
+      "no_detection": [
+        "golden_003",
+        "golden_017",
+        "golden_035",
+        "golden_036",
+        "golden_037",
+        "golden_038",
+        "golden_039",
+        "golden_074",
+        "golden_094",
+        "golden_096",
+        "golden_099",
+        "golden_104",
+        "golden_118",
+        "golden_124",
+        "golden_125",
+        "golden_233",
+        "golden_234"
+      ]
+    },
+    "البسيط": {
+      "correct": 0,
+      "total": 22,
+      "incorrect": [],
+      "no_detection": [
+        "golden_004",
+        "golden_005",
+        "golden_013",
+        "golden_016",
+        "golden_025",
+        "golden_026",
+        "golden_027",
+        "golden_028",
+        "golden_029",
+        "golden_072",
+        "golden_073",
+        "golden_080",
+        "golden_088",
+        "golden_092",
+        "golden_093",
+        "golden_105",
+        "golden_117",
+        "golden_127",
+        "golden_128",
+        "golden_129",
+        "golden_225",
+        "golden_226"
+      ]
+    },
+    "الكامل": {
+      "correct": 1,
+      "total": 26,
+      "incorrect": [
+        "golden_014"
+      ],
+      "no_detection": [
+        "golden_006",
+        "golden_008",
+        "golden_012",
+        "golden_031",
+        "golden_032",
+        "golden_033",
+        "golden_034",
+        "golden_084",
+        "golden_085",
+        "golden_086",
+        "golden_098",
+        "golden_106",
+        "golden_108",
+        "golden_111",
+        "golden_113",
+        "golden_133",
+        "golden_134",
+        "golden_135",
+        "golden_136",
+        "golden_227",
+        "golden_228",
+        "golden_229",
+        "golden_230",
+        "golden_243"
+      ]
+    },
+    "المتقارب": {
+      "correct": 0,
+      "total": 15,
+      "incorrect": [
+        "golden_018",
+        "golden_043"
+      ],
+      "no_detection": [
+        "golden_009",
+        "golden_040",
+        "golden_041",
+        "golden_042",
+        "golden_044",
+        "golden_075",
+        "golden_091",
+        "golden_095",
+        "golden_137",
+        "golden_138",
+        "golden_240",
+        "golden_241",
+        "golden_242"
+      ]
+    },
+    "الخفيف": {
+      "correct": 0,
+      "total": 13,
+      "incorrect": [
+        "golden_051",
+        "golden_107"
+      ],
+      "no_detection": [
+        "golden_010",
+        "golden_050",
+        "golden_052",
+        "golden_053",
+        "golden_054",
+        "golden_077",
+        "golden_078",
+        "golden_139",
+        "golden_140",
+        "golden_238",
+        "golden_239"
+      ]
+    },
+    "الهزج": {
+      "correct": 0,
+      "total": 9,
+      "incorrect": [],
+      "no_detection": [
+        "golden_011",
+        "golden_055",
+        "golden_056",
+        "golden_057",
+        "golden_058",
+        "golden_059",
+        "golden_079",
+        "golden_141",
+        "golden_142"
+      ]
+    },
+    "الوافر": {
+      "correct": 0,
+      "total": 19,
+      "incorrect": [],
+      "no_detection": [
+        "golden_062",
+        "golden_063",
+        "golden_064",
+        "golden_065",
+        "golden_066",
+        "golden_067",
+        "golden_068",
+        "golden_069",
+        "golden_070",
+        "golden_071",
+        "golden_090",
+        "golden_097",
+        "golden_109",
+        "golden_130",
+        "golden_131",
+        "golden_132",
+        "golden_231",
+        "golden_232",
+        "golden_245"
+      ]
+    },
+    "السريع": {
+      "correct": 0,
+      "total": 11,
+      "incorrect": [],
+      "no_detection": [
+        "golden_145",
+        "golden_176",
+        "golden_177",
+        "golden_178",
+        "golden_179",
+        "golden_180",
+        "golden_181",
+        "golden_182",
+        "golden_183",
+        "golden_184",
+        "golden_185"
+      ]
+    },
+    "المديد": {
+      "correct": 0,
+      "total": 11,
+      "incorrect": [],
+      "no_detection": [
+        "golden_146",
+        "golden_186",
+        "golden_187",
+        "golden_188",
+        "golden_189",
+        "golden_190",
+        "golden_191",
+        "golden_192",
+        "golden_193",
+        "golden_194",
+        "golden_195"
+      ]
+    },
+    "المنسرح": {
+      "correct": 0,
+      "total": 7,
+      "incorrect": [],
+      "no_detection": [
+        "golden_149",
+        "golden_150",
+        "golden_151",
+        "golden_152",
+        "golden_153",
+        "golden_154",
+        "golden_155"
+      ]
+    },
+    "المجتث": {
+      "correct": 0,
+      "total": 6,
+      "incorrect": [],
+      "no_detection": [
+        "golden_156",
+        "golden_157",
+        "golden_158",
+        "golden_159",
+        "golden_160",
+        "golden_161"
+      ]
+    },
+    "المقتضب": {
+      "correct": 0,
+      "total": 4,
+      "incorrect": [],
+      "no_detection": [
+        "golden_162",
+        "golden_163",
+        "golden_164",
+        "golden_165"
+      ]
+    },
+    "المضارع": {
+      "correct": 0,
+      "total": 4,
+      "incorrect": [],
+      "no_detection": [
+        "golden_166",
+        "golden_167",
+        "golden_168",
+        "golden_169"
+      ]
+    },
+    "المتدارك": {
+      "correct": 0,
+      "total": 19,
+      "incorrect": [],
+      "no_detection": [
+        "golden_170",
+        "golden_171",
+        "golden_172",
+        "golden_173",
+        "golden_174",
+        "golden_175",
+        "golden_246",
+        "golden_247",
+        "golden_248",
+        "golden_249",
+        "golden_250",
+        "golden_251",
+        "golden_252",
+        "golden_253",
+        "golden_254",
+        "golden_255",
+        "golden_256",
+        "golden_257",
+        "golden_258"
+      ]
+    },
+    "السريع (مفعولات)": {
+      "correct": 0,
+      "total": 5,
+      "incorrect": [],
+      "no_detection": [
+        "golden_196",
+        "golden_197",
+        "golden_198",
+        "golden_199",
+        "golden_200"
+      ]
+    },
+    "الكامل (3 تفاعيل)": {
+      "correct": 0,
+      "total": 5,
+      "incorrect": [],
+      "no_detection": [
+        "golden_201",
+        "golden_202",
+        "golden_203",
+        "golden_204",
+        "golden_205"
+      ]
+    },
+    "الكامل (مجزوء)": {
+      "correct": 0,
+      "total": 5,
+      "incorrect": [],
+      "no_detection": [
+        "golden_206",
+        "golden_207",
+        "golden_208",
+        "golden_209",
+        "golden_210"
+      ]
+    },
+    "الهزج (مجزوء)": {
+      "correct": 0,
+      "total": 5,
+      "incorrect": [
+        "golden_214"
+      ],
+      "no_detection": [
+        "golden_211",
+        "golden_212",
+        "golden_213",
+        "golden_215"
+      ]
+    }
+  },
+  "mutadarik": {
+    "accuracy": 0.0,
+    "total": 19,
+    "correct": 0,
+    "incorrect": [],
+    "no_detection": [
+      "golden_170",
+      "golden_171",
+      "golden_172",
+      "golden_173",
+      "golden_174",
+      "golden_175",
+      "golden_246",
+      "golden_247",
+      "golden_248",
+      "golden_249",
+      "golden_250",
+      "golden_251",
+      "golden_252",
+      "golden_253",
+      "golden_254",
+      "golden_255",
+      "golden_256",
+      "golden_257",
+      "golden_258"
+    ]
+  },
+  "confusion_matrix": {
+    "الكامل": {
+      "الكامل (3 تفاعيل)": 1
+    },
+    "المتقارب": {
+      "الكامل": 1,
+      "الكامل (3 تفاعيل)": 1
+    },
+    "الطويل": {
+      "الكامل (3 تفاعيل)": 3
+    },
+    "الخفيف": {
+      "البسيط": 2
+    },
+    "الرمل": {
+      "المتدارك": 1
+    },
+    "الهزج (مجزوء)": {
+      "الطويل": 1
+    }
+  },
+  "coverage": {
+    "all_meters": [
+      "الطويل",
+      "المديد",
+      "البسيط",
+      "الوافر",
+      "الكامل",
+      "الهزج",
+      "الرجز",
+      "الرمل",
+      "السريع",
+      "المنسرح",
+      "الخفيف",
+      "المضارع",
+      "المقتضب",
+      "المجتث",
+      "المتقارب",
+      "المتدارك"
+    ],
+    "covered": [
+      "الكامل (مجزوء)",
+      "المنسرح",
+      "الهزج (مجزوء)",
+      "الوافر",
+      "البسيط",
+      "المقتضب",
+      "الطويل",
+      "الخفيف",
+      "السريع (مفعولات)",
+      "الكامل (3 تفاعيل)",
+      "المديد",
+      "الرجز",
+      "السريع",
+      "الكامل",
+      "المضارع",
+      "الرمل",
+      "المتقارب",
+      "المتدارك",
+      "الهزج",
+      "المجتث"
+    ],
+    "missing": []
+  }
+}
