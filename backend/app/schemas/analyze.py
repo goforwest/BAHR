@@ -2,85 +2,86 @@
 Pydantic schemas for the analyze endpoint.
 """
 
-from typing import Optional, List
+from typing import List, Optional
+
 from pydantic import BaseModel, Field, field_validator
 
 
 class AnalyzeRequest(BaseModel):
     """
     Request schema for verse analysis.
-    
+
     Attributes:
         text: Arabic verse or text to analyze (required)
         detect_bahr: Whether to detect the meter (default: True)
         suggest_corrections: Whether to suggest corrections (default: False)
     """
+
     text: str = Field(
         ...,
         min_length=5,
         max_length=2000,
         description="Arabic verse or text to analyze",
-        examples=["إذا غامَرتَ في شَرَفٍ مَرومِ"]
+        examples=["إذا غامَرتَ في شَرَفٍ مَرومِ"],
     )
     detect_bahr: bool = Field(
-        default=True,
-        description="Whether to detect the meter (bahr)"
+        default=True, description="Whether to detect the meter (bahr)"
     )
     suggest_corrections: bool = Field(
-        default=False,
-        description="Whether to suggest prosodic corrections"
+        default=False, description="Whether to suggest prosodic corrections"
     )
     analyze_rhyme: bool = Field(
-        default=True,
-        description="Whether to analyze rhyme (qafiyah)"
+        default=True, description="Whether to analyze rhyme (qafiyah)"
     )
     precomputed_pattern: Optional[str] = Field(
         default=None,
-        description="Pre-computed phonetic pattern (optional, for advanced users). Format: /=haraka, o=sakin. Example: '/o////o/o/o/o//o//o/'"
+        description="Pre-computed phonetic pattern (optional, for advanced users). Format: /=haraka, o=sakin. Example: '/o////o/o/o/o//o//o/'",
     )
     expected_meter: Optional[str] = Field(
         default=None,
-        description="Expected meter name in Arabic (optional, enables smart disambiguation). Example: 'الطويل'"
+        description="Expected meter name in Arabic (optional, enables smart disambiguation). Example: 'الطويل'",
     )
 
-    @field_validator('text')
+    @field_validator("text")
     @classmethod
     def validate_arabic(cls, v: str) -> str:
         """Validate that text contains Arabic characters."""
         # Edge case: Strip whitespace for validation
         stripped = v.strip()
-        
+
         if not stripped:
-            raise ValueError('Text cannot be empty or only whitespace')
-        
+            raise ValueError("Text cannot be empty or only whitespace")
+
         if len(stripped) < 5:
-            raise ValueError('Text must be at least 5 characters long')
-        
+            raise ValueError("Text must be at least 5 characters long")
+
         # Check for Arabic characters
-        arabic_char_count = sum(1 for ch in v if '\u0600' <= ch <= '\u06FF')
-        
+        arabic_char_count = sum(1 for ch in v if "\u0600" <= ch <= "\u06ff")
+
         if arabic_char_count == 0:
-            raise ValueError('Text must contain Arabic characters')
-        
+            raise ValueError("Text must contain Arabic characters")
+
         # Edge case: Warn if text has very little Arabic (< 30%)
         if arabic_char_count / len(stripped) < 0.3:
-            raise ValueError('Text must be primarily in Arabic (at least 30% Arabic characters)')
-        
+            raise ValueError(
+                "Text must be primarily in Arabic (at least 30% Arabic characters)"
+            )
+
         return v.strip()
-    
+
     model_config = {
         "json_schema_extra": {
             "examples": [
                 {
                     "text": "إذا غامَرتَ في شَرَفٍ مَرومِ",
                     "detect_bahr": True,
-                    "suggest_corrections": False
+                    "suggest_corrections": False,
                 },
                 {
                     "text": "أَلا لَيتَ الشَبابَ يَعودُ يَوماً",
                     "detect_bahr": True,
-                    "suggest_corrections": True
-                }
+                    "suggest_corrections": True,
+                },
             ]
         }
     }
@@ -101,36 +102,30 @@ class BahrInfo(BaseModel):
         explanation_ar: Arabic explanation of the match - NEW in v2
         explanation_en: English explanation of the match - NEW in v2
     """
+
     id: int = Field(..., description="Unique identifier for the meter")
     name_ar: str = Field(..., description="Arabic name of the meter")
     name_en: str = Field(..., description="English transliteration")
     confidence: float = Field(
-        ...,
-        ge=0.0,
-        le=1.0,
-        description="Detection confidence score"
+        ..., ge=0.0, le=1.0, description="Detection confidence score"
     )
 
     # NEW: Explainability fields from BahrDetectorV2
     match_quality: Optional[str] = Field(
-        None,
-        description="Match quality: exact, strong, moderate, or weak"
+        None, description="Match quality: exact, strong, moderate, or weak"
     )
     matched_pattern: Optional[str] = Field(
-        None,
-        description="The exact phonetic pattern that matched"
+        None, description="The exact phonetic pattern that matched"
     )
     transformations: Optional[List[str]] = Field(
         None,
-        description="Zihafat/Ilal applied at each position (e.g., ['base', 'قبض', 'base', 'حذف'])"
+        description="Zihafat/Ilal applied at each position (e.g., ['base', 'قبض', 'base', 'حذف'])",
     )
     explanation_ar: Optional[str] = Field(
-        None,
-        description="Arabic explanation of how the match was made"
+        None, description="Arabic explanation of how the match was made"
     )
     explanation_en: Optional[str] = Field(
-        None,
-        description="English explanation of how the match was made"
+        None, description="English explanation of how the match was made"
     )
 
     model_config = {
@@ -145,7 +140,7 @@ class BahrInfo(BaseModel):
                     "matched_pattern": "/o////o/o/o/o//o//o/o/o",
                     "transformations": ["base", "قبض", "base", "base"],
                     "explanation_ar": "مطابقة مع زحافات: قبض",
-                    "explanation_en": "Match with variations: qabd"
+                    "explanation_en": "Match with variations: qabd",
                 }
             ]
         }
@@ -155,7 +150,7 @@ class BahrInfo(BaseModel):
 class RhymeInfo(BaseModel):
     """
     Information about rhyme (qafiyah) in the verse.
-    
+
     Attributes:
         rawi: The main rhyme letter (حرف الروي)
         rawi_vowel: Vowel on the rawi ('i', 'u', 'a', or '' for sukun)
@@ -163,12 +158,13 @@ class RhymeInfo(BaseModel):
         description_ar: Arabic description of the qafiyah
         description_en: English description of the qafiyah
     """
+
     rawi: str = Field(..., description="Main rhyme letter (حرف الروي)")
     rawi_vowel: str = Field(..., description="Vowel on rawi")
     rhyme_types: List[str] = Field(..., description="Rhyme type classifications")
     description_ar: str = Field(..., description="Arabic description")
     description_en: str = Field(..., description="English description")
-    
+
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -177,7 +173,7 @@ class RhymeInfo(BaseModel):
                     "rawi_vowel": "",
                     "rhyme_types": ["مقيدة", "مجردة"],
                     "description_ar": "القافية: روي:م (مقيدة, مجردة)",
-                    "description_en": "Qafiyah: rawi=م"
+                    "description_en": "Qafiyah: rawi=م",
                 }
             ]
         }
@@ -225,16 +221,11 @@ class AnalyzeResponse(BaseModel):
         suggestions: List of suggestions for improvement
         score: Overall quality score (0-100)
     """
+
     text: str = Field(..., description="Original input text")
     taqti3: str = Field(..., description="Prosodic scansion (tafa'il pattern)")
-    bahr: Optional[BahrInfo] = Field(
-        None,
-        description="Detected meter information"
-    )
-    rhyme: Optional[RhymeInfo] = Field(
-        None,
-        description="Rhyme (qafiyah) information"
-    )
+    bahr: Optional[BahrInfo] = Field(None, description="Detected meter information")
+    rhyme: Optional[RhymeInfo] = Field(None, description="Rhyme (qafiyah) information")
     # NEW: Multi-candidate support
     alternative_meters: Optional[List[AlternativeMeter]] = Field(
         None,
@@ -245,20 +236,15 @@ class AnalyzeResponse(BaseModel):
         description="Information about detection certainty"
     )
     errors: List[str] = Field(
-        default_factory=list,
-        description="List of prosodic errors"
+        default_factory=list, description="List of prosodic errors"
     )
     suggestions: List[str] = Field(
-        default_factory=list,
-        description="List of improvement suggestions"
+        default_factory=list, description="List of improvement suggestions"
     )
     score: float = Field(
-        ...,
-        ge=0.0,
-        le=100.0,
-        description="Overall quality score (0-100)"
+        ..., ge=0.0, le=100.0, description="Overall quality score (0-100)"
     )
-    
+
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -269,18 +255,18 @@ class AnalyzeResponse(BaseModel):
                         "id": 1,
                         "name_ar": "الطويل",
                         "name_en": "at-Tawil",
-                        "confidence": 0.95
+                        "confidence": 0.95,
                     },
                     "rhyme": {
                         "rawi": "م",
                         "rawi_vowel": "",
                         "rhyme_types": ["مقيدة", "مجردة"],
                         "description_ar": "القافية: روي:م (مقيدة, مجردة)",
-                        "description_en": "Qafiyah: rawi=م"
+                        "description_en": "Qafiyah: rawi=م",
                     },
                     "errors": [],
                     "suggestions": ["التقطيع دقيق ومتسق"],
-                    "score": 95.0
+                    "score": 95.0,
                 }
             ]
         }

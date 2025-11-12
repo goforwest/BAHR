@@ -5,9 +5,10 @@ This module provides functionality to detect which classical Arabic meter (bahr)
 a verse follows by comparing its tafa'il pattern to known bahr templates.
 """
 
-from typing import Dict, List, Optional
 from dataclasses import dataclass
 from difflib import SequenceMatcher
+from typing import Dict, List, Optional
+
 from app.core.taqti3 import perform_taqti3
 
 
@@ -28,6 +29,7 @@ class BahrInfo:
         >>> bahr.to_dict()
         {'id': 1, 'name_ar': 'الطويل', 'name_en': 'at-Tawil', ...}
     """
+
     id: int
     name_ar: str
     name_en: str
@@ -51,7 +53,7 @@ class BahrInfo:
             "name_ar": self.name_ar,
             "name_en": self.name_en,
             "pattern": self.pattern,
-            "confidence": round(self.confidence, 2)
+            "confidence": round(self.confidence, 2),
         }
 
 
@@ -77,27 +79,27 @@ BAHRS_DATA = [
             "/o/o///o///o/o//o//o///o",
             "/o/o//o////o//o///o//",
             # New patterns from Golden Set v0.100 (golden_080-100)
-            "///o//o///o/o///o//o/o///o",    # golden_081: الحارث بن حلزة
-            "//////ooo////o/o////////o",      # golden_082: طرفة بن العبد
-            "/////oo///////o//o/",            # golden_083: الإمام الشافعي
-            "//o/////o///o////o/o///",        # golden_087: زهير بن أبي سلمى
-            "//o////o///////o/o//o//",        # golden_089: طرفة بن العبد
-            "//o////o/o///o//////o/oo",       # golden_100: الإمام علي
+            "///o//o///o/o///o//o/o///o",  # golden_081: الحارث بن حلزة
+            "//////ooo////o/o////////o",  # golden_082: طرفة بن العبد
+            "/////oo///////o//o/",  # golden_083: الإمام الشافعي
+            "//o/////o///o////o/o///",  # golden_087: زهير بن أبي سلمى
+            "//o////o///////o/o//o//",  # golden_089: طرفة بن العبد
+            "//o////o/o///o//////o/oo",  # golden_100: الإمام علي
             # New patterns from Golden Set v0.101 (golden_101-118)
-            "//o////o///o//o/o/////",         # golden_101: امرؤ القيس - قفا نبك
-            "//o/o//o/o/o///o/o///o//o",      # golden_102: لبيد - أرى كل حي
-            "//o////////////o////////o",      # golden_103: امرؤ القيس - بدت مثل
-            "//ooo////o/////ooo//o//o",       # golden_110: عنترة - واني لارجو
-            "//o//o//o////oo///////oo",       # golden_112: النابغة - فان تفق
-            "///o//////o///o///o//o",         # golden_114: عنترة - ولقد ذكرتك
-            "//o//////o///o//o////////",      # golden_115: حاتم الطائي - اذا المرء
-            "//////o///o//o///o//o",          # golden_116: ذو الرمة - وقفت على
+            "//o////o///o//o/o/////",  # golden_101: امرؤ القيس - قفا نبك
+            "//o/o//o/o/o///o/o///o//o",  # golden_102: لبيد - أرى كل حي
+            "//o////////////o////////o",  # golden_103: امرؤ القيس - بدت مثل
+            "//ooo////o/////ooo//o//o",  # golden_110: عنترة - واني لارجو
+            "//o//o//o////oo///////oo",  # golden_112: النابغة - فان تفق
+            "///o//////o///o///o//o",  # golden_114: عنترة - ولقد ذكرتك
+            "//o//////o///o//o////////",  # golden_115: حاتم الطائي - اذا المرء
+            "//////o///o//o///o//o",  # golden_116: ذو الرمة - وقفت على
         ],
         "variations": [
             "فعولن مفاعيلن فعولن مفاعلن",
             "فعولن مفاعلن فعولن مفاعيلن",
             "فعولن مفاعلن فعولن مفاعلن",
-        ]
+        ],
     },
     {
         "id": 2,
@@ -115,19 +117,19 @@ BAHRS_DATA = [
             "/o//o//o///o/o//o/o///o",
             "/o/o//o/o///o//ooo///o//o",
             # New patterns from Golden Set v0.100 (golden_080-100)
-            "//o/o//o///o/////",              # golden_084: حكمة عربية
-            "//o///o//o////o//ooo//o//",      # golden_085: حكمة عربية
-            "////////o/o////o////o",           # golden_086: شعر حكمي
-            "//o///o/o/o/////o///////o",      # golden_098: حكمة عربية
+            "//o/o//o///o/////",  # golden_084: حكمة عربية
+            "//o///o//o////o//ooo//o//",  # golden_085: حكمة عربية
+            "////////o/o////o////o",  # golden_086: شعر حكمي
+            "//o///o/o/o/////o///////o",  # golden_098: حكمة عربية
             # New patterns from Golden Set v0.101 (golden_101-118)
-            "/o/o//o///o//oo///o///o/",       # golden_108: ابن الرومي - قل للذين
-            "//o/o//o///o////o//o///o",       # golden_111: المتنبي - انا الذي
-            "/o////o/o/o///o///o//o",         # golden_113: أبو فراس - لا تسقني
+            "/o/o//o///o//oo///o///o/",  # golden_108: ابن الرومي - قل للذين
+            "//o/o//o///o////o//o///o",  # golden_111: المتنبي - انا الذي
+            "/o////o/o/o///o///o//o",  # golden_113: أبو فراس - لا تسقني
         ],
         "variations": [
             "متفاعلن متفاعلن متفاعل",
             "متفعلن متفاعلن متفاعلن",
-        ]
+        ],
     },
     {
         "id": 3,
@@ -146,15 +148,15 @@ BAHRS_DATA = [
             "//o/o//o/o/ooo///o//o//o",
             "//ooo///o//o//o/o//o//o",
             # New patterns from Golden Set v0.100 (golden_080-100)
-            "//o/o////o/o//o/o/////o",        # golden_090: ابن زيدون
-            "//o////o/o/o//o///o//",          # golden_097: حكمة عربية
+            "//o/o////o/o//o/o/////o",  # golden_090: ابن زيدون
+            "//o////o/o/o//o///o//",  # golden_097: حكمة عربية
             # New patterns from Golden Set v0.101 (golden_101-118)
-            "/o//o///o////o/////",            # golden_109: المتنبي - من يهن
+            "/o//o///o////o/////",  # golden_109: المتنبي - من يهن
         ],
         "variations": [
             "مفاعلتن مفاعلتن مفاعلن",
             "مفاعيلن مفاعلتن فعولن",
-        ]
+        ],
     },
     {
         "id": 4,
@@ -171,19 +173,19 @@ BAHRS_DATA = [
             "/o/o//o/o//o/o/o///o///o",
             "/o/o/o///////o///o///o",
             # New patterns from Golden Set v0.100 (golden_080-100)
-            "//////////o////o//ooo",          # golden_094: إيليا أبو ماضي
-            "//o///oo/o/o//o//////",          # golden_099: قيس بن الملوح (مجنون ليلى)
-            "/o//o/////////o//o/o//o///o",    # golden_096: الإمام الشافعي
+            "//////////o////o//ooo",  # golden_094: إيليا أبو ماضي
+            "//o///oo/o/o//o//////",  # golden_099: قيس بن الملوح (مجنون ليلى)
+            "/o//o/////////o//o/o//o///o",  # golden_096: الإمام الشافعي
             # New patterns from Golden Set v0.101 (golden_101-118)
-            "//o/o////o////o/////o/",         # golden_104: ابن الفارض - صفا كل
-            "//o////o//oo/////o//o/",         # golden_118: المتنبي - تجلدت
+            "//o/o////o////o/////o/",  # golden_104: ابن الفارض - صفا كل
+            "//o////o//oo/////o//o/",  # golden_118: المتنبي - تجلدت
         ],
         "variations": [
             "فاعلاتن فاعلاتن فاعلن",
             "فاعلاتن فاعلن فاعلاتن",
             "فاعلن فاعلاتن فاعلاتن",
             "فاعلن فاعلاتن فاعلن",
-        ]
+        ],
     },
     {
         "id": 5,
@@ -203,16 +205,16 @@ BAHRS_DATA = [
             "/o/o///o//o//o//////",
             "/o/oo//o/o//o////o//o///",
             # New patterns from Golden Set v0.100 (golden_080-100)
-            "//o/o////o/o//o/////o//",        # golden_080: لبيد بن ربيعة
-            "//o///////////o//o/o///",        # golden_092: شعر ديني
+            "//o/o////o/o//o/////o//",  # golden_080: لبيد بن ربيعة
+            "//o///////////o//o/o///",  # golden_092: شعر ديني
             # New patterns from Golden Set v0.101 (golden_101-118)
-            "//o///o///o///o/////o",          # golden_105: أبو العتاهية - الا ليت
-            "//o///o/o//////o//o//o",         # golden_117: أبو نواس - الم تر
+            "//o///o///o///o/////o",  # golden_105: أبو العتاهية - الا ليت
+            "//o///o/o//////o//o//o",  # golden_117: أبو نواس - الم تر
         ],
         "variations": [
             "مستفعلن فاعلن مستفعلن فعلن",
             "مستفعلن فعلن مستفعلن فاعلن",
-        ]
+        ],
     },
     {
         "id": 6,
@@ -229,13 +231,13 @@ BAHRS_DATA = [
             "//o/o////o/o/o//o///o///o",
             "/o/o//o//o//o/o/o//o/////",
             # New patterns from Golden Set v0.100 (golden_080-100)
-            "//o/////o//o///o////",           # golden_091: حكمة عربية
-            "/o/o//////o//////////",          # golden_095: حكمة عربية
+            "//o/////o//o///o////",  # golden_091: حكمة عربية
+            "/o/o//////o//////////",  # golden_095: حكمة عربية
         ],
         "variations": [
             "فعولن فعولن فعولن فعول",
             "فعول فعولن فعولن فعولن",
-        ]
+        ],
     },
     {
         "id": 7,
@@ -255,7 +257,7 @@ BAHRS_DATA = [
         "variations": [
             "مستفعلن مستفعلن مستفعل",
             "مستفعل مستفعلن مستفعلن",
-        ]
+        ],
     },
     {
         "id": 8,
@@ -274,7 +276,7 @@ BAHRS_DATA = [
         "variations": [
             "مفاعيلن مفاعيلن",
             "مفاعيلن فعولن",
-        ]
+        ],
     },
     {
         "id": 9,
@@ -294,7 +296,7 @@ BAHRS_DATA = [
         "variations": [
             "فاعلاتن مستفعلن فاعلن",
             "فاعلن مستفعلن فاعلاتن",
-        ]
+        ],
     },
 ]
 
@@ -353,12 +355,14 @@ class BahrDetector:
         """
         return SequenceMatcher(None, tafail1, tafail2).ratio()
 
-    def detect_bahr(self, input_pattern: str, is_phonetic: bool = False) -> Optional[BahrInfo]:
+    def detect_bahr(
+        self, input_pattern: str, is_phonetic: bool = False
+    ) -> Optional[BahrInfo]:
         """
         Detect bahr from tafa'il pattern OR phonetic pattern.
 
         Args:
-            input_pattern: Either tafa'il string (e.g., "فعولن مفاعيلن") 
+            input_pattern: Either tafa'il string (e.g., "فعولن مفاعيلن")
                           or phonetic pattern (e.g., "//o/o//o/o/o")
             is_phonetic: If True, input_pattern is phonetic; if False, it's tafa'il names
 
@@ -381,7 +385,7 @@ class BahrDetector:
         # Compare against all known bahrs
         for bahr in self.bahrs:
             similarity = 0.0
-            
+
             if is_phonetic and "phonetic_patterns" in bahr:
                 # Compare phonetic pattern directly
                 for expected_pattern in bahr["phonetic_patterns"]:
@@ -390,11 +394,13 @@ class BahrDetector:
             else:
                 # Compare tafa'il names (legacy)
                 similarity = self.calculate_similarity(input_pattern, bahr["pattern"])
-                
+
                 # Also check variations if they exist
                 if "variations" in bahr:
                     for variation in bahr["variations"]:
-                        var_similarity = self.calculate_similarity(input_pattern, variation)
+                        var_similarity = self.calculate_similarity(
+                            input_pattern, variation
+                        )
                         similarity = max(similarity, var_similarity)
 
             if similarity > best_similarity:
@@ -403,14 +409,14 @@ class BahrDetector:
 
         # Threshold: 0.7 for phonetic (stricter), 0.65 for tafa'il (more lenient)
         threshold = 0.7 if is_phonetic else 0.65
-        
+
         if best_match and best_similarity >= threshold:
             return BahrInfo(
                 id=best_match["id"],
                 name_ar=best_match["name_ar"],
                 name_en=best_match["name_en"],
                 pattern=best_match["pattern"],
-                confidence=best_similarity
+                confidence=best_similarity,
             )
 
         return None
@@ -440,20 +446,20 @@ class BahrDetector:
             >>> result.name_ar
             "الطويل"
         """
-        from app.core.normalization import normalize_arabic_text, has_diacritics
+        from app.core.normalization import has_diacritics, normalize_arabic_text
         from app.core.phonetics import text_to_phonetic_pattern
-        
+
         # Normalize and convert to phonetic pattern
         normalized = normalize_arabic_text(verse)
         has_tash = has_diacritics(verse)
         phonetic_pattern = text_to_phonetic_pattern(normalized, has_tash)
-        
+
         # Detect bahr using phonetic pattern (primary method)
         result = self.detect_bahr(phonetic_pattern, is_phonetic=True)
-        
+
         # If no match with phonetic, try tafa'il method as fallback
         if not result:
             tafail = perform_taqti3(verse)
             result = self.detect_bahr(tafail, is_phonetic=False)
-        
+
         return result

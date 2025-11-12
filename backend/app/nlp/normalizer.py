@@ -20,6 +20,7 @@ TODO (Week 3-4): Implement full 8-stage pipeline
 - See: docs/implementation-guides/feature-arabic-text-normalization.md
 
 """
+
 import re
 
 DIACRITICS_PATTERN = re.compile(r"[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]")
@@ -42,24 +43,24 @@ PUNCT_PATTERN = re.compile("[" + re.escape(PUNCT_CHARS) + "]")
 class ArabicNormalizer:
     """
     Simplified Arabic text normalizer (MVP version).
-    
+
     This is a 4-stage pipeline for Week 1-2 development.
     Full 8-stage pipeline to be implemented in Week 3-4.
     """
-    
+
     def __init__(self, remove_diacritics: bool = True) -> None:
         self.remove_diacritics = remove_diacritics
 
     def normalize(self, text: str) -> str:
         """
         Normalize Arabic text through 4-stage pipeline (MVP).
-        
+
         Args:
             text: Input Arabic text
-            
+
         Returns:
             Normalized text string
-            
+
         TODO (Week 3): Return NormalizationResult dataclass with:
             - original
             - normalized
@@ -68,25 +69,25 @@ class ArabicNormalizer:
             - arabic_percentage
         """
         t = text
-        
+
         # Stage 1: Strip diacritics (if enabled)
         if self.remove_diacritics:
             t = self._strip_diacritics(t)
-        
+
         # Stage 2: Character mapping (unify chars)
         for old, new in CHAR_MAP.items():
             t = t.replace(old, new)
-        
+
         # Stage 3: Punctuation removal
         t = PUNCT_PATTERN.sub(" ", t)
-        
+
         # Stage 4: Whitespace normalization
         t = re.sub(r"\s+", " ", t).strip()
-        
+
         # TODO (Week 3): Add Arabic percentage validation
         # if arabic_percentage < 0.7:
         #     raise ValidationError("ERR_INPUT_001")
-        
+
         return t
 
     def _strip_diacritics(self, text: str) -> str:
@@ -97,13 +98,12 @@ class ArabicNormalizer:
 def basic_normalize(text: str, remove_diacritics: bool = True) -> str:
     """
     Convenience function for basic normalization.
-    
+
     Args:
         text: Input Arabic text
         remove_diacritics: Whether to remove diacritics
-        
+
     Returns:
         Normalized text string
     """
     return ArabicNormalizer(remove_diacritics=remove_diacritics).normalize(text)
-

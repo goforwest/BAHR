@@ -136,7 +136,8 @@ class TestTafailRegistry:
         """Test listing all base tafa'il."""
         all_tafail = list_all_tafail()
 
-        assert len(all_tafail) == 9  # 9 base tafa'il defined
+        # Updated: Registry expanded to 13 tafa'il
+        assert len(all_tafail) == 13
         assert all(isinstance(t, Tafila) for t in all_tafail)
 
     def test_tafail_base_registry(self):

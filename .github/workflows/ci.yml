@@ -14,20 +14,20 @@ jobs:
   lint:
     name: Lint & Format Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      
+        uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
       
       - name: Install linting tools
         run: |
-          pip install black==24.0.0 flake8==7.0.0 isort==5.13.0 mypy==1.8.0
+          pip install black==24.8.0 flake8==7.0.0 isort==5.13.0 mypy==1.8.0
       
       - name: Check code formatting with Black
         run: |
@@ -35,7 +35,7 @@ jobs:
       
       - name: Check import sorting with isort
         run: |
-          isort --check-only backend/app
+          isort --check-only --profile black backend/app
       
       - name: Lint with flake8
         run: |
@@ -53,7 +53,7 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15-alpine
@@ -68,7 +68,7 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-      
+
       redis:
         image: redis:7-alpine
         options: >-
@@ -78,13 +78,13 @@ jobs:
           --health-retries 5
         ports:
           - 6379:6379
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      
+        uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -93,7 +93,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r backend/requirements/base.txt
-          pip install pytest==8.3.3 pytest-cov==5.0.0 pytest-asyncio==0.23.0
+          pip install pytest==8.3.3 pytest-cov==5.0.0 pytest-asyncio==0.24.0
       
       - name: Run tests with coverage
         env:
@@ -116,10 +116,10 @@ jobs:
   security:
     name: Security Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Run Bandit security linter
         uses: tj-actions/bandit@v5.5
@@ -134,16 +134,16 @@ jobs:
   build:
     name: Build Docker Image
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      
+        uses: actions/checkout@v4
+
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       
       - name: Build backend image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./backend
           file: ./infrastructure/docker/backend/Dockerfile.dev

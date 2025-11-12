@@ -6,23 +6,24 @@ with rule-based understanding of Arabic prosody. It generates valid patterns
 from rules and validates against them.
 """
 
-from typing import List, Dict, Optional, Tuple, Set
 from dataclasses import dataclass
 from enum import Enum
+from typing import Dict, List, Optional, Set, Tuple
 
-from .meters import Meter, METERS_REGISTRY
+from .disambiguation import disambiguate_tied_results
+from .meters import METERS_REGISTRY, Meter
 from .pattern_generator import PatternGenerator
 from .tafila import Tafila
-from .disambiguation import disambiguate_tied_results
 
 
 class MatchQuality(Enum):
     """Quality of meter match."""
-    EXACT = "exact"           # Perfect match with base pattern
-    STRONG = "strong"         # Match with common zihafat
-    MODERATE = "moderate"     # Match with rare zihafat
-    WEAK = "weak"            # Match with very rare zihafat
-    NO_MATCH = "no_match"    # No valid match found
+
+    EXACT = "exact"  # Perfect match with base pattern
+    STRONG = "strong"  # Match with common zihafat
+    MODERATE = "moderate"  # Match with rare zihafat
+    WEAK = "weak"  # Match with very rare zihafat
+    NO_MATCH = "no_match"  # No valid match found
 
 
 @dataclass
@@ -41,6 +42,7 @@ class DetectionResult:
         transformations: List of transformations applied at each position
         explanation: Human-readable explanation
     """
+
     meter_id: int
     meter_name_ar: str
     meter_name_en: str
@@ -98,7 +100,7 @@ class BahrDetectorV2:
         self,
         phonetic_pattern: str,
         top_k: int = 3,
-        expected_meter_ar: Optional[str] = None
+        expected_meter_ar: Optional[str] = None,
     ) -> List[DetectionResult]:
         """
         Detect meter(s) for a phonetic pattern.
@@ -127,10 +129,14 @@ class BahrDetectorV2:
 
         # Sort by confidence (descending), then by tier (ascending - prefer common meters)
         # This provides tie-breaking for meters with identical patterns (e.g., المتدارك vs المتقارب)
-        candidates.sort(key=lambda x: (-x.confidence, self.meters[x.meter_id].tier.value))
+        candidates.sort(
+            key=lambda x: (-x.confidence, self.meters[x.meter_id].tier.value)
+        )
 
         # Apply disambiguation rules for tied results
-        candidates = disambiguate_tied_results(candidates, phonetic_pattern, expected_meter_ar)
+        candidates = disambiguate_tied_results(
+            candidates, phonetic_pattern, expected_meter_ar
+        )
 
         # Return top K
         return candidates[:top_k]
@@ -149,9 +155,7 @@ class BahrDetectorV2:
         return results[0] if results else None
 
     def _match_meter(
-        self,
-        phonetic_pattern: str,
-        meter: Meter
+        self, phonetic_pattern: str, meter: Meter
     ) -> Optional[DetectionResult]:
         """
         Try to match pattern against a specific meter.
@@ -177,15 +181,11 @@ class BahrDetectorV2:
 
         return None
 
-    def _create_exact_match_result(
-        self,
-        pattern: str,
-        meter: Meter
-    ) -> DetectionResult:
+    def _create_exact_match_result(self, pattern: str, meter: Meter) -> DetectionResult:
         """Create result for exact pattern match."""
         # Determine if it's the base pattern
         base_pattern = meter.base_pattern
-        is_base = (pattern == base_pattern)
+        is_base = pattern == base_pattern
 
         # Get transformations with tracking
         generator = self.generators[meter.id]
@@ -203,17 +203,11 @@ class BahrDetectorV2:
 
         # Calculate confidence (exact matches get high confidence)
         confidence = self._calculate_confidence(
-            match_quality,
-            is_exact=True,
-            meter_tier=meter.tier
+            match_quality, is_exact=True, meter_tier=meter.tier
         )
 
         # Create explanation
-        explanation = self._create_explanation(
-            meter,
-            transformations,
-            is_base
-        )
+        explanation = self._create_explanation(meter, transformations, is_base)
 
         return DetectionResult(
             meter_id=meter.id,
@@ -228,10 +222,7 @@ class BahrDetectorV2:
         )
 
     def _find_close_match(
-        self,
-        pattern: str,
-        valid_patterns: Set[str],
-        meter: Meter
+        self, pattern: str, valid_patterns: Set[str], meter: Meter
     ) -> Optional[DetectionResult]:
         """
         Find close match allowing for minor variations.
@@ -266,9 +257,7 @@ class BahrDetectorV2:
 
             # Reduce confidence for approximate matches
             base_confidence = self._calculate_confidence(
-                match_quality,
-                is_exact=False,
-                meter_tier=meter.tier
+                match_quality, is_exact=False, meter_tier=meter.tier
             )
             confidence = base_confidence * best_similarity
 
@@ -277,7 +266,7 @@ class BahrDetectorV2:
                 transformations,
                 is_base=False,
                 is_approximate=True,
-                similarity=best_similarity
+                similarity=best_similarity,
             )
 
             return DetectionResult(
@@ -295,9 +284,7 @@ class BahrDetectorV2:
         return None
 
     def _assess_match_quality(
-        self,
-        transformations: List[str],
-        meter: Meter
+        self, transformations: List[str], meter: Meter
     ) -> MatchQuality:
         """
         Assess quality of match based on transformations used.
@@ -315,7 +302,9 @@ class BahrDetectorV2:
 
         # Check frequency of transformations used
         has_rare = any("rare" in t.lower() for t in transformations if t != "base")
-        has_very_rare = any("very_rare" in t.lower() for t in transformations if t != "base")
+        has_very_rare = any(
+            "very_rare" in t.lower() for t in transformations if t != "base"
+        )
 
         non_base_count = sum(1 for t in transformations if t != "base")
 
@@ -327,10 +316,7 @@ class BahrDetectorV2:
             return MatchQuality.STRONG
 
     def _calculate_confidence(
-        self,
-        match_quality: MatchQuality,
-        is_exact: bool,
-        meter_tier
+        self, match_quality: MatchQuality, is_exact: bool, meter_tier
     ) -> float:
         """
         Calculate confidence score.
@@ -374,6 +360,7 @@ class BahrDetectorV2:
 
         # Slight boost for common meters (Tier 1)
         from .meters import MeterTier
+
         if meter_tier == MeterTier.TIER_1:
             base_score = min(1.0, base_score * 1.02)
 
@@ -402,6 +389,7 @@ class BahrDetectorV2:
         # This handles insertions, deletions, and substitutions better than
         # simple character-by-character matching
         from difflib import SequenceMatcher
+
         return SequenceMatcher(None, pattern1, pattern2).ratio()
 
     def _create_explanation(
@@ -410,7 +398,7 @@ class BahrDetectorV2:
         transformations: List[str],
         is_base: bool,
         is_approximate: bool = False,
-        similarity: float = 1.0
+        similarity: float = 1.0,
     ) -> str:
         """
         Create human-readable explanation of the match.
@@ -435,7 +423,9 @@ class BahrDetectorV2:
             explanation = f"مطابقة تامة | Exact match with {meter.name_en}"
         else:
             trans_list = ", ".join(non_base)
-            explanation = f"مطابقة مع زحافات: {trans_list} | Match with variations: {trans_list}"
+            explanation = (
+                f"مطابقة مع زحافات: {trans_list} | Match with variations: {trans_list}"
+            )
 
         if is_approximate:
             explanation += f" (تقريبية {similarity:.1%} | approximate {similarity:.1%})"
@@ -453,6 +443,7 @@ class BahrDetectorV2:
 
         patterns_by_tier = {}
         from .meters import MeterTier
+
         for tier in MeterTier:
             tier_patterns = sum(
                 len(self.pattern_cache[m.id])
@@ -519,10 +510,7 @@ def detect_meter(phonetic_pattern: str) -> Optional[DetectionResult]:
     return detector.detect_best(phonetic_pattern)
 
 
-def detect_meters_top_k(
-    phonetic_pattern: str,
-    top_k: int = 3
-) -> List[DetectionResult]:
+def detect_meters_top_k(phonetic_pattern: str, top_k: int = 3) -> List[DetectionResult]:
     """
     Convenience function to detect top K meters.
 

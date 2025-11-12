@@ -16,7 +16,9 @@ import json
 from pathlib import Path
 from typing import Optional, List, Tuple
 
-sys.path.insert(0, '/home/user/BAHR/backend')
+# Add backend to path
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / 'backend'))
 
 from app.core.prosody.detector_v2 import BahrDetectorV2
 from app.core.prosody.meters import get_meter_by_name
@@ -229,8 +231,19 @@ def precompute_patterns(
 
 
 def main():
-    golden_set_path = Path('/home/user/BAHR/dataset/evaluation/golden_set_v1_0_mutadarik.jsonl')
-    output_path = Path('/home/user/BAHR/dataset/evaluation/golden_set_v1_0_with_patterns.jsonl')
+    import argparse
+    parser = argparse.ArgumentParser(description='Precompute prosodic patterns for golden set')
+    parser.add_argument('--file', type=str, help='Input JSONL file')
+    parser.add_argument('--output', type=str, help='Output JSONL file (defaults to input file)')
+    args = parser.parse_args()
+
+    if args.file:
+        golden_set_path = Path(args.file)
+        output_path = Path(args.output) if args.output else golden_set_path
+    else:
+        # Default paths
+        golden_set_path = PROJECT_ROOT / 'dataset/evaluation/golden_set_v1_0_with_patterns.jsonl'
+        output_path = golden_set_path
 
     if not golden_set_path.exists():
         print(f"Error: Golden set not found at {golden_set_path}")

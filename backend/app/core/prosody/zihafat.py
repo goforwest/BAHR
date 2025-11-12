@@ -8,6 +8,7 @@ They modify base tafa'il according to strict classical prosody rules.
 from dataclasses import dataclass
 from enum import Enum
 from typing import Callable, List, Optional, Set
+
 from .tafila import Tafila
 
 
@@ -30,20 +31,21 @@ class ZahafType(Enum):
     - KHAZL: Idmar + Tayy (خزل)
     - SHAKL: Khabn + Kaff (شكل)
     """
+
     # Single Zihafat
-    KHABN = "خبن"      # Remove 2nd sakin
-    TAYY = "طي"        # Remove 4th sakin
-    QABD = "قبض"       # Remove 5th sakin
-    KAFF = "كف"        # Remove 7th sakin
-    WAQS = "وقص"       # Remove 2nd mutaharrik
-    ASB = "عصب"        # Remove 5th mutaharrik
-    AQL = "عقل"        # Remove 5th sakin (variant)
-    IDMAR = "إضمار"    # Make 2nd letter sakin
+    KHABN = "خبن"  # Remove 2nd sakin
+    TAYY = "طي"  # Remove 4th sakin
+    QABD = "قبض"  # Remove 5th sakin
+    KAFF = "كف"  # Remove 7th sakin
+    WAQS = "وقص"  # Remove 2nd mutaharrik
+    ASB = "عصب"  # Remove 5th mutaharrik
+    AQL = "عقل"  # Remove 5th sakin (variant)
+    IDMAR = "إضمار"  # Make 2nd letter sakin
 
     # Double Zihafat
-    KHABL = "خبل"      # Khabn + Tayy
-    KHAZL = "خزل"      # Idmar + Tayy
-    SHAKL = "شكل"      # Khabn + Kaff
+    KHABL = "خبل"  # Khabn + Tayy
+    KHAZL = "خزل"  # Idmar + Tayy
+    SHAKL = "شكل"  # Khabn + Kaff
 
 
 @dataclass
@@ -139,10 +141,11 @@ class Zahaf:
 # Transformation Functions
 # ============================================================================
 
+
 def remove_at_index(pattern: str, index: int) -> str:
     """Remove character at specific index."""
     if 0 <= index < len(pattern):
-        return pattern[:index] + pattern[index + 1:]
+        return pattern[:index] + pattern[index + 1 :]
     return pattern
 
 
@@ -156,7 +159,7 @@ def khabn_transform(pattern: str) -> str:
     # General case: Find and remove 2nd sakin (o)
     sakin_count = 0
     for i, char in enumerate(pattern):
-        if char == 'o':
+        if char == "o":
             sakin_count += 1
             if sakin_count == 2:
                 return remove_at_index(pattern, i)
@@ -167,7 +170,7 @@ def tayy_transform(pattern: str) -> str:
     """طي - Remove 4th sakin."""
     sakin_count = 0
     for i, char in enumerate(pattern):
-        if char == 'o':
+        if char == "o":
             sakin_count += 1
             if sakin_count == 4:
                 return remove_at_index(pattern, i)
@@ -179,12 +182,12 @@ def qabd_transform(pattern: str) -> str:
     # For patterns like /o//o → /o//
     sakin_count = 0
     for i, char in enumerate(pattern):
-        if char == 'o':
+        if char == "o":
             sakin_count += 1
             if sakin_count == 5:
                 return remove_at_index(pattern, i)
     # If less than 5 sakins, remove last one
-    last_o = pattern.rfind('o')
+    last_o = pattern.rfind("o")
     if last_o != -1:
         return remove_at_index(pattern, last_o)
     return pattern
@@ -194,7 +197,7 @@ def kaff_transform(pattern: str) -> str:
     """كف - Remove 7th sakin."""
     sakin_count = 0
     for i, char in enumerate(pattern):
-        if char == 'o':
+        if char == "o":
             sakin_count += 1
             if sakin_count == 7:
                 return remove_at_index(pattern, i)
@@ -205,7 +208,7 @@ def waqs_transform(pattern: str) -> str:
     """وقص - Remove 2nd mutaharrik (/)."""
     haraka_count = 0
     for i, char in enumerate(pattern):
-        if char == '/':
+        if char == "/":
             haraka_count += 1
             if haraka_count == 2:
                 return remove_at_index(pattern, i)
@@ -216,7 +219,7 @@ def asb_transform(pattern: str) -> str:
     """عصب - Remove 5th mutaharrik."""
     haraka_count = 0
     for i, char in enumerate(pattern):
-        if char == '/':
+        if char == "/":
             haraka_count += 1
             if haraka_count == 5:
                 return remove_at_index(pattern, i)
@@ -228,10 +231,10 @@ def idmar_transform(pattern: str) -> str:
     # ///o//o → //o//o (2nd / becomes o)
     slash_count = 0
     for i, char in enumerate(pattern):
-        if char == '/':
+        if char == "/":
             slash_count += 1
             if slash_count == 2:
-                return pattern[:i] + 'o' + pattern[i + 1:]
+                return pattern[:i] + "o" + pattern[i + 1 :]
     return pattern
 
 
@@ -269,7 +272,7 @@ KHABN = Zahaf(
     transformation=khabn_transform,
     is_double=False,
     allowed_meters={3, 5, 6, 7, 8, 9, 10, 11, 13, 16},  # البسيط, الرجز, الخفيف, etc.
-    frequency="common"
+    frequency="common",
 )
 
 # طي - Common in several meters
@@ -281,7 +284,7 @@ TAYY = Zahaf(
     transformation=tayy_transform,
     is_double=False,
     allowed_meters={3, 5, 7, 8, 10, 12},  # البسيط, الرجز, الخفيف, السريع
-    frequency="common"
+    frequency="common",
 )
 
 # قبض - Common in الطويل, الهزج, المتقارب
@@ -293,7 +296,7 @@ QABD = Zahaf(
     transformation=qabd_transform,
     is_double=False,
     allowed_meters={1, 6, 9, 12, 15},  # الطويل, الهزج, المتقارب
-    frequency="common"
+    frequency="common",
 )
 
 # كف - Less common
@@ -305,7 +308,7 @@ KAFF = Zahaf(
     transformation=kaff_transform,
     is_double=False,
     allowed_meters={1, 4, 6, 9},  # الطويل, الرمل, الهزج, المديد
-    frequency="rare"
+    frequency="rare",
 )
 
 # وقص - Rare
@@ -317,7 +320,7 @@ WAQS = Zahaf(
     transformation=waqs_transform,
     is_double=False,
     allowed_meters={2},  # الكامل
-    frequency="rare"
+    frequency="rare",
 )
 
 # عصب - Used in الوافر
@@ -329,7 +332,7 @@ ASB = Zahaf(
     transformation=asb_transform,
     is_double=False,
     allowed_meters={4},  # الوافر
-    frequency="common"
+    frequency="common",
 )
 
 # إضمار - Very common in الكامل
@@ -341,7 +344,7 @@ IDMAR = Zahaf(
     transformation=idmar_transform,
     is_double=False,
     allowed_meters={2},  # الكامل
-    frequency="very_common"
+    frequency="very_common",
 )
 
 # خبل - Double zahaf (Khabn + Tayy)
@@ -353,7 +356,7 @@ KHABL = Zahaf(
     transformation=khabl_transform,
     is_double=True,
     allowed_meters={3, 5, 7},  # البسيط, الرجز, الخفيف
-    frequency="rare"
+    frequency="rare",
 )
 
 # خزل - Double zahaf (Idmar + Tayy)
@@ -365,7 +368,7 @@ KHAZL = Zahaf(
     transformation=khazl_transform,
     is_double=True,
     allowed_meters={2},  # الكامل
-    frequency="very_rare"
+    frequency="very_rare",
 )
 
 # شكل - Double zahaf (Khabn + Kaff)
@@ -377,7 +380,7 @@ SHAKL = Zahaf(
     transformation=shakl_transform,
     is_double=True,
     allowed_meters={4, 6},  # الرمل, المديد
-    frequency="very_rare"
+    frequency="very_rare",
 )
 
 
@@ -412,7 +415,8 @@ def get_zihafat_for_meter(meter_id: int) -> List[Zahaf]:
         List of Zahaf objects allowed for this meter
     """
     return [
-        zahaf for zahaf in ZIHAFAT_REGISTRY.values()
+        zahaf
+        for zahaf in ZIHAFAT_REGISTRY.values()
         if zahaf.can_apply_to_meter(meter_id)
     ]
 

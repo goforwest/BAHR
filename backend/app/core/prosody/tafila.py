@@ -7,7 +7,7 @@ Each taf'ila has a specific phonetic pattern and prosodic structure.
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List
+from typing import List, Optional
 
 
 class TafilaStructure(Enum):
@@ -18,12 +18,15 @@ class TafilaStructure(Enum):
     - SABAB: Two-letter unit (سبب)
     - WATAD: Three-letter unit (وتد)
     """
+
     SABAB_KHAFIF = "sabab_khafif"  # ب خ - Two letters: mut., sakin (e.g., "فَعْ")
     SABAB_THAQIL = "sabab_thaqil"  # ب ث - Two letters: mut., mut. (e.g., "فَعَ")
-    WATAD_MAJMU = "watad_majmu"    # و م - Three letters: mut., mut., sakin (e.g., "فَعُولْ")
-    WATAD_MAFRUQ = "watad_mafruq"  # و ف - Three letters: mut., sakin, mut. (e.g., "فَاعِ")
-    FASILA = "fasila"              # فاصلة - Four or five letters
-    COMPLEX = "complex"            # Mixed structure
+    WATAD_MAJMU = "watad_majmu"  # و م - Three letters: mut., mut., sakin (e.g., "فَعُولْ")
+    WATAD_MAFRUQ = (
+        "watad_mafruq"  # و ف - Three letters: mut., sakin, mut. (e.g., "فَاعِ")
+    )
+    FASILA = "fasila"  # فاصلة - Four or five letters
+    COMPLEX = "complex"  # Mixed structure
 
 
 @dataclass(frozen=True)
@@ -46,10 +49,10 @@ class Tafila:
         /o//o
     """
 
-    name: str                           # Arabic name (e.g., "فعولن")
-    phonetic: str                       # Phonetic pattern (e.g., "/o//o")
-    structure: str                      # Description (e.g., "sabab+watad")
-    syllable_count: int                 # Number of syllables
+    name: str  # Arabic name (e.g., "فعولن")
+    phonetic: str  # Phonetic pattern (e.g., "/o//o")
+    structure: str  # Description (e.g., "sabab+watad")
+    syllable_count: int  # Number of syllables
     components: Optional[List[TafilaStructure]] = None  # Prosodic components
 
     def __post_init__(self):
@@ -62,8 +65,10 @@ class Tafila:
             raise ValueError("Tafila must have at least 1 syllable")
 
         # Validate phonetic pattern contains only '/' and 'o'
-        if not all(c in '/o' for c in self.phonetic):
-            raise ValueError(f"Invalid phonetic pattern: {self.phonetic}. Must contain only '/' and 'o'")
+        if not all(c in "/o" for c in self.phonetic):
+            raise ValueError(
+                f"Invalid phonetic pattern: {self.phonetic}. Must contain only '/' and 'o'"
+            )
 
     def __str__(self) -> str:
         """String representation (Arabic name)."""
@@ -95,12 +100,12 @@ class Tafila:
     @property
     def harakat_count(self) -> int:
         """Count of harakat (/) in pattern."""
-        return self.phonetic.count('/')
+        return self.phonetic.count("/")
 
     @property
     def sukunat_count(self) -> int:
         """Count of sukunat (o) in pattern."""
-        return self.phonetic.count('o')
+        return self.phonetic.count("o")
 
     def matches_pattern(self, pattern: str) -> bool:
         """
@@ -132,7 +137,8 @@ class Tafila:
             return 1.0
 
         matches = sum(
-            1 for i in range(min(len(self.phonetic), len(pattern)))
+            1
+            for i in range(min(len(self.phonetic), len(pattern)))
             if self.phonetic[i] == pattern[i]
         )
 
@@ -168,85 +174,104 @@ TAFAIL_BASE = {
         phonetic="/o//o",
         structure="sabab+watad",
         syllable_count=3,
-        components=[TafilaStructure.SABAB_KHAFIF, TafilaStructure.WATAD_MAJMU]
+        components=[TafilaStructure.SABAB_KHAFIF, TafilaStructure.WATAD_MAJMU],
     ),
-
     # Used in: الطويل, الهزج, المضارع
     "مفاعيلن": Tafila(
         name="مفاعيلن",
         phonetic="//o/o/o",
         structure="sabab+sabab+watad",
         syllable_count=4,
-        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.SABAB_KHAFIF, TafilaStructure.WATAD_MAJMU]
+        components=[
+            TafilaStructure.SABAB_THAQIL,
+            TafilaStructure.SABAB_KHAFIF,
+            TafilaStructure.WATAD_MAJMU,
+        ],
     ),
-
     # Used in: المديد, البسيط, السريع, المتدارك
     "فاعلن": Tafila(
         name="فاعلن",
         phonetic="/o//o",
         structure="watad+sabab",
         syllable_count=3,
-        components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF]
+        components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF],
     ),
-
     # Used in: الكامل
     "متفاعلن": Tafila(
         name="متفاعلن",
         phonetic="///o//o",
         structure="sabab+sabab+watad",
         syllable_count=4,
-        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
+        components=[
+            TafilaStructure.SABAB_THAQIL,
+            TafilaStructure.SABAB_THAQIL,
+            TafilaStructure.WATAD_MAJMU,
+        ],
     ),
-
     # Used in: الرجز, البسيط, السريع, المنسرح, الخفيف, المجتث
     "مستفعلن": Tafila(
         name="مستفعلن",
         phonetic="/o/o//o",
         structure="sabab+sabab+watad",
         syllable_count=4,
-        components=[TafilaStructure.SABAB_KHAFIF, TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
+        components=[
+            TafilaStructure.SABAB_KHAFIF,
+            TafilaStructure.SABAB_THAQIL,
+            TafilaStructure.WATAD_MAJMU,
+        ],
     ),
-
     # Used in: المنسرح, المقتضب
     "مفعولات": Tafila(
         name="مفعولات",
         phonetic="/o/o/o/",
         structure="watad_mafruq+sabab+sabab",
         syllable_count=4,
-        components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF, TafilaStructure.SABAB_THAQIL]
+        components=[
+            TafilaStructure.WATAD_MAFRUQ,
+            TafilaStructure.SABAB_KHAFIF,
+            TafilaStructure.SABAB_THAQIL,
+        ],
     ),
-
     # Used in: الرمل, المديد, الخفيف, المجتث, المضارع
     "فاعلاتن": Tafila(
         name="فاعلاتن",
         phonetic="/o//o/o",
         structure="watad+sabab+sabab",
         syllable_count=4,
-        components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF, TafilaStructure.SABAB_KHAFIF]
+        components=[
+            TafilaStructure.WATAD_MAFRUQ,
+            TafilaStructure.SABAB_KHAFIF,
+            TafilaStructure.SABAB_KHAFIF,
+        ],
     ),
-
     # Used in: الوافر
     "مفاعلتن": Tafila(
         name="مفاعلتن",
         phonetic="//o///o",
         structure="sabab+sabab+sabab+watad",
         syllable_count=4,
-        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.SABAB_KHAFIF, TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
+        components=[
+            TafilaStructure.SABAB_THAQIL,
+            TafilaStructure.SABAB_KHAFIF,
+            TafilaStructure.SABAB_THAQIL,
+            TafilaStructure.WATAD_MAJMU,
+        ],
     ),
-
     # Used in: المنسرح (rare)
     "مفتعلن": Tafila(
         name="مفتعلن",
         phonetic="/o/o//o",
         structure="sabab+sabab+watad",
         syllable_count=4,
-        components=[TafilaStructure.SABAB_KHAFIF, TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
+        components=[
+            TafilaStructure.SABAB_KHAFIF,
+            TafilaStructure.SABAB_THAQIL,
+            TafilaStructure.WATAD_MAJMU,
+        ],
     ),
-
     # ============================================================================
     # Commonly Used Modified Forms (from Zihafat/Ilal)
     # ============================================================================
-
     # فعلن - Modified form of فاعلن (with حذف - removing last sabab)
     # Used in final position in many meters
     "فعلن": Tafila(
@@ -254,9 +279,8 @@ TAFAIL_BASE = {
         phonetic="//o",
         structure="sabab+watad_modified",
         syllable_count=2,
-        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
+        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU],
     ),
-
     # فعِلن - Alternative notation: Modified form of فاعلن (with خبن)
     # Letter-based notation used in classical prosody texts (especially المتدارك)
     # Represents: فَ (/) + عِ (/) + لُ (/) + نْ (o) = ///o
@@ -265,9 +289,8 @@ TAFAIL_BASE = {
         phonetic="///o",
         structure="three_mutaharrik+sakin",
         syllable_count=4,
-        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.SABAB_THAQIL]
+        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.SABAB_THAQIL],
     ),
-
     # مفاعلن - Modified form of مفاعيلن (with قبض - removing 5th sakin)
     # Very common in الطويل final position
     "مفاعلن": Tafila(
@@ -275,9 +298,12 @@ TAFAIL_BASE = {
         phonetic="//o//o",
         structure="sabab+sabab+watad_modified",
         syllable_count=3,
-        components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU]
+        components=[
+            TafilaStructure.SABAB_THAQIL,
+            TafilaStructure.SABAB_THAQIL,
+            TafilaStructure.WATAD_MAJMU,
+        ],
     ),
-
     # فاعلان - Modified form of فاعلاتن (with حذف)
     # Used in الرمل
     "فاعلان": Tafila(
@@ -285,7 +311,7 @@ TAFAIL_BASE = {
         phonetic="/o//o",
         structure="watad+sabab_modified",
         syllable_count=3,
-        components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF]
+        components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF],
     ),
 }
 

@@ -2,7 +2,8 @@
 Bahr (meter) and Taf'ila models.
 """
 
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, JSON
+from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text
+
 from app.models.base import Base
 
 

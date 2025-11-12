@@ -15,7 +15,7 @@
 # ============================================================================
 pytest==8.3.3
 pytest-cov==5.0.0
-pytest-asyncio==0.23.0
+pytest-asyncio==0.24.0  # Updated from 0.23.0 to fix 'Package' object attribute error
 pytest-mock==3.12.0
 httpx==0.27.2  # For TestClient
 

@@ -9,6 +9,7 @@ position-specific and often mandatory or very common in certain meters.
 from dataclasses import dataclass
 from enum import Enum
 from typing import Callable, List, Optional, Set
+
 from .tafila import Tafila
 
 
@@ -24,12 +25,13 @@ class IlahType(Enum):
     - KASHF: Remove last sakin (كشف)
     - HADHDHAH: Remove half of last watad (حذذ)
     """
-    HADHF = "حذف"        # Remove last sabab
-    QAT = "قطع"          # Make last sakin + remove preceding
-    QASR = "قصر"         # Make last letter sakin
-    BATR = "بتر"         # Remove last sabab + make sakin
-    KASHF = "كشف"        # Remove last sakin
-    HADHDHAH = "حذذ"     # Remove half of last watad
+
+    HADHF = "حذف"  # Remove last sabab
+    QAT = "قطع"  # Make last sakin + remove preceding
+    QASR = "قصر"  # Make last letter sakin
+    BATR = "بتر"  # Remove last sabab + make sakin
+    KASHF = "كشف"  # Remove last sakin
+    HADHDHAH = "حذذ"  # Remove half of last watad
 
 
 @dataclass
@@ -119,6 +121,7 @@ class Ilah:
 # Transformation Functions for 'Ilal
 # ============================================================================
 
+
 def hadhf_transform(pattern: str) -> str:
     """
     حذف - Remove last sabab (last two characters).
@@ -138,7 +141,7 @@ def qat_transform(pattern: str) -> str:
     Logic: Remove second-to-last char, change last to 'o'
     """
     if len(pattern) >= 2:
-        return pattern[:-2] + 'oo'
+        return pattern[:-2] + "oo"
     return pattern
 
 
@@ -148,7 +151,7 @@ def qasr_transform(pattern: str) -> str:
 
     Example: /o//o → /o//
     """
-    if len(pattern) >= 1 and pattern[-1] == 'o':
+    if len(pattern) >= 1 and pattern[-1] == "o":
         return pattern[:-1]
     return pattern
 
@@ -171,9 +174,9 @@ def kashf_transform(pattern: str) -> str:
     Example: /o//o → /o///
     """
     # Find and remove last 'o'
-    last_o = pattern.rfind('o')
+    last_o = pattern.rfind("o")
     if last_o != -1:
-        return pattern[:last_o] + pattern[last_o + 1:]
+        return pattern[:last_o] + pattern[last_o + 1 :]
     return pattern
 
 
@@ -200,7 +203,7 @@ HADHF = Ilah(
     description="Remove last sabab (last two letters)",
     transformation=hadhf_transform,
     allowed_meters={1, 4, 6, 7, 9, 11, 12, 13, 15, 16},  # الرمل, الخفيف, المتقارب, etc.
-    frequency="very_common"
+    frequency="very_common",
 )
 
 # قطع - Less common
@@ -211,7 +214,7 @@ QAT = Ilah(
     description="Make last letter sakin + remove preceding",
     transformation=qat_transform,
     allowed_meters={2, 3, 4, 6, 11, 14},  # الكامل, البسيط, الوافر
-    frequency="rare"
+    frequency="rare",
 )
 
 # قصر - Common in several meters
@@ -222,7 +225,7 @@ QASR = Ilah(
     description="Make last letter sakin (remove final consonant)",
     transformation=qasr_transform,
     allowed_meters={1, 5, 7, 8, 9, 16},  # الطويل, الرجز, السريع, المديد
-    frequency="common"
+    frequency="common",
 )
 
 # بتر - Rare
@@ -233,7 +236,7 @@ BATR = Ilah(
     description="Remove last sabab + make sakin",
     transformation=batr_transform,
     allowed_meters={5, 7},  # الرجز, الخفيف
-    frequency="rare"
+    frequency="rare",
 )
 
 # كشف - Rare
@@ -244,7 +247,7 @@ KASHF = Ilah(
     description="Remove last sakin",
     transformation=kashf_transform,
     allowed_meters={8, 10, 12},  # السريع, المنسرح
-    frequency="rare"
+    frequency="rare",
 )
 
 # حذذ - Very rare
@@ -255,7 +258,7 @@ HADHDHAH = Ilah(
     description="Remove half of last watad",
     transformation=hadhdhah_transform,
     allowed_meters={},  # Very specialized usage
-    frequency="very_rare"
+    frequency="very_rare",
 )
 
 
@@ -286,8 +289,7 @@ def get_ilal_for_meter(meter_id: int) -> List[Ilah]:
         List of Ilah objects allowed for this meter
     """
     return [
-        ilah for ilah in ILAL_REGISTRY.values()
-        if ilah.can_apply_to_meter(meter_id)
+        ilah for ilah in ILAL_REGISTRY.values() if ilah.can_apply_to_meter(meter_id)
     ]
 
 

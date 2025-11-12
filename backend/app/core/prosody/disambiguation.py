@@ -11,8 +11,8 @@ Key ambiguities:
 4. الكامل (3 تفاعيل) vs الرجز - 8.3% overlap
 """
 
-from typing import List, Optional, Tuple
 from dataclasses import dataclass
+from typing import List, Optional, Tuple
 
 
 @dataclass
@@ -28,6 +28,7 @@ class DisambiguationRule:
         confidence_adjustment: Confidence boost for preferred meter (0.0-0.2)
         reason: Explanation for the preference
     """
+
     meter1_ar: str
     meter2_ar: str
     pattern: str
@@ -46,8 +47,8 @@ DISAMBIGUATION_RULES = [
         preferred_meter_ar="المتدارك",  # Prefer the rarer meter when explicitly tagged
         confidence_adjustment=0.05,
         reason="Pattern /o//o/o//o/o//o/o//o appears in both المتدارك (فاعلن×4 with خبن) "
-               "and المتقارب (فعولن×4 with قبض). When both are equal confidence, prefer "
-               "المتدارك as it's rarer and more specific."
+        "and المتقارب (فعولن×4 with قبض). When both are equal confidence, prefer "
+        "المتدارك as it's rarer and more specific.",
     ),
     DisambiguationRule(
         meter1_ar="المتدارك",
@@ -55,7 +56,7 @@ DISAMBIGUATION_RULES = [
         pattern="/o//o/o//o/o//o/o/",  # Another shared pattern
         preferred_meter_ar="المتدارك",
         confidence_adjustment=0.05,
-        reason="Shortened variant of ambiguous pattern"
+        reason="Shortened variant of ambiguous pattern",
     ),
     DisambiguationRule(
         meter1_ar="المتدارك",
@@ -63,9 +64,8 @@ DISAMBIGUATION_RULES = [
         pattern="/o//o/o//o/o//o/o//",
         preferred_meter_ar="المتدارك",
         confidence_adjustment=0.05,
-        reason="Shortened variant of ambiguous pattern"
+        reason="Shortened variant of ambiguous pattern",
     ),
-
     # الخفيف vs الرجز (12.5% overlap)
     DisambiguationRule(
         meter1_ar="الخفيف",
@@ -73,7 +73,7 @@ DISAMBIGUATION_RULES = [
         pattern="/o///o/o/o//o/o///o",  # Shared pattern causing confusion
         preferred_meter_ar="الخفيف",
         confidence_adjustment=0.05,
-        reason="Pattern فاعلاتن مستفعلن فاعلاتن characteristic of الخفيف"
+        reason="Pattern فاعلاتن مستفعلن فاعلاتن characteristic of الخفيف",
     ),
     DisambiguationRule(
         meter1_ar="الخفيف",
@@ -81,9 +81,8 @@ DISAMBIGUATION_RULES = [
         pattern="/o///o/o///o/o///o",  # Three-way confusion
         preferred_meter_ar="الخفيف",
         confidence_adjustment=0.05,
-        reason="Symmetrical pattern suggests الخفيف over الرجز"
+        reason="Symmetrical pattern suggests الخفيف over الرجز",
     ),
-
     # الخفيف vs الرمل (50% overlap!)
     DisambiguationRule(
         meter1_ar="الخفيف",
@@ -91,7 +90,7 @@ DISAMBIGUATION_RULES = [
         pattern="/o///o/o///o/o//",  # Shared pattern
         preferred_meter_ar="الخفيف",  # Prefer based on context
         confidence_adjustment=0.05,
-        reason="Pattern appears in both meters. Prefer الخفيف for standard length verses."
+        reason="Pattern appears in both meters. Prefer الخفيف for standard length verses.",
     ),
     DisambiguationRule(
         meter1_ar="الخفيف",
@@ -99,7 +98,7 @@ DISAMBIGUATION_RULES = [
         pattern="/o//o/o/o///o/o//o/o",
         preferred_meter_ar="الخفيف",
         confidence_adjustment=0.05,
-        reason="Longer variant suggests الخفيف over الرمل"
+        reason="Longer variant suggests الخفيف over الرمل",
     ),
     DisambiguationRule(
         meter1_ar="الخفيف",
@@ -107,9 +106,8 @@ DISAMBIGUATION_RULES = [
         pattern="/o//o/o/o///o/o//",
         preferred_meter_ar="الخفيف",
         confidence_adjustment=0.05,
-        reason="مستفعلن فاعلاتن pattern characteristic of الخفيف"
+        reason="مستفعلن فاعلاتن pattern characteristic of الخفيف",
     ),
-
     # الرمل vs الرجز
     DisambiguationRule(
         meter1_ar="الرمل",
@@ -117,9 +115,8 @@ DISAMBIGUATION_RULES = [
         pattern="/o///o/o///o/o///o",  # Three-way confusion
         preferred_meter_ar="الرمل",
         confidence_adjustment=0.03,
-        reason="Symmetrical triple pattern suggests الرمل"
+        reason="Symmetrical triple pattern suggests الرمل",
     ),
-
     # الرمل vs الخفيف - CRITICAL for golden_039, golden_099, golden_118
     DisambiguationRule(
         meter1_ar="الرمل",
@@ -127,9 +124,8 @@ DISAMBIGUATION_RULES = [
         pattern="/o///o/o///o/o///o",  # Same pattern, but favor الرمل when expected
         preferred_meter_ar="الرمل",
         confidence_adjustment=0.10,  # Strong boost needed (gap is 0.02)
-        reason="Triple فاعلاتن pattern can be الرمل or الخفيف - prefer الرمل for symmetrical verses"
+        reason="Triple فاعلاتن pattern can be الرمل or الخفيف - prefer الرمل for symmetrical verses",
     ),
-
     # المتدارك special cases
     DisambiguationRule(
         meter1_ar="المتدارك",
@@ -137,7 +133,7 @@ DISAMBIGUATION_RULES = [
         pattern="/o//o///o///o/o//",  # golden_174
         preferred_meter_ar="المتدارك",
         confidence_adjustment=0.10,
-        reason="Mixed pattern with فاعلاتن characteristic of المتدارك variants"
+        reason="Mixed pattern with فاعلاتن characteristic of المتدارك variants",
     ),
     DisambiguationRule(
         meter1_ar="المتدارك",
@@ -145,9 +141,8 @@ DISAMBIGUATION_RULES = [
         pattern="/o//o///o///o/o//",  # golden_174 (also confused with الخفيف)
         preferred_meter_ar="المتدارك",
         confidence_adjustment=0.10,
-        reason="Mixed pattern with فاعلاتن characteristic of المتدارك variants"
+        reason="Mixed pattern with فاعلاتن characteristic of المتدارك variants",
     ),
-
     # الكامل (3 تفاعيل) vs الرجز
     DisambiguationRule(
         meter1_ar="الكامل (3 تفاعيل)",
@@ -155,7 +150,7 @@ DISAMBIGUATION_RULES = [
         pattern="/o/o//o/o/o//o/o/o//o",
         preferred_meter_ar="الكامل (3 تفاعيل)",
         confidence_adjustment=0.15,  # Increased from 0.05 - need strong preference
-        reason="Pattern /o/o/ suggests متفاعلن (الكامل) rather than مستفعلن (الرجز)"
+        reason="Pattern /o/o/ suggests متفاعلن (الكامل) rather than مستفعلن (الرجز)",
     ),
     DisambiguationRule(
         meter1_ar="الكامل (3 تفاعيل)",
@@ -163,7 +158,7 @@ DISAMBIGUATION_RULES = [
         pattern="/o/o//o/o/o//o/o/o/oo",
         preferred_meter_ar="الكامل (3 تفاعيل)",
         confidence_adjustment=0.15,  # Increased from 0.05 - need strong preference
-        reason="Three متفاعلن pattern characteristic of الكامل"
+        reason="Three متفاعلن pattern characteristic of الكامل",
     ),
     # Handle the third pattern variant
     DisambiguationRule(
@@ -172,7 +167,7 @@ DISAMBIGUATION_RULES = [
         pattern="///o//o/o/o//o/o/o//o",
         preferred_meter_ar="الكامل (3 تفاعيل)",
         confidence_adjustment=0.15,
-        reason="متفاعلن متفاعلن متفاعلن pattern of الكامل"
+        reason="متفاعلن متفاعلن متفاعلن pattern of الكامل",
     ),
 ]
 
@@ -186,9 +181,7 @@ for rule in DISAMBIGUATION_RULES:
 
 
 def find_disambiguation_rule(
-    meter1_ar: str,
-    meter2_ar: str,
-    pattern: str
+    meter1_ar: str, meter2_ar: str, pattern: str
 ) -> Optional[DisambiguationRule]:
     """
     Find disambiguation rule for two meters with a specific pattern.
@@ -212,9 +205,7 @@ def find_disambiguation_rule(
 
 
 def disambiguate_tied_results(
-    results: List,
-    input_pattern: str,
-    expected_meter_ar: Optional[str] = None
+    results: List, input_pattern: str, expected_meter_ar: Optional[str] = None
 ) -> List:
     """
     Apply disambiguation rules to tied detection results.
@@ -238,7 +229,9 @@ def disambiguate_tied_results(
     # When expected_meter is used, ONLY boost the expected meter (don't run normal tie-breaking)
     if expected_meter_ar:
         # Find the expected meter in results
-        expected_result = next((r for r in results if r.meter_name_ar == expected_meter_ar), None)
+        expected_result = next(
+            (r for r in results if r.meter_name_ar == expected_meter_ar), None
+        )
 
         if expected_result:
             # Find the BEST (highest boost) disambiguation rule for expected meter
@@ -248,9 +241,7 @@ def disambiguate_tied_results(
             for other_result in results:
                 if other_result.meter_name_ar != expected_meter_ar:
                     rule = find_disambiguation_rule(
-                        expected_meter_ar,
-                        other_result.meter_name_ar,
-                        input_pattern
+                        expected_meter_ar, other_result.meter_name_ar, input_pattern
                     )
 
                     if rule and rule.confidence_adjustment > best_boost:
@@ -273,11 +264,9 @@ def disambiguate_tied_results(
     if len(tied_results) >= 2:
         # Check each pair of tied results for disambiguation rules
         for i, result1 in enumerate(tied_results):
-            for result2 in tied_results[i+1:]:
+            for result2 in tied_results[i + 1 :]:
                 rule = find_disambiguation_rule(
-                    result1.meter_name_ar,
-                    result2.meter_name_ar,
-                    input_pattern
+                    result1.meter_name_ar, result2.meter_name_ar, input_pattern
                 )
 
                 if rule:
@@ -285,7 +274,10 @@ def disambiguate_tied_results(
                     preferred_meter = rule.preferred_meter_ar
 
                     # If we have expected meter, prefer that when tied
-                    if expected_meter_ar and expected_meter_ar in {result1.meter_name_ar, result2.meter_name_ar}:
+                    if expected_meter_ar and expected_meter_ar in {
+                        result1.meter_name_ar,
+                        result2.meter_name_ar,
+                    }:
                         preferred_meter = expected_meter_ar
 
                     # Boost preferred meter
@@ -294,7 +286,9 @@ def disambiguate_tied_results(
                             result.confidence += rule.confidence_adjustment
                             # Add explanation
                             if "Disambiguation" not in result.explanation:
-                                result.explanation += f" [Disambiguation: {rule.reason}]"
+                                result.explanation += (
+                                    f" [Disambiguation: {rule.reason}]"
+                                )
 
     # Re-sort by confidence
     results.sort(key=lambda x: -x.confidence)
@@ -310,25 +304,25 @@ def get_ambiguous_pattern_stats() -> dict:
         Dictionary with stats about disambiguation rules
     """
     stats = {
-        'total_rules': len(DISAMBIGUATION_RULES),
-        'unique_patterns': len(PATTERN_TO_RULES),
-        'meter_pairs': set()
+        "total_rules": len(DISAMBIGUATION_RULES),
+        "unique_patterns": len(PATTERN_TO_RULES),
+        "meter_pairs": set(),
     }
 
     for rule in DISAMBIGUATION_RULES:
         pair = tuple(sorted([rule.meter1_ar, rule.meter2_ar]))
-        stats['meter_pairs'].add(pair)
+        stats["meter_pairs"].add(pair)
 
-    stats['meter_pairs'] = list(stats['meter_pairs'])
+    stats["meter_pairs"] = list(stats["meter_pairs"])
 
     return stats
 
 
 if __name__ == "__main__":
     # Demo
-    print("="*80)
+    print("=" * 80)
     print("DISAMBIGUATION RULES")
-    print("="*80)
+    print("=" * 80)
     print()
 
     stats = get_ambiguous_pattern_stats()
@@ -338,7 +332,7 @@ if __name__ == "__main__":
     print()
 
     print("Meter pairs:")
-    for pair in stats['meter_pairs']:
+    for pair in stats["meter_pairs"]:
         print(f"  - {pair[0]} ↔ {pair[1]}")
     print()
 
@@ -346,5 +340,7 @@ if __name__ == "__main__":
     for i, rule in enumerate(DISAMBIGUATION_RULES[:3], 1):
         print(f"\n{i}. {rule.meter1_ar} vs {rule.meter2_ar}")
         print(f"   Pattern: {rule.pattern}")
-        print(f"   Preferred: {rule.preferred_meter_ar} (+{rule.confidence_adjustment})")
+        print(
+            f"   Preferred: {rule.preferred_meter_ar} (+{rule.confidence_adjustment})"
+        )
         print(f"   Reason: {rule.reason}")

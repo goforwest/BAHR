@@ -2,12 +2,14 @@
 Redis caching utilities for the BAHR API.
 """
 
-import json
 import hashlib
-from typing import Optional, Any
-from redis.asyncio import Redis, from_url
-from app.config import settings
+import json
 import logging
+from typing import Any, Optional
+
+from redis.asyncio import Redis, from_url
+
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -18,16 +20,14 @@ _redis_client: Optional[Redis] = None
 async def get_redis() -> Redis:
     """
     Get or create Redis connection.
-    
+
     Returns:
         Redis client instance
     """
     global _redis_client
     if _redis_client is None:
         _redis_client = from_url(
-            settings.redis_url,
-            encoding="utf-8",
-            decode_responses=True
+            settings.redis_url, encoding="utf-8", decode_responses=True
         )
     return _redis_client
 
@@ -43,13 +43,13 @@ async def close_redis():
 async def cache_get(key: str) -> Optional[Any]:
     """
     Get value from cache.
-    
+
     Args:
         key: Cache key
-        
+
     Returns:
         Cached value (deserialized from JSON) or None if not found
-        
+
     Example:
         >>> result = await cache_get("analysis:abc123")
     """
@@ -84,15 +84,15 @@ async def cache_get(key: str) -> Optional[Any]:
 async def cache_set(key: str, value: Any, ttl: int = 86400) -> bool:
     """
     Set value in cache with TTL.
-    
+
     Args:
         key: Cache key
         value: Value to cache (will be JSON serialized)
         ttl: Time to live in seconds (default: 24 hours)
-        
+
     Returns:
         True if successful, False otherwise
-        
+
     Example:
         >>> await cache_set("analysis:abc123", {"result": "..."}, ttl=3600)
     """
@@ -103,12 +103,12 @@ async def cache_set(key: str, value: Any, ttl: int = 86400) -> bool:
         except (TypeError, ValueError) as e:
             logger.error(f"Failed to serialize value for key {key}: {e}")
             return False
-        
+
         # Edge case: Validate TTL
         if ttl <= 0:
             logger.warning(f"Invalid TTL {ttl} for key {key}, using default 86400")
             ttl = 86400
-        
+
         await redis.setex(key, ttl, serialized)
         logger.debug(f"Cached key: {key} with TTL: {ttl}s")
         return True
@@ -126,13 +126,13 @@ async def cache_set(key: str, value: Any, ttl: int = 86400) -> bool:
 async def cache_delete(key: str) -> bool:
     """
     Delete value from cache.
-    
+
     Args:
         key: Cache key
-        
+
     Returns:
         True if successful, False otherwise
-        
+
     Example:
         >>> await cache_delete("analysis:abc123")
     """
@@ -146,20 +146,31 @@ async def cache_delete(key: str) -> bool:
         return False
 
 
-def generate_cache_key(text: str) -> str:
+def generate_cache_key(
+    text: str,
+    detect_bahr: bool = True,
+    suggest_corrections: bool = False,
+    analyze_rhyme: bool = True,
+) -> str:
     """
-    Generate cache key from text using SHA256 hash.
-    
+    Generate cache key from text and request parameters using SHA256 hash.
+
     Args:
         text: Normalized text to hash
-        
+        detect_bahr: Whether bahr detection was requested
+        suggest_corrections: Whether corrections were requested
+        analyze_rhyme: Whether rhyme analysis was requested
+
     Returns:
         Cache key string
-        
+
     Example:
-        >>> key = generate_cache_key("إذا غامرت في شرف مروم")
+        >>> key = generate_cache_key("إذا غامرت في شرف مروم", detect_bahr=True)
         >>> key
         'analysis:abc123...'
     """
-    text_hash = hashlib.sha256(text.encode('utf-8')).hexdigest()
+    # Include request parameters in cache key to avoid returning
+    # cached results with different analysis options
+    cache_data = f"{text}|{detect_bahr}|{suggest_corrections}|{analyze_rhyme}"
+    text_hash = hashlib.sha256(cache_data.encode("utf-8")).hexdigest()
     return f"analysis:{text_hash}"
