@@ -1,13 +1,19 @@
 # =============================================================================
 # BAHR - Arabic Poetry Analysis Platform
-# Optimized Multi-stage Dockerfile for Railway Deployment
-# Target: <2GB final image (down from 7.8GB)
+# Ultra-Optimized Dockerfile for Railway - Cache-Busted
+# Target: <1.5GB final image (down from 15GB!)
 # =============================================================================
+
+# Cache buster - change this to force fresh build
+ARG CACHE_BUST=v3
 
 # =============================================================================
 # Stage 1: Builder - Compile dependencies in isolated environment
 # =============================================================================
 FROM python:3.11.10-slim-bookworm AS builder
+
+ARG CACHE_BUST
+RUN echo "Cache bust: ${CACHE_BUST}"
 
 # Prevent Python from writing pyc files and buffering stdout/stderr
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -27,7 +33,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy only requirements files (leverage Docker layer caching)
 WORKDIR /build
-COPY requirements/base.txt requirements/production.txt ./requirements/
+COPY requirements/base.txt ./requirements/base.txt
+COPY requirements/production.txt ./requirements/production.txt
 
 # Install production dependencies with aggressive optimization flags
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
@@ -35,16 +42,20 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     -r requirements/production.txt
 
 # CRITICAL: Strip unnecessary bloat from venv before copying to final image
-RUN find /opt/venv -type d -name "tests" -o -name "test" | xargs rm -rf 2>/dev/null || true && \
-    find /opt/venv -type d -name "__pycache__" | xargs rm -rf 2>/dev/null || true && \
-    find /opt/venv -type f -name "*.pyc" -o -name "*.pyo" -o -name "*.pyd" | xargs rm -f 2>/dev/null || true && \
-    find /opt/venv -type f -name "*.c" -o -name "*.h" | xargs rm -f 2>/dev/null || true && \
-    find /opt/venv -type d -name "*.dist-info" -exec sh -c 'rm -rf "$1"/RECORD "$1"/INSTALLER' _ {} \; 2>/dev/null || true && \
+RUN find /opt/venv -type d \( -name "tests" -o -name "test" -o -name "testing" \) -exec rm -rf {} + 2>/dev/null || true && \
+    find /opt/venv -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
+    find /opt/venv -type f \( -name "*.pyc" -o -name "*.pyo" -o -name "*.pyd" \) -delete && \
+    find /opt/venv -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" \) -delete && \
+    find /opt/venv -name "*.so" -exec strip --strip-unneeded {} + 2>/dev/null || true && \
     rm -rf /opt/venv/lib/python*/site-packages/pip* \
            /opt/venv/lib/python*/site-packages/setuptools* \
            /opt/venv/lib/python*/site-packages/wheel* \
+           /opt/venv/lib/python*/site-packages/*/tests \
+           /opt/venv/lib/python*/site-packages/*/*/tests \
            /opt/venv/share \
-           /root/.cache
+           /opt/venv/include \
+           /root/.cache \
+           /tmp/*
 
 # =============================================================================
 # Stage 2: Production - Minimal runtime-only image

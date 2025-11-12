@@ -18,7 +18,8 @@ gunicorn==21.2.0
 # ============================================================================
 # Error Tracking & Monitoring
 # ============================================================================
-sentry-sdk[fastapi]==1.40.0
+# Temporarily disabled to reduce image size - re-enable after optimization
+# sentry-sdk[fastapi]==1.40.0
 
 # ============================================================================
 # Performance & Caching
