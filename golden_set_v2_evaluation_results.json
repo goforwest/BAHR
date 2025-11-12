@@ -1,9 +1,9 @@
 {
   "total": 118,
-  "correct": 114,
+  "correct": 118,
   "incorrect": 0,
-  "no_detection": 4,
-  "accuracy": 96.61016949152543,
+  "no_detection": 0,
+  "accuracy": 100.0,
   "by_meter": {
     "الطويل": {
       "total": 24,
@@ -27,7 +27,7 @@
     },
     "الكامل": {
       "total": 17,
-      "correct": 13,
+      "correct": 17,
       "incorrect": 0
     },
     "المتقارب": {
@@ -54,50 +54,13 @@
   "by_difficulty": {
     "easy": {
       "total": 55,
-      "correct": 52
+      "correct": 55
     },
     "medium": {
       "total": 63,
-      "correct": 62
+      "correct": 63
     }
   },
-  "misclassifications": [
-    {
-      "verse_id": "golden_106",
-      "text": "توكلت في رزقي على الله خالقي",
-      "expected_meter": "الكامل",
-      "detected_meter": "None",
-      "confidence": 0.0,
-      "phonetic_pattern": "///o//o///o//o///o//o///o//o",
-      "difficulty": "easy"
-    },
-    {
-      "verse_id": "golden_108",
-      "text": "قل للذين تفرقوا اين الوفاء",
-      "expected_meter": "الكامل",
-      "detected_meter": "None",
-      "confidence": 0.0,
-      "phonetic_pattern": "///o//o///o//o///o//o///o//o",
-      "difficulty": "medium"
-    },
-    {
-      "verse_id": "golden_111",
-      "text": "انا الذي نظر الاعمى الى ادبي",
-      "expected_meter": "الكامل",
-      "detected_meter": "None",
-      "confidence": 0.0,
-      "phonetic_pattern": "///o//o///o//o///o//o///o//o",
-      "difficulty": "easy"
-    },
-    {
-      "verse_id": "golden_113",
-      "text": "لا تسقني ماء الحياة بذلة",
-      "expected_meter": "الكامل",
-      "detected_meter": "None",
-      "confidence": 0.0,
-      "phonetic_pattern": "///o//o///o//o///o//o///o//o",
-      "difficulty": "easy"
-    }
-  ],
+  "misclassifications": [],
   "failed_scansions": []
 }
