@@ -35,7 +35,7 @@ jobs:
       
       - name: Check import sorting with isort
         run: |
-          isort --check-only backend/app
+          isort --check-only --profile black backend/app
       
       - name: Lint with flake8
         run: |
