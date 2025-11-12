@@ -30,12 +30,14 @@ COPY requirements.txt ./
 
 # Install Python dependencies to /install prefix
 RUN pip install --upgrade pip setuptools wheel && \
-    # Install CPU-only PyTorch first (saves ~1.5 GB vs CUDA version)
-    pip install --prefix=/install --no-warn-script-location \
-    torch==2.9.0+cpu --index-url https://download.pytorch.org/whl/cpu && \
-    # Install remaining requirements
+    # Install all requirements first (this installs uvicorn and all dependencies)
     pip install --prefix=/install --no-warn-script-location \
     -r requirements/production.txt && \
+    # THEN reinstall PyTorch with CPU-only version to replace CUDA version (saves ~1.5 GB)
+    pip install --prefix=/install --no-warn-script-location --force-reinstall --no-deps \
+    torch==2.9.0+cpu --index-url https://download.pytorch.org/whl/cpu && \
+    # Verify critical packages are installed
+    /usr/local/bin/python -c "import sys; sys.path.insert(0, '/install/lib/python3.11/site-packages'); import uvicorn, fastapi; print('✓ Core packages verified')" && \
     # Remove pip cache and unnecessary files
     rm -rf /root/.cache/pip && \
     find /install -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
@@ -87,12 +89,14 @@ COPY app ./app
 COPY alembic ./alembic
 COPY alembic.ini ./
 
-# Create non-root user
+# Create non-root user and verify installation
 RUN useradd -m -u 1000 -s /bin/sh appuser && \
     chown -R appuser:appuser /app && \
     chmod -R 755 /app && \
     # Clean up any cache
-    find /app -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+    find /app -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
+    # Verify uvicorn is installed and importable (fail build if not)
+    python -c "import uvicorn, fastapi, torch; print('✓ All critical packages available in production image')"
 
 USER appuser
 
