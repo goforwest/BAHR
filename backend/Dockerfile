@@ -29,15 +29,21 @@ COPY requirements/base.txt requirements/production.txt ./requirements/
 COPY requirements.txt ./
 
 # Install Python dependencies to /install prefix
-RUN pip install --upgrade pip setuptools wheel && \
-    # Install all requirements with PyTorch CPU index (standard PyTorch method)
-    pip install --prefix=/install --no-warn-script-location \
-    --extra-index-url https://download.pytorch.org/whl/cpu \
-    torch==2.9.0+cpu && \
+RUN set -e && \
+    pip install --upgrade pip setuptools wheel && \
+    # Install all requirements first (including torch with CUDA by default)
     pip install --prefix=/install --no-warn-script-location \
     -r requirements/production.txt && \
-    # Verify critical packages are installed
-    /usr/local/bin/python -c "import sys; sys.path.insert(0, '/install/lib/python3.11/site-packages'); import uvicorn, fastapi, torch; print('✓ Core packages verified'); print(f'PyTorch: {torch.__version__}')" && \
+    # List what was installed for debugging
+    ls -la /install/lib/python3.11/site-packages/ | head -20 && \
+    # Verify critical packages in builder stage
+    /usr/local/bin/python -c "import sys; sys.path.insert(0, '/install/lib/python3.11/site-packages'); import uvicorn, fastapi; print('✓ Builder: uvicorn and fastapi verified')" && \
+    # NOW replace PyTorch CUDA with CPU-only version (keeps all deps)
+    pip install --prefix=/install --no-warn-script-location --upgrade \
+    --extra-index-url https://download.pytorch.org/whl/cpu \
+    torch==2.9.0+cpu && \
+    # Verify torch is CPU version
+    /usr/local/bin/python -c "import sys; sys.path.insert(0, '/install/lib/python3.11/site-packages'); import torch; print(f'✓ Builder: PyTorch {torch.__version__} installed')" && \
     # Remove pip cache and unnecessary files
     rm -rf /root/.cache/pip && \
     find /install -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
