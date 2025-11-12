@@ -1,0 +1,162 @@
+[
+  {
+    "verse_id": "mutadarik_shamela_001",
+    "status": "FAILED",
+    "is_valid_mutadarik": false,
+    "confidence": 0.0,
+    "errors": [
+      "Pattern does not match any known meter"
+    ],
+    "warnings": [],
+    "checks": {
+      "tafail_count": true,
+      "valid_tafail": true,
+      "zihafat_compliance": true,
+      "ilal_compliance": true,
+      "pattern_match": false,
+      "rajaz_disambiguation": true
+    },
+    "detected_meter": null,
+    "detected_pattern": null,
+    "confusion_risk": {},
+    "disambiguation_notes": "✓ Tafʿīla count = 4 (المتدارك uses 4 تفاعيل, الرجز typically uses 3) | ✓ Tafāʿīl match فاعلن pattern (characteristic of المتدارك) | ✓ Pattern length = 16 syllables (matches 4×فاعلن structure)",
+    "recommendations": [
+      "❌ Verse MUST NOT be added to golden set",
+      "Fix errors before re-submission"
+    ]
+  },
+  {
+    "verse_id": "mutadarik_shamela_002",
+    "status": "FAILED",
+    "is_valid_mutadarik": false,
+    "confidence": 0.0,
+    "errors": [
+      "Pattern does not match any known meter"
+    ],
+    "warnings": [],
+    "checks": {
+      "tafail_count": true,
+      "valid_tafail": true,
+      "zihafat_compliance": true,
+      "ilal_compliance": true,
+      "pattern_match": false,
+      "rajaz_disambiguation": true
+    },
+    "detected_meter": null,
+    "detected_pattern": null,
+    "confusion_risk": {},
+    "disambiguation_notes": "✓ Tafʿīla count = 4 (المتدارك uses 4 تفاعيل, الرجز typically uses 3) | ✓ Tafāʿīl match فاعلن pattern (characteristic of المتدارك) | ✓ Pattern length = 16 syllables (matches 4×فاعلن structure)",
+    "recommendations": [
+      "❌ Verse MUST NOT be added to golden set",
+      "Fix errors before re-submission"
+    ]
+  },
+  {
+    "verse_id": "mutadarik_shamela_003",
+    "status": "FAILED",
+    "is_valid_mutadarik": false,
+    "confidence": 0.0,
+    "errors": [
+      "Pattern does not match any known meter"
+    ],
+    "warnings": [],
+    "checks": {
+      "tafail_count": true,
+      "valid_tafail": true,
+      "zihafat_compliance": true,
+      "ilal_compliance": true,
+      "pattern_match": false,
+      "rajaz_disambiguation": true
+    },
+    "detected_meter": null,
+    "detected_pattern": null,
+    "confusion_risk": {},
+    "disambiguation_notes": "✓ Tafʿīla count = 4 (المتدارك uses 4 تفاعيل, الرجز typically uses 3) | ✓ Tafāʿīl match فاعلن pattern (characteristic of المتدارك) | ✓ Pattern length = 16 syllables (matches 4×فاعلن structure)",
+    "recommendations": [
+      "❌ Verse MUST NOT be added to golden set",
+      "Fix errors before re-submission"
+    ]
+  },
+  {
+    "verse_id": "mutadarik_shamela_004",
+    "status": "FAILED",
+    "is_valid_mutadarik": false,
+    "confidence": 1.0,
+    "errors": [
+      "Pattern does NOT match المتدارك. Detected: المتقارب (confidence: 100.00%)"
+    ],
+    "warnings": [],
+    "checks": {
+      "tafail_count": true,
+      "valid_tafail": true,
+      "zihafat_compliance": true,
+      "ilal_compliance": true,
+      "pattern_match": false,
+      "rajaz_disambiguation": true
+    },
+    "detected_meter": "المتقارب",
+    "detected_pattern": "/o//o/o//o/o//o/o//o",
+    "confusion_risk": {
+      "المتقارب": 1.0,
+      "المتدارك": 1.0
+    },
+    "disambiguation_notes": "✓ Tafʿīla count = 4 (المتدارك uses 4 تفاعيل, الرجز typically uses 3) | ✓ Tafāʿīl match فاعلن pattern (characteristic of المتدارك) | ✓ Detection confidence: المتدارك (100.0%) > الرجز (0.0%)",
+    "recommendations": [
+      "❌ Verse MUST NOT be added to golden set",
+      "Fix errors before re-submission"
+    ]
+  },
+  {
+    "verse_id": "mutadarik_shamela_005",
+    "status": "FAILED",
+    "is_valid_mutadarik": false,
+    "confidence": 0.0,
+    "errors": [
+      "Pattern does not match any known meter"
+    ],
+    "warnings": [],
+    "checks": {
+      "tafail_count": true,
+      "valid_tafail": true,
+      "zihafat_compliance": true,
+      "ilal_compliance": true,
+      "pattern_match": false,
+      "rajaz_disambiguation": true
+    },
+    "detected_meter": null,
+    "detected_pattern": null,
+    "confusion_risk": {},
+    "disambiguation_notes": "✓ Tafʿīla count = 4 (المتدارك uses 4 تفاعيل, الرجز typically uses 3) | ✓ Tafāʿīl match فاعلن pattern (characteristic of المتدارك) | ✓ Pattern length = 16 syllables (matches 4×فاعلن structure)",
+    "recommendations": [
+      "❌ Verse MUST NOT be added to golden set",
+      "Fix errors before re-submission"
+    ]
+  },
+  {
+    "verse_id": "mutadarik_shamela_006",
+    "status": "FAILED",
+    "is_valid_mutadarik": false,
+    "confidence": 0.0,
+    "errors": [
+      "Invalid tafʿīla count: expected 4, got 2",
+      "Pattern does not match any known meter"
+    ],
+    "warnings": [],
+    "checks": {
+      "tafail_count": false,
+      "valid_tafail": true,
+      "zihafat_compliance": true,
+      "ilal_compliance": true,
+      "pattern_match": false,
+      "rajaz_disambiguation": true
+    },
+    "detected_meter": null,
+    "detected_pattern": null,
+    "confusion_risk": {},
+    "disambiguation_notes": "✓ Tafāʿīl match فاعلن pattern (characteristic of المتدارك)",
+    "recommendations": [
+      "❌ Verse MUST NOT be added to golden set",
+      "Fix errors before re-submission"
+    ]
+  }
+]
