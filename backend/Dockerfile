@@ -22,17 +22,27 @@ RUN apt-get update && \
     libpq-dev && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Copy and install Python dependencies
-COPY requirements/base.txt requirements/production.txt ./requirements/
-RUN pip install --no-cache-dir -r requirements/production.txt && \
-    pip uninstall -y pip setuptools wheel && \
-    find /usr/local/lib/python3.11/site-packages -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
-    find /usr/local/lib/python3.11/site-packages -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
-    find /usr/local/lib/python3.11/site-packages -type f -name "*.pyc" -delete && \
-    find /usr/local/lib/python3.11/site-packages -name "*.so" -exec strip --strip-unneeded {} + 2>/dev/null || true && \
+# Copy and install Python dependencies with MAXIMUM cleanup
+COPY requirements/minimal-production.txt ./requirements/
+RUN pip install --no-cache-dir -r requirements/minimal-production.txt && \
+    find /usr/local -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local -type d -name "test" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
+    find /usr/local -type f -name "*.pyc" -o -name "*.pyo" -delete && \
+    find /usr/local -type f -name "*.c" -o -name "*.h" -o -name "*.cpp" -delete && \
+    find /usr/local -name "*.so" -exec strip --strip-unneeded {} + 2>/dev/null || true && \
+    rm -rf /usr/local/lib/python3.11/site-packages/pip* \
+           /usr/local/lib/python3.11/site-packages/setuptools* \
+           /usr/local/lib/python3.11/site-packages/wheel* \
+           /usr/local/lib/python3.11/site-packages/*/tests \
+           /usr/local/lib/python3.11/site-packages/*/*/tests \
+           /usr/local/lib/python3.11/site-packages/*/test \
+           /usr/local/share \
+           /root/.cache && \
     apt-get purge -y gcc libpq-dev && \
     apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.cache
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Copy application code
 COPY app/ ./app/
