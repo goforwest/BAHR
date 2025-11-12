@@ -531,9 +531,51 @@ AL_MUTADARIK = Meter(
     description='البحر السادس عشر، "استدركه الأخفش على الخليل"'
 )
 
+# ============================================================================
+# مجزوء (Majzū') Variants - Shortened Meter Forms
+# ============================================================================
+# These are standard shortened forms of meters with fewer tafāʿīl than the
+# complete (تام) forms. They are widely used in classical and modern poetry.
+
+# 17. مجزوء الكامل (Majzū' al-Kamil) - "Shortened Perfect"
+MAJZU_AL_KAMIL = Meter(
+    id=17,
+    name_ar="الكامل (مجزوء)",
+    name_en="al-Kamil (majzū')",
+    tier=MeterTier.TIER_1,  # Very common variant
+    frequency_rank=17,
+    base_tafail=[
+        TAFAIL_BASE["متفاعلن"],
+        TAFAIL_BASE["متفاعلن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[IDMAR]),
+        2: MeterRules(allowed_zihafat=[IDMAR], allowed_ilal=[HADHF, QAT], is_final=True),
+    },
+    description="النسخة المجزوءة من بحر الكامل (تفعيلتان بدلاً من أربع)"
+)
+
+# 18. مجزوء الهزج (Majzū' al-Hazaj) - "Shortened Trilling"
+MAJZU_AL_HAZAJ = Meter(
+    id=18,
+    name_ar="الهزج (مجزوء)",
+    name_en="al-Hazaj (majzū')",
+    tier=MeterTier.TIER_1,  # Common variant
+    frequency_rank=18,
+    base_tafail=[
+        TAFAIL_BASE["مفاعيلن"],
+        TAFAIL_BASE["مفاعيلن"],
+    ],
+    rules_by_position={
+        1: MeterRules(allowed_zihafat=[QABD, KAFF]),
+        2: MeterRules(allowed_zihafat=[QABD, KAFF], allowed_ilal=[HADHF], is_final=True),
+    },
+    description="النسخة المجزوءة من بحر الهزج (تفعيلتان بدلاً من ثلاث)"
+)
+
 
 # ============================================================================
-# Meters Registry - All 16 Classical Arabic Meters
+# Meters Registry - All Classical Arabic Meters (16 Base + مجزوء Variants)
 # ============================================================================
 
 METERS_REGISTRY: Dict[int, Meter] = {
@@ -558,6 +600,10 @@ METERS_REGISTRY: Dict[int, Meter] = {
     14: AL_MUQTADAB,
     15: AL_MUDARI,
     16: AL_MUTADARIK,
+
+    # مجزوء (Majzū') Variants - Shortened Forms
+    17: MAJZU_AL_KAMIL,
+    18: MAJZU_AL_HAZAJ,
 }
 
 

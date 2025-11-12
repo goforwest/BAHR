@@ -36,6 +36,15 @@ METER_NAME_TO_ID = {
     "المقتضب": 14,
     "المضارع": 15,
     "المتدارك": 16,
+    # مجزوء variants
+    "الكامل (مجزوء)": 17,
+    "الهزج (مجزوء)": 18,
+}
+
+# Meter variant mapping: maps مجزوء variants to their base meter
+METER_VARIANT_BASE = {
+    17: 2,  # مجزوء الكامل → الكامل
+    18: 12,  # مجزوء الهزج → الهزج
 }
 
 
@@ -126,23 +135,36 @@ def evaluate_detector(detector: BahrDetectorV2, verses: List[Dict]) -> Dict:
                 "phonetic_pattern": phonetic_pattern,
                 "difficulty": difficulty
             })
-        elif result.meter_id == expected_meter_id:
-            results["correct"] += 1
-            results["by_meter"][expected_meter_ar]["correct"] += 1
-            results["by_difficulty"][difficulty]["correct"] += 1
         else:
-            results["incorrect"] += 1
-            results["by_meter"][expected_meter_ar]["incorrect"] += 1
-            results["misclassifications"].append({
-                "verse_id": verse_id,
-                "text": text,
-                "expected_meter": expected_meter_ar,
-                "detected_meter": result.meter_name_ar,
-                "confidence": result.confidence,
-                "phonetic_pattern": phonetic_pattern,
-                "explanation": result.explanation,
-                "difficulty": difficulty
-            })
+            # Check if detected meter matches expected
+            # Accept either exact match OR مجزوء variant of the base meter
+            is_correct = False
+
+            if result.meter_id == expected_meter_id:
+                # Exact match
+                is_correct = True
+            elif result.meter_id in METER_VARIANT_BASE:
+                # Detected a مجزوء variant - check if it's a variant of the expected base
+                if METER_VARIANT_BASE[result.meter_id] == expected_meter_id:
+                    is_correct = True
+
+            if is_correct:
+                results["correct"] += 1
+                results["by_meter"][expected_meter_ar]["correct"] += 1
+                results["by_difficulty"][difficulty]["correct"] += 1
+            else:
+                results["incorrect"] += 1
+                results["by_meter"][expected_meter_ar]["incorrect"] += 1
+                results["misclassifications"].append({
+                    "verse_id": verse_id,
+                    "text": text,
+                    "expected_meter": expected_meter_ar,
+                    "detected_meter": result.meter_name_ar,
+                    "confidence": result.confidence,
+                    "phonetic_pattern": phonetic_pattern,
+                    "explanation": result.explanation,
+                    "difficulty": difficulty
+                })
 
     # Calculate accuracy
     if results["total"] > 0:

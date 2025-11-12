@@ -1,9 +1,9 @@
 {
   "total": 118,
-  "correct": 97,
+  "correct": 100,
   "incorrect": 0,
-  "no_detection": 21,
-  "accuracy": 82.20338983050848,
+  "no_detection": 18,
+  "accuracy": 84.7457627118644,
   "by_meter": {
     "الطويل": {
       "total": 24,
@@ -27,7 +27,7 @@
     },
     "الكامل": {
       "total": 17,
-      "correct": 12,
+      "correct": 13,
       "incorrect": 0
     },
     "المتقارب": {
@@ -42,7 +42,7 @@
     },
     "الهزج": {
       "total": 7,
-      "correct": 5,
+      "correct": 7,
       "incorrect": 0
     },
     "الوافر": {
@@ -54,42 +54,14 @@
   "by_difficulty": {
     "easy": {
       "total": 55,
-      "correct": 43
+      "correct": 45
     },
     "medium": {
       "total": 63,
-      "correct": 54
+      "correct": 55
     }
   },
-  "misclassifications": [
-    {
-      "verse_id": "golden_056",
-      "text": "انما النفس كالزجاجة",
-      "expected_meter": "الهزج",
-      "detected_meter": "None",
-      "confidence": 0.0,
-      "phonetic_pattern": "//o/o/o//o/o/o",
-      "difficulty": "easy"
-    },
-    {
-      "verse_id": "golden_059",
-      "text": "يا من اذا رامه محتاج",
-      "expected_meter": "الهزج",
-      "detected_meter": "None",
-      "confidence": 0.0,
-      "phonetic_pattern": "//o/o/o//o/o/o",
-      "difficulty": "medium"
-    },
-    {
-      "verse_id": "golden_084",
-      "text": "تجنب مصاحبة الاحمق",
-      "expected_meter": "الكامل",
-      "detected_meter": "None",
-      "confidence": 0.0,
-      "phonetic_pattern": "///o//o///o//o",
-      "difficulty": "easy"
-    }
-  ],
+  "misclassifications": [],
   "failed_scansions": [
     {
       "verse_id": "golden_101",
