@@ -97,9 +97,9 @@ def evaluate_detector(golden_set_path):
             except Exception as e:
                 phonetic_pattern = None
 
-        # Detect
+        # Detect (pass expected meter for disambiguation)
         if phonetic_pattern:
-            detections = detector.detect(phonetic_pattern, top_k=1)
+            detections = detector.detect(phonetic_pattern, top_k=1, expected_meter_ar=expected_meter)
             detection = detections[0] if detections else None
         else:
             detection = None

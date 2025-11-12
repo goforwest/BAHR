@@ -1,19 +1,17 @@
 {
   "overall": {
-    "accuracy": 84.49612403100775,
-    "correct": 218,
-    "incorrect": 30,
-    "no_detection": 10,
+    "accuracy": 98.44961240310077,
+    "correct": 254,
+    "incorrect": 4,
+    "no_detection": 0,
     "total": 258
   },
   "per_meter": {
     "الطويل": {
-      "correct": 41,
+      "correct": 42,
       "total": 42,
       "incorrect": [],
-      "no_detection": [
-        "golden_147"
-      ]
+      "no_detection": []
     },
     "الرجز": {
       "correct": 12,
@@ -50,18 +48,9 @@
       "no_detection": []
     },
     "الخفيف": {
-      "correct": 5,
+      "correct": 13,
       "total": 13,
-      "incorrect": [
-        "golden_051",
-        "golden_054",
-        "golden_077",
-        "golden_078",
-        "golden_107",
-        "golden_139",
-        "golden_140",
-        "golden_238"
-      ],
+      "incorrect": [],
       "no_detection": []
     },
     "الهزج": {
@@ -71,12 +60,10 @@
       "no_detection": []
     },
     "الوافر": {
-      "correct": 18,
+      "correct": 19,
       "total": 19,
       "incorrect": [],
-      "no_detection": [
-        "golden_245"
-      ]
+      "no_detection": []
     },
     "السريع": {
       "correct": 11,
@@ -97,24 +84,16 @@
       "no_detection": []
     },
     "المجتث": {
-      "correct": 4,
+      "correct": 6,
       "total": 6,
       "incorrect": [],
-      "no_detection": [
-        "golden_159",
-        "golden_161"
-      ]
+      "no_detection": []
     },
     "المقتضب": {
-      "correct": 0,
+      "correct": 4,
       "total": 4,
       "incorrect": [],
-      "no_detection": [
-        "golden_162",
-        "golden_163",
-        "golden_164",
-        "golden_165"
-      ]
+      "no_detection": []
     },
     "المضارع": {
       "correct": 4,
@@ -123,28 +102,12 @@
       "no_detection": []
     },
     "المتدارك": {
-      "correct": 3,
+      "correct": 18,
       "total": 19,
       "incorrect": [
-        "golden_171",
-        "golden_173",
-        "golden_174",
-        "golden_175",
-        "golden_247",
-        "golden_248",
-        "golden_249",
-        "golden_250",
-        "golden_251",
-        "golden_252",
-        "golden_253",
-        "golden_254",
-        "golden_255",
-        "golden_257",
-        "golden_258"
+        "golden_174"
       ],
-      "no_detection": [
-        "golden_256"
-      ]
+      "no_detection": []
     },
     "السريع (مفعولات)": {
       "correct": 5,
@@ -153,23 +116,16 @@
       "no_detection": []
     },
     "الكامل (3 تفاعيل)": {
-      "correct": 1,
+      "correct": 5,
       "total": 5,
-      "incorrect": [
-        "golden_202",
-        "golden_203",
-        "golden_204",
-        "golden_205"
-      ],
+      "incorrect": [],
       "no_detection": []
     },
     "الكامل (مجزوء)": {
-      "correct": 4,
+      "correct": 5,
       "total": 5,
       "incorrect": [],
-      "no_detection": [
-        "golden_208"
-      ]
+      "no_detection": []
     },
     "الهزج (مجزوء)": {
       "correct": 5,
@@ -179,44 +135,20 @@
     }
   },
   "mutadarik": {
-    "accuracy": 15.789473684210526,
+    "accuracy": 94.73684210526315,
     "total": 19,
-    "correct": 3,
+    "correct": 18,
     "incorrect": [
-      "golden_171",
-      "golden_173",
-      "golden_174",
-      "golden_175",
-      "golden_247",
-      "golden_248",
-      "golden_249",
-      "golden_250",
-      "golden_251",
-      "golden_252",
-      "golden_253",
-      "golden_254",
-      "golden_255",
-      "golden_257",
-      "golden_258"
+      "golden_174"
     ],
-    "no_detection": [
-      "golden_256"
-    ]
+    "no_detection": []
   },
   "confusion_matrix": {
     "الرمل": {
-      "الرجز": 3
-    },
-    "الخفيف": {
-      "الرجز": 4,
-      "الرمل": 4
+      "الخفيف": 3
     },
     "المتدارك": {
-      "المتقارب": 14,
       "الرمل": 1
-    },
-    "الكامل (3 تفاعيل)": {
-      "الرجز": 4
     }
   },
   "coverage": {
@@ -239,26 +171,26 @@
       "المتدارك"
     ],
     "covered": [
-      "السريع (مفعولات)",
-      "الوافر",
       "المضارع",
-      "المجتث",
-      "البسيط",
-      "المتدارك",
-      "المديد",
-      "الكامل (3 تفاعيل)",
-      "الطويل",
-      "الرجز",
-      "الهزج",
-      "المنسرح",
-      "المتقارب",
       "الرمل",
-      "المقتضب",
       "الهزج (مجزوء)",
+      "السريع (مفعولات)",
       "الكامل",
+      "المقتضب",
+      "الرجز",
+      "الطويل",
+      "السريع",
+      "المديد",
       "الخفيف",
+      "المتقارب",
+      "البسيط",
+      "الوافر",
+      "الكامل (3 تفاعيل)",
+      "المجتث",
+      "الهزج",
       "الكامل (مجزوء)",
-      "السريع"
+      "المنسرح",
+      "المتدارك"
     ],
     "missing": []
   }

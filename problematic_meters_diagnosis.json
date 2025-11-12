@@ -1,0 +1,405 @@
+{
+  "المتدارك": {
+    "correct": [
+      {
+        "verse_id": "golden_170",
+        "confidence": 0.95
+      },
+      {
+        "verse_id": "golden_171",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_172",
+        "confidence": 0.95
+      },
+      {
+        "verse_id": "golden_173",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_175",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_246",
+        "confidence": 0.95
+      },
+      {
+        "verse_id": "golden_247",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_248",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_249",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_250",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_251",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_252",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_253",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_254",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_255",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_256",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_257",
+        "confidence": 1.05
+      },
+      {
+        "verse_id": "golden_258",
+        "confidence": 1.05
+      }
+    ],
+    "confused": {
+      "الرمل": [
+        {
+          "verse_id": "golden_174",
+          "text": "قَد طالَ لَيلي وَأَرَّقَني الأَلَمُ",
+          "detected_meter": "الرمل",
+          "confidence": 0.8664,
+          "pattern": "/o//o///o///o/o//",
+          "top_5": [
+            [
+              "الرمل",
+              0.8664
+            ],
+            [
+              "الخفيف",
+              0.8664
+            ],
+            [
+              "المتدارك",
+              0.85
+            ]
+          ]
+        }
+      ]
+    },
+    "no_detection": []
+  },
+  "المقتضب": {
+    "correct": [
+      {
+        "verse_id": "golden_162",
+        "confidence": 0.95
+      },
+      {
+        "verse_id": "golden_163",
+        "confidence": 0.95
+      },
+      {
+        "verse_id": "golden_164",
+        "confidence": 0.95
+      },
+      {
+        "verse_id": "golden_165",
+        "confidence": 0.95
+      }
+    ],
+    "confused": {},
+    "no_detection": []
+  },
+  "الخفيف": {
+    "correct": [
+      {
+        "verse_id": "golden_010",
+        "confidence": 1.0
+      },
+      {
+        "verse_id": "golden_050",
+        "confidence": 0.969
+      },
+      {
+        "verse_id": "golden_052",
+        "confidence": 0.969
+      },
+      {
+        "verse_id": "golden_053",
+        "confidence": 0.969
+      },
+      {
+        "verse_id": "golden_054",
+        "confidence": 0.897
+      },
+      {
+        "verse_id": "golden_077",
+        "confidence": 0.897
+      },
+      {
+        "verse_id": "golden_140",
+        "confidence": 0.897
+      },
+      {
+        "verse_id": "golden_239",
+        "confidence": 1.0
+      }
+    ],
+    "confused": {
+      "الرجز": [
+        {
+          "verse_id": "golden_051",
+          "text": "يا مَن يَعِزُّ عَلَينا أَن نُفارِقَهُم",
+          "detected_meter": "الرجز",
+          "confidence": 0.969,
+          "pattern": "/o///o/o/o//o/o///o",
+          "top_5": [
+            [
+              "الرجز",
+              0.969
+            ],
+            [
+              "الخفيف",
+              0.969
+            ],
+            [
+              "السريع (مفعولات)",
+              0.81225
+            ]
+          ]
+        },
+        {
+          "verse_id": "golden_107",
+          "text": "يا مَن يَعِزُّ عَلَينا أَن نُفارِقَهُم",
+          "detected_meter": "الرجز",
+          "confidence": 0.969,
+          "pattern": "/o///o/o/o//o/o///o",
+          "top_5": [
+            [
+              "الرجز",
+              0.969
+            ],
+            [
+              "الخفيف",
+              0.969
+            ],
+            [
+              "السريع (مفعولات)",
+              0.81225
+            ]
+          ]
+        },
+        {
+          "verse_id": "golden_139",
+          "text": "أَسِربَ القَطا هَل مَن يُعِيرُ جَناحَهُ",
+          "detected_meter": "الرجز",
+          "confidence": 0.867,
+          "pattern": "/o///o/o///o/o///o",
+          "top_5": [
+            [
+              "الرجز",
+              0.867
+            ],
+            [
+              "الرمل",
+              0.867
+            ],
+            [
+              "الخفيف",
+              0.867
+            ]
+          ]
+        },
+        {
+          "verse_id": "golden_238",
+          "text": "وَمَن يَتَّقِ فَإِنَّ اللَهَ مَعَهُ وَرِزقُ اللَهِ مُختَلِفٌ",
+          "detected_meter": "الرجز",
+          "confidence": 0.867,
+          "pattern": "/o///o/o///o/o///o",
+          "top_5": [
+            [
+              "الرجز",
+              0.867
+            ],
+            [
+              "الرمل",
+              0.867
+            ],
+            [
+              "الخفيف",
+              0.867
+            ]
+          ]
+        }
+      ],
+      "الرمل": [
+        {
+          "verse_id": "golden_078",
+          "text": "إِذا غامَرتَ في شَرَفٍ مَرومٍ",
+          "detected_meter": "الرمل",
+          "confidence": 0.969,
+          "pattern": "/o//o/o/o///o/o//",
+          "top_5": [
+            [
+              "الرمل",
+              0.969
+            ],
+            [
+              "الخفيف",
+              0.969
+            ],
+            [
+              "المتدارك",
+              0.76
+            ]
+          ]
+        }
+      ]
+    },
+    "no_detection": []
+  },
+  "الكامل (3 تفاعيل)": {
+    "correct": [
+      {
+        "verse_id": "golden_201",
+        "confidence": 0.969
+      }
+    ],
+    "confused": {
+      "الرجز": [
+        {
+          "verse_id": "golden_202",
+          "text": "وَإِذا صَحَوتُ فَما أُقَصِّرُ عَن نَدىً وَكَما عَلِمتِ شَمائ",
+          "detected_meter": "الرجز",
+          "confidence": 0.969,
+          "pattern": "/o/o//o/o/o//o/o/o/oo",
+          "top_5": [
+            [
+              "الرجز",
+              0.969
+            ],
+            [
+              "السريع (مفعولات)",
+              0.9047619047619047
+            ],
+            [
+              "الكامل (3 تفاعيل)",
+              0.867
+            ]
+          ]
+        },
+        {
+          "verse_id": "golden_203",
+          "text": "أَبا المِسكِ أَرَجّي أَن أَراكا وَأَن يَجمَعَنا مَجلِسُ اُنس",
+          "detected_meter": "الرجز",
+          "confidence": 1.0,
+          "pattern": "/o/o//o/o/o//o/o/o//o",
+          "top_5": [
+            [
+              "الرجز",
+              1.0
+            ],
+            [
+              "الكامل (3 تفاعيل)",
+              0.867
+            ],
+            [
+              "السريع (مفعولات)",
+              0.8595238095238095
+            ],
+            [
+              "المنسرح",
+              0.8595238095238095
+            ]
+          ]
+        },
+        {
+          "verse_id": "golden_204",
+          "text": "لَو كانَ قَلبي مَعي ما اِختَرتُ غَيرَكُمُ وَلا رَضيتُ سِواكُ",
+          "detected_meter": "الرجز",
+          "confidence": 0.969,
+          "pattern": "/o/o//o/o/o//o/o/o/oo",
+          "top_5": [
+            [
+              "الرجز",
+              0.969
+            ],
+            [
+              "السريع (مفعولات)",
+              0.9047619047619047
+            ],
+            [
+              "الكامل (3 تفاعيل)",
+              0.867
+            ]
+          ]
+        },
+        {
+          "verse_id": "golden_205",
+          "text": "وَإِذا أَتَتكَ مَذَمَّتي مِن ناقِصٍ فَهِيَ الشَهادَةُ لي بِأ",
+          "detected_meter": "الرجز",
+          "confidence": 0.969,
+          "pattern": "/o/o//o/o/o//o/o/o/oo",
+          "top_5": [
+            [
+              "الرجز",
+              0.969
+            ],
+            [
+              "السريع (مفعولات)",
+              0.9047619047619047
+            ],
+            [
+              "الكامل (3 تفاعيل)",
+              0.867
+            ]
+          ]
+        }
+      ]
+    },
+    "no_detection": []
+  },
+  "المجتث": {
+    "correct": [
+      {
+        "verse_id": "golden_156",
+        "confidence": 1.0
+      },
+      {
+        "verse_id": "golden_157",
+        "confidence": 1.0
+      },
+      {
+        "verse_id": "golden_158",
+        "confidence": 1.0
+      },
+      {
+        "verse_id": "golden_159",
+        "confidence": 1.0
+      },
+      {
+        "verse_id": "golden_160",
+        "confidence": 1.0
+      },
+      {
+        "verse_id": "golden_161",
+        "confidence": 1.0
+      }
+    ],
+    "confused": {},
+    "no_detection": []
+  }
+}
