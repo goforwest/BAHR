@@ -245,12 +245,13 @@ class BahrDetectorV2:
         for valid_pattern in valid_patterns:
             similarity = self._calculate_similarity(pattern, valid_pattern)
 
-            # Require high similarity threshold (90%+)
-            if similarity >= 0.90 and similarity > best_similarity:
+            # Require high similarity threshold (85%+ for real-world verses)
+            # Lowered from 90% to handle pronunciation variations in actual poetry
+            if similarity >= 0.85 and similarity > best_similarity:
                 best_similarity = similarity
                 best_match = valid_pattern
 
-        if best_match and best_similarity >= 0.90:
+        if best_match and best_similarity >= 0.85:
             # Create result with reduced confidence
             generator = self.generators[meter.id]
             tracked_patterns = generator.generate_with_tracking()
@@ -368,6 +369,8 @@ class BahrDetectorV2:
         """
         Calculate similarity between two phonetic patterns.
 
+        Uses SequenceMatcher for smarter similarity that handles insertions/deletions.
+
         Args:
             pattern1: First pattern
             pattern2: Second pattern
@@ -378,17 +381,14 @@ class BahrDetectorV2:
         if not pattern1 or not pattern2:
             return 0.0
 
-        max_len = max(len(pattern1), len(pattern2))
-        if max_len == 0:
+        if pattern1 == pattern2:
             return 1.0
 
-        # Count matching characters at same positions
-        matches = sum(
-            1 for i in range(min(len(pattern1), len(pattern2)))
-            if pattern1[i] == pattern2[i]
-        )
-
-        return matches / max_len
+        # Use SequenceMatcher for smarter similarity calculation
+        # This handles insertions, deletions, and substitutions better than
+        # simple character-by-character matching
+        from difflib import SequenceMatcher
+        return SequenceMatcher(None, pattern1, pattern2).ratio()
 
     def _create_explanation(
         self,
