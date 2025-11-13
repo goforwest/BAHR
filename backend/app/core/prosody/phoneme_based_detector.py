@@ -15,10 +15,7 @@ from .detector_v2 import BahrDetectorV2, DetectionResult, MatchQuality
 from .meters import METERS_REGISTRY
 
 
-def calculate_pattern_fitness(
-    phonemes: List[Phoneme],
-    pattern: str
-) -> float:
+def calculate_pattern_fitness(phonemes: List[Phoneme], pattern: str) -> float:
     """
     Calculate how well a cached pattern "fits" a phoneme sequence.
 
@@ -39,14 +36,14 @@ def calculate_pattern_fitness(
         return 0.0
 
     # Count phoneme types
-    n_harakas = sum(1 for p in phonemes if p.vowel in ['a', 'u', 'i'])
+    n_harakas = sum(1 for p in phonemes if p.vowel in ["a", "u", "i"])
     n_sakins = sum(1 for p in phonemes if p.is_sukun())
     n_long = sum(1 for p in phonemes if p.is_long_vowel())
-    n_tanween = sum(1 for p in phonemes if p.vowel in ['an', 'un', 'in'])
+    n_tanween = sum(1 for p in phonemes if p.vowel in ["an", "un", "in"])
 
     # Count pattern symbols
-    n_haraka_in_pattern = pattern.count('/')
-    n_sakin_in_pattern = pattern.count('o')
+    n_haraka_in_pattern = pattern.count("/")
+    n_sakin_in_pattern = pattern.count("o")
 
     # Use the original fitness function from precompute_golden_patterns.py
     # This function gives high scores to patterns with similar counts,
@@ -56,13 +53,17 @@ def calculate_pattern_fitness(
 
     # 1. Harakat count ratio
     if max(n_harakas, n_haraka_in_pattern) > 0:
-        haraka_ratio = min(n_harakas, n_haraka_in_pattern) / max(n_harakas, n_haraka_in_pattern)
+        haraka_ratio = min(n_harakas, n_haraka_in_pattern) / max(
+            n_harakas, n_haraka_in_pattern
+        )
     else:
         haraka_ratio = 0.0
 
     # 2. Sakin count ratio
     if max(total_sakins, n_sakin_in_pattern) > 0:
-        sakin_ratio = min(total_sakins, n_sakin_in_pattern) / max(total_sakins, n_sakin_in_pattern)
+        sakin_ratio = min(total_sakins, n_sakin_in_pattern) / max(
+            total_sakins, n_sakin_in_pattern
+        )
     else:
         sakin_ratio = 0.0
 
@@ -70,12 +71,14 @@ def calculate_pattern_fitness(
     expected_length = n_harakas + total_sakins
     pattern_len = len(pattern)
     if max(pattern_len, expected_length) > 0:
-        length_ratio = min(pattern_len, expected_length) / max(pattern_len, expected_length)
+        length_ratio = min(pattern_len, expected_length) / max(
+            pattern_len, expected_length
+        )
     else:
         length_ratio = 0.0
 
     # Overall fitness (weighted average - same as golden set preprocessing)
-    fitness = (haraka_ratio * 0.4 + sakin_ratio * 0.4 + length_ratio * 0.2)
+    fitness = haraka_ratio * 0.4 + sakin_ratio * 0.4 + length_ratio * 0.2
 
     return fitness
 
@@ -85,7 +88,7 @@ def detect_with_phoneme_fitness(
     has_tashkeel: bool,
     detector: BahrDetectorV2,
     top_k: int = 3,
-    use_hybrid_scoring: bool = True
+    use_hybrid_scoring: bool = True,
 ) -> List[Tuple[int, str, float, str]]:
     """
     Detect meter using phoneme-based fitness matching.
@@ -122,7 +125,9 @@ def detect_with_phoneme_fitness(
     extracted_pattern = None
     if use_hybrid_scoring:
         try:
-            extracted_pattern = text_to_phonetic_pattern(text, has_tashkeel=has_tashkeel)
+            extracted_pattern = text_to_phonetic_pattern(
+                text, has_tashkeel=has_tashkeel
+            )
         except Exception:
             pass
 
@@ -158,7 +163,9 @@ def detect_with_phoneme_fitness(
             else:
                 score = fitness
 
-            if score > best_fitness or (score == best_fitness and similarity > best_similarity):
+            if score > best_fitness or (
+                score == best_fitness and similarity > best_similarity
+            ):
                 best_fitness = score
                 best_similarity = similarity
                 best_pattern = pattern
@@ -166,13 +173,15 @@ def detect_with_phoneme_fitness(
         if best_fitness > 0.0 and best_pattern:
             meter = METERS_REGISTRY.get(meter_id)
             if meter:
-                meter_scores.append((
-                    meter_id,
-                    meter.name_ar,
-                    best_fitness,
-                    best_pattern,
-                    best_similarity
-                ))
+                meter_scores.append(
+                    (
+                        meter_id,
+                        meter.name_ar,
+                        best_fitness,
+                        best_pattern,
+                        best_similarity,
+                    )
+                )
 
     # CRITICAL: Smart frequency-based tie-breaking
     # Only apply frequency boost when scores are close (competitive range)
@@ -214,16 +223,27 @@ def detect_with_phoneme_fitness(
         # Apply frequency boost to score
         boosted_score = min(1.0, score + freq_boost)
 
-        meter_scores_with_ranking.append((
-            meter_id, meter_name, boosted_score, pattern,
-            tier_value, freq_rank, similarity, score  # Keep original score for reference
-        ))
+        meter_scores_with_ranking.append(
+            (
+                meter_id,
+                meter_name,
+                boosted_score,
+                pattern,
+                tier_value,
+                freq_rank,
+                similarity,
+                score,  # Keep original score for reference
+            )
+        )
 
     # Sort by: boosted_score (desc), tier (asc), freq_rank (asc)
     meter_scores_with_ranking.sort(key=lambda x: (-x[2], x[4], x[5]))
 
     # Remove ranking info from results, return boosted score
-    meter_scores = [(mid, name, boosted, pat) for mid, name, boosted, pat, _, _, _, _ in meter_scores_with_ranking]
+    meter_scores = [
+        (mid, name, boosted, pat)
+        for mid, name, boosted, pat, _, _, _, _ in meter_scores_with_ranking
+    ]
 
     # Return top K
     return meter_scores[:top_k]
@@ -234,7 +254,7 @@ def detect_meter_from_text(
     has_tashkeel: bool,
     detector: BahrDetectorV2,
     min_score: float = 0.50,
-    use_hybrid: bool = True
+    use_hybrid: bool = True,
 ) -> Optional[DetectionResult]:
     """
     Detect meter from Arabic text using hybrid scoring (fitness + similarity).
@@ -253,9 +273,7 @@ def detect_meter_from_text(
         DetectionResult for best match, or None if no good match
     """
     results = detect_with_phoneme_fitness(
-        text, has_tashkeel, detector,
-        top_k=1,
-        use_hybrid_scoring=use_hybrid
+        text, has_tashkeel, detector, top_k=1, use_hybrid_scoring=use_hybrid
     )
 
     if not results:
@@ -303,5 +321,5 @@ def detect_meter_from_text(
         matched_pattern=best_pattern,
         input_pattern="<hybrid-scoring>",  # Using combined fitness + similarity
         transformations=[],
-        explanation=f"{explanation_ar} | {explanation_en}"
+        explanation=f"{explanation_ar} | {explanation_en}",
     )

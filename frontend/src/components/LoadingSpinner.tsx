@@ -3,25 +3,25 @@
  * Uses Tailwind CSS for styling and smooth animations.
  */
 
-'use client';
+"use client";
 
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const spinnerVariants = cva(
-  'inline-block animate-spin rounded-full border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]',
+  "inline-block animate-spin rounded-full border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]",
   {
     variants: {
       size: {
-        sm: 'h-4 w-4 border-2',
-        md: 'h-8 w-8 border-3',
-        lg: 'h-12 w-12 border-4',
+        sm: "h-4 w-4 border-2",
+        md: "h-8 w-8 border-3",
+        lg: "h-12 w-12 border-4",
       },
     },
     defaultVariants: {
-      size: 'md',
+      size: "md",
     },
-  }
+  },
 );
 
 export interface LoadingSpinnerProps
@@ -32,11 +32,11 @@ export interface LoadingSpinnerProps
 
 /**
  * LoadingSpinner component
- * 
+ *
  * @param size - Size variant: 'sm' | 'md' | 'lg'
  * @param className - Additional CSS classes
  * @param label - Optional accessible label for screen readers
- * 
+ *
  * @example
  * ```tsx
  * <LoadingSpinner size="sm" />
@@ -47,7 +47,7 @@ export interface LoadingSpinnerProps
 export function LoadingSpinner({
   size,
   className,
-  label = 'جارٍ التحميل...',
+  label = "جارٍ التحميل...",
 }: LoadingSpinnerProps) {
   return (
     <div

@@ -5,8 +5,8 @@
  * allowing users to select the correct meter and provide feedback.
  */
 
-import React, { useState } from 'react';
-import type { BahrInfo, AlternativeMeter } from '@/types/analyze';
+import React, { useState } from "react";
+import type { BahrInfo, AlternativeMeter } from "@/types/analyze";
 
 interface MultiCandidateViewProps {
   /** The top detected meter */
@@ -34,12 +34,12 @@ export default function MultiCandidateView({
       ...topMeter,
       confidence_diff: 0,
       rank: 1,
-      medal: '🥇',
+      medal: "🥇",
     },
     ...alternatives.map((alt, idx) => ({
       ...alt,
       rank: idx + 2,
-      medal: idx === 0 ? '🥈' : idx === 1 ? '🥉' : '🏅',
+      medal: idx === 0 ? "🥈" : idx === 1 ? "🥉" : "🏅",
     })),
   ];
 
@@ -78,8 +78,8 @@ export default function MultiCandidateView({
               border-2 rounded-lg p-4 transition-all cursor-pointer
               ${
                 selectedMeter === candidate.name_ar
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300 bg-white'
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-200 hover:border-gray-300 bg-white"
               }
             `}
             onClick={() => handleSelection(candidate.name_ar)}
@@ -101,13 +101,18 @@ export default function MultiCandidateView({
                 {/* Meter info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center flex-wrap gap-2 mb-2">
-                    <span className="text-xl" aria-label={`Rank ${candidate.rank}`}>
+                    <span
+                      className="text-xl"
+                      aria-label={`Rank ${candidate.rank}`}
+                    >
                       {candidate.medal}
                     </span>
                     <h4 className="text-lg font-bold text-gray-900">
                       {candidate.name_ar}
                     </h4>
-                    <span className="text-sm text-gray-600">({candidate.name_en})</span>
+                    <span className="text-sm text-gray-600">
+                      ({candidate.name_en})
+                    </span>
                   </div>
 
                   {/* Confidence bar */}
@@ -124,20 +129,21 @@ export default function MultiCandidateView({
                       <div
                         className={`h-2 rounded-full transition-all ${
                           candidate.rank === 1
-                            ? 'bg-green-500'
+                            ? "bg-green-500"
                             : candidate.rank === 2
-                            ? 'bg-blue-500'
-                            : 'bg-gray-400'
+                              ? "bg-blue-500"
+                              : "bg-gray-400"
                         }`}
                         style={{ width: `${candidate.confidence * 100}%` }}
                       />
                     </div>
-                    {'confidence_diff' in candidate && candidate.confidence_diff > 0 && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        -{(candidate.confidence_diff * 100).toFixed(2)}% من الأول |
-                        from top
-                      </p>
-                    )}
+                    {"confidence_diff" in candidate &&
+                      candidate.confidence_diff > 0 && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          -{(candidate.confidence_diff * 100).toFixed(2)}% من
+                          الأول | from top
+                        </p>
+                      )}
                   </div>
 
                   {/* Expandable details */}
@@ -148,8 +154,8 @@ export default function MultiCandidateView({
                     }}
                     className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
                   >
-                    {expandedId === candidate.id ? '▼' : '▶'} عرض التفاصيل | Show
-                    details
+                    {expandedId === candidate.id ? "▼" : "▶"} عرض التفاصيل |
+                    Show details
                   </button>
 
                   {expandedId === candidate.id && (
@@ -160,21 +166,24 @@ export default function MultiCandidateView({
                           {candidate.matched_pattern}
                         </code>
                       </div>
-                      {candidate.transformations && candidate.transformations.length > 0 && (
-                        <div>
-                          <span className="font-medium">التحولات | Transformations:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {candidate.transformations.map((trans, idx) => (
-                              <span
-                                key={idx}
-                                className="inline-block px-2 py-1 bg-white rounded border border-gray-200 text-xs"
-                              >
-                                {trans}
-                              </span>
-                            ))}
+                      {candidate.transformations &&
+                        candidate.transformations.length > 0 && (
+                          <div>
+                            <span className="font-medium">
+                              التحولات | Transformations:
+                            </span>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {candidate.transformations.map((trans, idx) => (
+                                <span
+                                  key={idx}
+                                  className="inline-block px-2 py-1 bg-white rounded border border-gray-200 text-xs"
+                                >
+                                  {trans}
+                                </span>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
                     </div>
                   )}
                 </div>
@@ -186,9 +195,9 @@ export default function MultiCandidateView({
 
       <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-gray-700">
         <p>
-          💡 <strong>نصيحة | Tip:</strong> اختر البحر الذي تعتقد أنه صحيح. سيساعد اختيارك في
-          تحسين النظام. | Select the meter you believe is correct. Your selection helps
-          improve the system.
+          💡 <strong>نصيحة | Tip:</strong> اختر البحر الذي تعتقد أنه صحيح.
+          سيساعد اختيارك في تحسين النظام. | Select the meter you believe is
+          correct. Your selection helps improve the system.
         </p>
       </div>
     </div>

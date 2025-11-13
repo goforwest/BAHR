@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useEffect } from "react";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export default function Home() {
   const { trackPageView } = useAnalytics();
 
   // Track page view on mount
   useEffect(() => {
-    trackPageView('/');
+    trackPageView("/");
   }, [trackPageView]);
 
   return (
@@ -16,9 +16,7 @@ export default function Home() {
       <main className="flex w-full max-w-4xl flex-col items-center gap-12 rounded-2xl border border-slate-200 bg-white p-12 shadow-xl">
         {/* Header */}
         <div className="flex flex-col items-center gap-4 text-center">
-          <h1 className="text-6xl font-bold text-slate-900">
-            بحر
-          </h1>
+          <h1 className="text-6xl font-bold text-slate-900">بحر</h1>
           <p className="text-xl text-slate-600">
             BAHR - نظام ذكي لتحليل الشعر العربي
           </p>
@@ -27,15 +25,9 @@ export default function Home() {
         {/* Sample Poetry Card */}
         <div className="w-full rounded-xl border border-slate-200 bg-slate-50 p-8">
           <div className="font-serif text-2xl leading-loose text-slate-800">
-            <p className="mb-4">
-              أَلا يا اِسلَمي يا دارَ مَيٍّ عَلى البِلى
-            </p>
-            <p className="mb-4">
-              وَلا زالَ مُنهَلاً بِجَرعائِكِ القَطرُ
-            </p>
-            <p>
-              فَيا دارَ مَيٍّ بِالعَلياءِ فَالسَّندِ
-            </p>
+            <p className="mb-4">أَلا يا اِسلَمي يا دارَ مَيٍّ عَلى البِلى</p>
+            <p className="mb-4">وَلا زالَ مُنهَلاً بِجَرعائِكِ القَطرُ</p>
+            <p>فَيا دارَ مَيٍّ بِالعَلياءِ فَالسَّندِ</p>
           </div>
           <div className="mt-6 border-t border-slate-300 pt-4 text-sm text-slate-500">
             <p>— لبيد بن ربيعة</p>
@@ -46,32 +38,20 @@ export default function Home() {
         <div className="grid w-full gap-6 sm:grid-cols-3">
           <div className="rounded-lg border border-slate-200 bg-white p-6 text-center transition-shadow hover:shadow-md">
             <div className="mb-3 text-4xl">🎼</div>
-            <h3 className="mb-2 font-bold text-slate-900">
-              كشف البحور
-            </h3>
-            <p className="text-sm text-slate-600">
-              تحديد الأوزان العروضية
-            </p>
+            <h3 className="mb-2 font-bold text-slate-900">كشف البحور</h3>
+            <p className="text-sm text-slate-600">تحديد الأوزان العروضية</p>
           </div>
 
           <div className="rounded-lg border border-slate-200 bg-white p-6 text-center transition-shadow hover:shadow-md">
             <div className="mb-3 text-4xl">✨</div>
-            <h3 className="mb-2 font-bold text-slate-900">
-              تحليل القوافي
-            </h3>
-            <p className="text-sm text-slate-600">
-              استخراج نمط القافية
-            </p>
+            <h3 className="mb-2 font-bold text-slate-900">تحليل القوافي</h3>
+            <p className="text-sm text-slate-600">استخراج نمط القافية</p>
           </div>
 
           <div className="rounded-lg border border-slate-200 bg-white p-6 text-center transition-shadow hover:shadow-md">
             <div className="mb-3 text-4xl">📊</div>
-            <h3 className="mb-2 font-bold text-slate-900">
-              التقطيع العروضي
-            </h3>
-            <p className="text-sm text-slate-600">
-              تفعيلات دقيقة للأبيات
-            </p>
+            <h3 className="mb-2 font-bold text-slate-900">التقطيع العروضي</h3>
+            <p className="text-sm text-slate-600">تفعيلات دقيقة للأبيات</p>
           </div>
         </div>
 

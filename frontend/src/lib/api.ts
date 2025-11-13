@@ -3,14 +3,20 @@
  * Handles requests to the analyze endpoint and meter data retrieval.
  */
 
-import axios, { AxiosInstance, AxiosError } from 'axios';
-import type { AnalyzeRequest, AnalyzeResponse, MeterFeedback, FeedbackResponse } from '@/types/analyze';
+import axios, { AxiosInstance, AxiosError } from "axios";
+import type {
+  AnalyzeRequest,
+  AnalyzeResponse,
+  MeterFeedback,
+  FeedbackResponse,
+} from "@/types/analyze";
 
 /**
  * Base URL for the API - defaults to local development
  * Set NEXT_PUBLIC_API_URL in .env.local for production
  */
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 /**
  * Axios instance configured with base URL and interceptors
@@ -18,7 +24,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/a
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   timeout: 10000, // 10 second timeout
 });
@@ -29,17 +35,18 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     // Check for auth token in localStorage
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-    
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config;
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -53,24 +60,24 @@ apiClient.interceptors.response.use(
     // Handle 401 Unauthorized errors
     if (error.response?.status === 401) {
       // Clear token and redirect to login (when auth is implemented)
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('auth_token');
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("auth_token");
         // Future: redirect to login page
         // window.location.href = '/login';
       }
     }
-    
+
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
  * Analyze a verse or text for prosodic analysis
- * 
+ *
  * @param data - Analysis request data
  * @returns Promise resolving to analysis response
  * @throws AxiosError if request fails
- * 
+ *
  * @example
  * ```typescript
  * const result = await analyzeVerse({
@@ -81,9 +88,11 @@ apiClient.interceptors.response.use(
  * console.log(result.taqti3, result.bahr);
  * ```
  */
-export async function analyzeVerse(data: AnalyzeRequest): Promise<AnalyzeResponse> {
+export async function analyzeVerse(
+  data: AnalyzeRequest,
+): Promise<AnalyzeResponse> {
   // NOW USES V2 API WITH 100% ACCURACY FEATURES!
-  const response = await apiClient.post<AnalyzeResponse>('/analyze-v2/', data);
+  const response = await apiClient.post<AnalyzeResponse>("/analyze-v2/", data);
   return response.data;
 }
 
@@ -101,7 +110,7 @@ export async function analyzeVerse(data: AnalyzeRequest): Promise<AnalyzeRespons
  */
 export async function getBahrs(): Promise<unknown> {
   // Future: Add proper type when backend endpoint is implemented
-  const response = await apiClient.get('/bahrs');
+  const response = await apiClient.get("/bahrs");
   return response.data;
 }
 
@@ -128,8 +137,13 @@ export async function getBahrs(): Promise<unknown> {
  * console.log(result.message); // "شكراً لملاحظاتك! | Thank you for your feedback!"
  * ```
  */
-export async function submitMeterFeedback(feedback: MeterFeedback): Promise<FeedbackResponse> {
-  const response = await apiClient.post<FeedbackResponse>('/feedback/meter', feedback);
+export async function submitMeterFeedback(
+  feedback: MeterFeedback,
+): Promise<FeedbackResponse> {
+  const response = await apiClient.post<FeedbackResponse>(
+    "/feedback/meter",
+    feedback,
+  );
   return response.data;
 }
 
