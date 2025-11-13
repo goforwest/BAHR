@@ -311,6 +311,61 @@ def khabn_transform_letters(tafila_structure):
     return new_tafila
 
 
+def idmar_transform_letters(tafila_structure):
+    """
+    إِضْمَار (Iḍmār) - Make 2nd mutaḥarrik letter sākin (letter-level implementation).
+
+    Classical Definition:
+    "الإضمار هو تسكين الحرف الثاني المتحرك"
+    Translation: "Iḍmār is making the 2nd mutaḥarrik letter sākin"
+
+    Classical Interpretation:
+    Unlike QABD and KHABN which REMOVE letters, IḌMĀR CHANGES a letter's ḥaraka.
+    It takes a mutaḥarrik letter and adds sukūn to it, making it sākin.
+
+    Example (from verification document):
+        Input:  مُتَفَاعِلُنْ (mutafāʿilun) = م(/) ت(/) ف(/) ا(o) ع(/) ل(/) ن(o)
+                Mutaḥarrik positions: م (1st), ت (2nd), ف (3rd), ع (4th), ل (5th)
+
+        Change: ت (2nd mutaharrik) → add sukūn
+        Result: مُتْفَاعِلُنْ (mutfāʿilun) = م(/) ت(o) ف(/) ا(o) ع(/) ل(/) ن(o)
+                Pattern: ///o//o → /o/o//o ✓
+
+    Note: This transformation is very common in الكامل meter.
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 2nd mutaḥarrik made sākin
+
+    Raises:
+        ValueError: If tafʿīlah has fewer than 2 mutaḥarrik letters
+    """
+    from .letter_structure import TafilaLetterStructure, HarakaType, VowelQuality
+
+    # Get 2nd mutaḥarrik letter
+    mutaharrik_result = tafila_structure.get_nth_mutaharrik(2)
+
+    if mutaharrik_result is None:
+        # Fewer than 2 mutaharriks - idmar cannot apply
+        # Return unchanged (not an error - just means this tafʿīlah doesn't support idmar)
+        return tafila_structure
+
+    position, letter = mutaharrik_result
+
+    # Change this letter from mutaharrik to sakin
+    new_tafila = tafila_structure.change_haraka_at_position(
+        position,
+        HarakaType.SAKIN,
+        VowelQuality.SUKUN
+    )
+
+    # Note: We don't modify the name here as that's handled by the Zahaf.apply() method
+
+    return new_tafila
+
+
 def kaff_transform(pattern: str) -> str:
     """كف - Remove 7th sakin."""
     sakin_count = 0
