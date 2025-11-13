@@ -1,0 +1,114 @@
+{
+  "overall_accuracy": 0.9363057324840764,
+  "baseline_accuracy": 0.0,
+  "improvement": 0.9363057324840764,
+  "total_verses": 471,
+  "unique_meters": 20,
+  "errors": 30,
+  "error_rate": 0.06369426751592357,
+  "avg_confidence": 0.48869934840641116,
+  "high_confidence_count": 11,
+  "high_confidence_accuracy": 1.0,
+  "per_meter_accuracy": {
+    "الطويل": {
+      "correct": 40,
+      "total": 45,
+      "accuracy": 0.8888888888888888
+    },
+    "الرجز": {
+      "correct": 19,
+      "total": 20,
+      "accuracy": 0.95
+    },
+    "الرمل": {
+      "correct": 19,
+      "total": 20,
+      "accuracy": 0.95
+    },
+    "البسيط": {
+      "correct": 23,
+      "total": 25,
+      "accuracy": 0.92
+    },
+    "الكامل": {
+      "correct": 28,
+      "total": 30,
+      "accuracy": 0.9333333333333333
+    },
+    "المتقارب": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 1.0
+    },
+    "الخفيف": {
+      "correct": 18,
+      "total": 20,
+      "accuracy": 0.9
+    },
+    "الهزج": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 1.0
+    },
+    "الوافر": {
+      "correct": 21,
+      "total": 21,
+      "accuracy": 1.0
+    },
+    "السريع": {
+      "correct": 31,
+      "total": 34,
+      "accuracy": 0.9117647058823529
+    },
+    "المديد": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 1.0
+    },
+    "المنسرح": {
+      "correct": 18,
+      "total": 20,
+      "accuracy": 0.9
+    },
+    "المجتث": {
+      "correct": 17,
+      "total": 20,
+      "accuracy": 0.85
+    },
+    "المقتضب": {
+      "correct": 28,
+      "total": 30,
+      "accuracy": 0.9333333333333333
+    },
+    "المضارع": {
+      "correct": 23,
+      "total": 25,
+      "accuracy": 0.92
+    },
+    "المتدارك": {
+      "correct": 21,
+      "total": 21,
+      "accuracy": 1.0
+    },
+    "السريع (مفعولات)": {
+      "correct": 19,
+      "total": 20,
+      "accuracy": 0.95
+    },
+    "الكامل (3 تفاعيل)": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 1.0
+    },
+    "الكامل (مجزوء)": {
+      "correct": 16,
+      "total": 20,
+      "accuracy": 0.8
+    },
+    "الهزج (مجزوء)": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 1.0
+    }
+  }
+}

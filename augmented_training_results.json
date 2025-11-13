@@ -1,0 +1,13 @@
+{
+  "augmented_dataset_size": 872,
+  "original_dataset_size": 471,
+  "test_accuracy": 0.8,
+  "cv_mean": 0.8267980295566503,
+  "cv_std": 0.05282828482811558,
+  "original_accuracy": 0.9363057324840764,
+  "baseline_hybrid": 0.682,
+  "baseline_rf": 0.66,
+  "improvement": 0.2763057324840764,
+  "feature_count": 36,
+  "model_path": "models/rf_augmented_v1.joblib"
+}

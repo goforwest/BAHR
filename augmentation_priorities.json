@@ -1,0 +1,142 @@
+[
+  {
+    "meter": "الطويل",
+    "count": 45,
+    "priority": "LOW",
+    "aug_factor": 1.5,
+    "target_count": 67
+  },
+  {
+    "meter": "السريع",
+    "count": 34,
+    "priority": "LOW",
+    "aug_factor": 1.5,
+    "target_count": 51
+  },
+  {
+    "meter": "الكامل",
+    "count": 30,
+    "priority": "LOW",
+    "aug_factor": 1.5,
+    "target_count": 45
+  },
+  {
+    "meter": "المقتضب",
+    "count": 30,
+    "priority": "LOW",
+    "aug_factor": 1.5,
+    "target_count": 45
+  },
+  {
+    "meter": "البسيط",
+    "count": 25,
+    "priority": "MEDIUM",
+    "aug_factor": 2.0,
+    "target_count": 50
+  },
+  {
+    "meter": "المضارع",
+    "count": 25,
+    "priority": "MEDIUM",
+    "aug_factor": 2.0,
+    "target_count": 50
+  },
+  {
+    "meter": "الوافر",
+    "count": 21,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 52
+  },
+  {
+    "meter": "المتدارك",
+    "count": 21,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 52
+  },
+  {
+    "meter": "الرجز",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "الرمل",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "المتقارب",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "الخفيف",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "الهزج",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "المديد",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "المنسرح",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "المجتث",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "السريع (مفعولات)",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "الكامل (3 تفاعيل)",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "الكامل (مجزوء)",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  },
+  {
+    "meter": "الهزج (مجزوء)",
+    "count": 20,
+    "priority": "HIGH",
+    "aug_factor": 2.5,
+    "target_count": 50
+  }
+]
