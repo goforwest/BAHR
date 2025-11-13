@@ -178,7 +178,14 @@ def tayy_transform(pattern: str) -> str:
 
 
 def qabd_transform(pattern: str) -> str:
-    """قبض - Remove 5th sakin (often the last one)."""
+    """
+    قبض - Remove 5th sakin (DEPRECATED - use qabd_transform_letters).
+
+    This function is kept for backwards compatibility but is fundamentally
+    flawed as it operates on pattern strings instead of letter structures.
+
+    For correct implementation, use qabd_transform_letters() with TafilaLetterStructure.
+    """
     # For patterns like /o//o → /o//
     sakin_count = 0
     for i, char in enumerate(pattern):
@@ -191,6 +198,61 @@ def qabd_transform(pattern: str) -> str:
     if last_o != -1:
         return remove_at_index(pattern, last_o)
     return pattern
+
+
+def qabd_transform_letters(tafila_structure):
+    """
+    قَبْض (Qabḍ) - Remove 2nd sākin/madd letter (letter-level implementation).
+
+    Classical Definition:
+    "القَبْض هو حذف الخامس الساكن"
+    Translation: "Qabḍ is the removal of the 5th sākin"
+
+    Classical Interpretation:
+    In the 7-letter notation (م ف ا ع ي ل ن), position 5 (ي) is the 2nd sākin/madd.
+    Therefore, QABD = "Remove the 2nd sākin/madd letter"
+
+    Example:
+        Input:  مَفَاعِيلُنْ (mafāʿīlun) = م(/) ف(/) ا(o) ع(/) ي(o) ل(/) ن(o)
+                Classical positions: 1   2   3   4   5   6   7
+                Sākin/madd positions: 3 (1st), 5 (2nd), 7 (3rd)
+
+        Remove: Position 5 (ي) = 2nd sākin/madd
+        Result: مَفَاعِلُنْ (mafāʿilun) = م(/) ف(/) ا(o) ع(/) ل(/) ن(o)
+                Pattern: //o/o/o → //o//o ✓
+
+    Note on Phoneme Representation:
+        Our phoneme extraction combines consonant+long_vowel (e.g., فَا → فaa).
+        This is linguistically correct but collapses the 7-letter structure to 5 phonemes.
+        When counting sakins for transformations, we count these combined phonemes as single units.
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 2nd sākin/madd removed
+
+    Raises:
+        ValueError: If tafʿīlah has fewer than 2 sākin/madd letters
+    """
+    from .letter_structure import TafilaLetterStructure
+
+    # Get 2nd sākin/madd letter (includes both explicit sukūn and long vowels)
+    sakin_result = tafila_structure.get_nth_sakin(2, include_madd=True)
+
+    if sakin_result is None:
+        # Fewer than 2 sakins/madds - qabd cannot apply
+        # Return unchanged (not an error - just means this tafʿīlah doesn't support qabd)
+        return tafila_structure
+
+    position, letter = sakin_result
+
+    # Remove this letter
+    new_tafila = tafila_structure.remove_letter_at_position(position)
+
+    # Note: We don't modify the name here as that's handled by the Zahaf.apply() method
+
+    return new_tafila
 
 
 def kaff_transform(pattern: str) -> str:
