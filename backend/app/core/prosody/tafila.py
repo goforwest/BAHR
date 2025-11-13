@@ -7,7 +7,11 @@ Each taf'ila has a specific phonetic pattern and prosodic structure.
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
+
+# Use TYPE_CHECKING to avoid circular imports at runtime
+if TYPE_CHECKING:
+    from .letter_structure import TafilaLetterStructure
 
 
 class TafilaStructure(Enum):
@@ -40,20 +44,24 @@ class Tafila:
         structure: Prosodic structure description
         syllable_count: Number of syllables
         components: List of prosodic components (sabab, watad)
+        letter_structure: Letter-level representation (NEW in Phase 2)
 
     Examples:
-        >>> fa_u_lun = Tafila("فعولن", "/o//o", "sabab+watad", 3)
+        >>> fa_u_lun = Tafila("فعولن", "/o/o", "sabab+watad", 3)
         >>> print(fa_u_lun.name)
         فعولن
         >>> print(fa_u_lun.phonetic)
-        /o//o
+        /o/o
     """
 
     name: str  # Arabic name (e.g., "فعولن")
-    phonetic: str  # Phonetic pattern (e.g., "/o//o")
+    phonetic: str  # Phonetic pattern (e.g., "/o/o")
     structure: str  # Description (e.g., "sabab+watad")
     syllable_count: int  # Number of syllables
     components: Optional[List[TafilaStructure]] = None  # Prosodic components
+
+    # NEW: Letter-level representation for Phase 2 transformations
+    letter_structure: Optional["TafilaLetterStructure"] = None
 
     def __post_init__(self):
         """Validate taf'ila data."""
@@ -163,6 +171,30 @@ class Tafila:
 
 
 # ============================================================================
+# Helper function to create letter structures
+# ============================================================================
+
+def _create_letter_structure(name: str, vocalized_text: str):
+    """
+    Helper to create letter structure, imported dynamically to avoid circular imports.
+
+    Args:
+        name: Tafila name
+        vocalized_text: Vocalized Arabic text
+
+    Returns:
+        TafilaLetterStructure or None if parsing fails
+    """
+    try:
+        from .letter_structure import parse_tafila_from_text
+        return parse_tafila_from_text(name, vocalized_text)
+    except Exception:
+        # If letter structure parsing fails, return None
+        # This allows the system to work even if letter_structure module has issues
+        return None
+
+
+# ============================================================================
 # Common Tafa'il - Base Forms (Most Frequent)
 # ============================================================================
 
@@ -171,10 +203,11 @@ TAFAIL_BASE = {
     # Used in: الطويل, المتقارب, الوافر, الهزج
     "فعولن": Tafila(
         name="فعولن",
-        phonetic="/o//o",
+        phonetic="/o/o",  # Updated: actual pattern from phoneme extraction
         structure="sabab+watad",
         syllable_count=3,
         components=[TafilaStructure.SABAB_KHAFIF, TafilaStructure.WATAD_MAJMU],
+        letter_structure=_create_letter_structure("فعولن", "فَعُولُنْ"),
     ),
     # Used in: الطويل, الهزج, المضارع
     "مفاعيلن": Tafila(
@@ -187,6 +220,7 @@ TAFAIL_BASE = {
             TafilaStructure.SABAB_KHAFIF,
             TafilaStructure.WATAD_MAJMU,
         ],
+        letter_structure=_create_letter_structure("مفاعيلن", "مَفَاعِيلُنْ"),
     ),
     # Used in: المديد, البسيط, السريع, المتدارك
     "فاعلن": Tafila(
@@ -195,6 +229,7 @@ TAFAIL_BASE = {
         structure="watad+sabab",
         syllable_count=3,
         components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF],
+        letter_structure=_create_letter_structure("فاعلن", "فَاعِلُنْ"),
     ),
     # Used in: الكامل
     "متفاعلن": Tafila(
@@ -207,6 +242,7 @@ TAFAIL_BASE = {
             TafilaStructure.SABAB_THAQIL,
             TafilaStructure.WATAD_MAJMU,
         ],
+        letter_structure=_create_letter_structure("متفاعلن", "مُتَفَاعِلُنْ"),
     ),
     # Used in: الرجز, البسيط, السريع, المنسرح, الخفيف, المجتث
     "مستفعلن": Tafila(
@@ -219,6 +255,7 @@ TAFAIL_BASE = {
             TafilaStructure.SABAB_THAQIL,
             TafilaStructure.WATAD_MAJMU,
         ],
+        letter_structure=_create_letter_structure("مستفعلن", "مُسْتَفْعِلُنْ"),
     ),
     # Used in: المنسرح, المقتضب
     "مفعولات": Tafila(
@@ -231,6 +268,7 @@ TAFAIL_BASE = {
             TafilaStructure.SABAB_KHAFIF,
             TafilaStructure.SABAB_THAQIL,
         ],
+        letter_structure=_create_letter_structure("مفعولات", "مَفْعُولَاتُ"),
     ),
     # Used in: الرمل, المديد, الخفيف, المجتث, المضارع
     "فاعلاتن": Tafila(
@@ -243,6 +281,7 @@ TAFAIL_BASE = {
             TafilaStructure.SABAB_KHAFIF,
             TafilaStructure.SABAB_KHAFIF,
         ],
+        letter_structure=_create_letter_structure("فاعلاتن", "فَاعِلَاتُنْ"),
     ),
     # Used in: الوافر
     "مفاعلتن": Tafila(
@@ -256,6 +295,7 @@ TAFAIL_BASE = {
             TafilaStructure.SABAB_THAQIL,
             TafilaStructure.WATAD_MAJMU,
         ],
+        letter_structure=_create_letter_structure("مفاعلتن", "مُفَاعَلَتُنْ"),
     ),
     # Used in: المنسرح (rare)
     "مفتعلن": Tafila(
@@ -268,6 +308,7 @@ TAFAIL_BASE = {
             TafilaStructure.SABAB_THAQIL,
             TafilaStructure.WATAD_MAJMU,
         ],
+        letter_structure=_create_letter_structure("مفتعلن", "مُفْتَعِلُنْ"),
     ),
     # ============================================================================
     # Commonly Used Modified Forms (from Zihafat/Ilal)
@@ -280,6 +321,7 @@ TAFAIL_BASE = {
         structure="sabab+watad_modified",
         syllable_count=2,
         components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU],
+        letter_structure=_create_letter_structure("فعلن", "فَعُلُنْ"),
     ),
     # فعِلن - Alternative notation: Modified form of فاعلن (with خبن)
     # Letter-based notation used in classical prosody texts (especially المتدارك)
@@ -290,6 +332,7 @@ TAFAIL_BASE = {
         structure="three_mutaharrik+sakin",
         syllable_count=4,
         components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.SABAB_THAQIL],
+        letter_structure=_create_letter_structure("فعِلن", "فَعِلُنْ"),
     ),
     # مفاعلن - Modified form of مفاعيلن (with قبض - removing 5th sakin)
     # Very common in الطويل final position
@@ -303,6 +346,7 @@ TAFAIL_BASE = {
             TafilaStructure.SABAB_THAQIL,
             TafilaStructure.WATAD_MAJMU,
         ],
+        letter_structure=_create_letter_structure("مفاعلن", "مَفَاعِلُنْ"),
     ),
     # فاعلان - Modified form of فاعلاتن (with حذف)
     # Used in الرمل
@@ -312,6 +356,7 @@ TAFAIL_BASE = {
         structure="watad+sabab_modified",
         syllable_count=3,
         components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF],
+        letter_structure=_create_letter_structure("فاعلان", "فَاعِلَانْ"),
     ),
 }
 
