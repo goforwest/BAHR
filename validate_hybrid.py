@@ -9,8 +9,12 @@ from collections import defaultdict
 
 sys.path.insert(0, '/home/user/BAHR/backend')
 
-from app.core.prosody.detector_v2_hybrid import BahrDetectorV2Hybrid
+from app.core.prosody.detector_v2_hybrid import BahrDetectorV2Hybrid, EMPIRICAL_PATTERNS
 from app.core.phonetics import text_to_phonetic_pattern
+from missing_meters_patterns import MISSING_METERS_PATTERNS
+
+# Integrate missing meter patterns into empirical patterns
+EMPIRICAL_PATTERNS.update(MISSING_METERS_PATTERNS)
 
 
 def load_verses(filepath: str):
