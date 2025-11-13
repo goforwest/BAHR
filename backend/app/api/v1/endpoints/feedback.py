@@ -9,13 +9,14 @@ This module provides endpoints for collecting user feedback on:
 The feedback is stored in JSONL format for later analysis and model improvement.
 """
 
-import logging
 import json
-from pathlib import Path
+import logging
 from datetime import datetime
+from pathlib import Path
+
 from fastapi import APIRouter, HTTPException, status
 
-from app.schemas.feedback import MeterFeedback, FeedbackResponse
+from app.schemas.feedback import FeedbackResponse, MeterFeedback
 
 logger = logging.getLogger(__name__)
 

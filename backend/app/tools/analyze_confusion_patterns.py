@@ -12,12 +12,12 @@ Usage:
     python -m app.tools.analyze_confusion_patterns [--feedback-file PATH] [--top N]
 """
 
-import json
 import argparse
-from pathlib import Path
-from collections import Counter, defaultdict
-from typing import List, Dict, Tuple
+import json
 import sys
+from collections import Counter, defaultdict
+from pathlib import Path
+from typing import Dict, List, Tuple
 
 
 class ConfusionAnalyzer:
