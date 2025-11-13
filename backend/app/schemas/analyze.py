@@ -186,12 +186,15 @@ class AlternativeMeter(BaseModel):
 
     Used when detection is uncertain to show multiple possibilities.
     """
+
     id: int = Field(..., description="Meter ID")
     name_ar: str = Field(..., description="Arabic name")
     name_en: str = Field(..., description="English name")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence score")
     matched_pattern: str = Field(..., description="Matched phonetic pattern")
-    transformations: Optional[List[str]] = Field(None, description="Transformations applied")
+    transformations: Optional[List[str]] = Field(
+        None, description="Transformations applied"
+    )
     confidence_diff: float = Field(..., description="Difference from top candidate")
 
 
@@ -201,10 +204,17 @@ class DetectionUncertainty(BaseModel):
 
     Helps users understand when to trust detection and when to be cautious.
     """
+
     is_uncertain: bool = Field(..., description="Whether detection is uncertain")
-    reason: Optional[str] = Field(None, description="Reason for uncertainty (low_confidence, close_candidates)")
-    top_diff: Optional[float] = Field(None, description="Confidence difference between top 2")
-    recommendation: Optional[str] = Field(None, description="Recommendation (add_diacritics, manual_review)")
+    reason: Optional[str] = Field(
+        None, description="Reason for uncertainty (low_confidence, close_candidates)"
+    )
+    top_diff: Optional[float] = Field(
+        None, description="Confidence difference between top 2"
+    )
+    recommendation: Optional[str] = Field(
+        None, description="Recommendation (add_diacritics, manual_review)"
+    )
 
 
 class AnalyzeResponse(BaseModel):
@@ -229,11 +239,10 @@ class AnalyzeResponse(BaseModel):
     # NEW: Multi-candidate support
     alternative_meters: Optional[List[AlternativeMeter]] = Field(
         None,
-        description="Alternative meter candidates (shown when detection is uncertain)"
+        description="Alternative meter candidates (shown when detection is uncertain)",
     )
     detection_uncertainty: Optional[DetectionUncertainty] = Field(
-        None,
-        description="Information about detection certainty"
+        None, description="Information about detection certainty"
     )
     errors: List[str] = Field(
         default_factory=list, description="List of prosodic errors"

@@ -103,13 +103,15 @@ class FallbackDetector:
                     best_pat_for_meter = cached_pattern
 
             if best_sim_for_meter >= threshold:
-                candidates.append((
-                    best_sim_for_meter,
-                    meter,
-                    best_pat_for_meter,
-                    meter.tier.value,  # Lower is better (Tier 1 = most common)
-                    meter.frequency_rank  # Lower is better (rank 1 = most frequent)
-                ))
+                candidates.append(
+                    (
+                        best_sim_for_meter,
+                        meter,
+                        best_pat_for_meter,
+                        meter.tier.value,  # Lower is better (Tier 1 = most common)
+                        meter.frequency_rank,  # Lower is better (rank 1 = most frequent)
+                    )
+                )
 
         if not candidates:
             return None

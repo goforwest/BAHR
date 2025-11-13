@@ -340,20 +340,20 @@ class BahrDetectorV2:
             # Exact matches get high confidence (0.92-0.97)
             # Still differentiate by quality, but keep all exact matches high
             quality_scores_exact = {
-                MatchQuality.EXACT: 0.97,      # All base (no transformations)
-                MatchQuality.STRONG: 0.95,     # 1-2 common transformations
-                MatchQuality.MODERATE: 0.93,   # 3+ common transformations
-                MatchQuality.WEAK: 0.92,       # Many transformations (but still valid!)
+                MatchQuality.EXACT: 0.97,  # All base (no transformations)
+                MatchQuality.STRONG: 0.95,  # 1-2 common transformations
+                MatchQuality.MODERATE: 0.93,  # 3+ common transformations
+                MatchQuality.WEAK: 0.92,  # Many transformations (but still valid!)
                 MatchQuality.NO_MATCH: 0.0,
             }
             base_score = quality_scores_exact[match_quality]
         else:
             # Approximate matches (fuzzy matching) - lower confidence
             quality_scores_approx = {
-                MatchQuality.EXACT: 0.90,      # Very close match
-                MatchQuality.STRONG: 0.85,     # Good similarity
-                MatchQuality.MODERATE: 0.75,   # Moderate similarity
-                MatchQuality.WEAK: 0.65,       # Weak similarity
+                MatchQuality.EXACT: 0.90,  # Very close match
+                MatchQuality.STRONG: 0.85,  # Good similarity
+                MatchQuality.MODERATE: 0.75,  # Moderate similarity
+                MatchQuality.WEAK: 0.65,  # Weak similarity
                 MatchQuality.NO_MATCH: 0.0,
             }
             base_score = quality_scores_approx[match_quality]

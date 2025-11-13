@@ -41,7 +41,7 @@ class ConfusionAnalyzer:
             print("   No feedback data available for analysis.")
             return
 
-        with open(self.feedback_file, 'r', encoding='utf-8') as f:
+        with open(self.feedback_file, "r", encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     self.feedbacks.append(json.loads(line))
@@ -51,8 +51,9 @@ class ConfusionAnalyzer:
     def get_corrections_only(self) -> List[Dict]:
         """Get only correction feedbacks (where user changed the meter)."""
         return [
-            fb for fb in self.feedbacks
-            if fb.get('detected_meter') != fb.get('user_selected_meter')
+            fb
+            for fb in self.feedbacks
+            if fb.get("detected_meter") != fb.get("user_selected_meter")
         ]
 
     def analyze_confusion_pairs(self, top_n: int = 10) -> List[Tuple[str, int]]:
@@ -69,8 +70,8 @@ class ConfusionAnalyzer:
 
         pair_counts = Counter()
         for fb in corrections:
-            detected = fb.get('detected_meter', 'Unknown')
-            selected = fb.get('user_selected_meter', 'Unknown')
+            detected = fb.get("detected_meter", "Unknown")
+            selected = fb.get("user_selected_meter", "Unknown")
 
             # Normalize pair order (alphabetically) to avoid duplicates
             pair = tuple(sorted([detected, selected]))
@@ -78,17 +79,12 @@ class ConfusionAnalyzer:
 
         # Format pairs as "A ↔ B"
         formatted_pairs = [
-            (f"{p[0]} ↔ {p[1]}", count)
-            for p, count in pair_counts.most_common(top_n)
+            (f"{p[0]} ↔ {p[1]}", count) for p, count in pair_counts.most_common(top_n)
         ]
 
         return formatted_pairs
 
-    def analyze_specific_pair(
-        self,
-        meter1: str,
-        meter2: str
-    ) -> Dict:
+    def analyze_specific_pair(self, meter1: str, meter2: str) -> Dict:
         """
         Analyze confusion between two specific meters.
 
@@ -104,8 +100,8 @@ class ConfusionAnalyzer:
         # Find all cases where these two meters were confused
         confused_cases = []
         for fb in corrections:
-            detected = fb.get('detected_meter')
-            selected = fb.get('user_selected_meter')
+            detected = fb.get("detected_meter")
+            selected = fb.get("user_selected_meter")
 
             if {detected, selected} == {meter1, meter2}:
                 confused_cases.append(fb)
@@ -114,7 +110,7 @@ class ConfusionAnalyzer:
             return {
                 "pair": f"{meter1} ↔ {meter2}",
                 "total_confusions": 0,
-                "message": "No confusion found for this pair"
+                "message": "No confusion found for this pair",
             }
 
         # Analyze directionality (A→B vs B→A)
@@ -124,18 +120,20 @@ class ConfusionAnalyzer:
             direction_counts[direction] += 1
 
         # Analyze characteristics
-        has_tashkeel_count = sum(1 for fb in confused_cases if fb.get('has_tashkeel'))
-        avg_confidence = sum(fb.get('detected_confidence', 0) for fb in confused_cases) / len(confused_cases)
+        has_tashkeel_count = sum(1 for fb in confused_cases if fb.get("has_tashkeel"))
+        avg_confidence = sum(
+            fb.get("detected_confidence", 0) for fb in confused_cases
+        ) / len(confused_cases)
 
         # Sample verses
         sample_verses = [
             {
-                "text": fb.get('text', '')[:60] + "...",
-                "detected": fb.get('detected_meter'),
-                "user_selected": fb.get('user_selected_meter'),
-                "confidence": fb.get('detected_confidence', 0),
-                "has_tashkeel": fb.get('has_tashkeel', False),
-                "comment": fb.get('user_comment', '')[:50]
+                "text": fb.get("text", "")[:60] + "...",
+                "detected": fb.get("detected_meter"),
+                "user_selected": fb.get("user_selected_meter"),
+                "confidence": fb.get("detected_confidence", 0),
+                "has_tashkeel": fb.get("has_tashkeel", False),
+                "comment": fb.get("user_comment", "")[:50],
             }
             for fb in confused_cases[:5]  # Top 5 examples
         ]
@@ -147,7 +145,7 @@ class ConfusionAnalyzer:
             "with_tashkeel": has_tashkeel_count,
             "without_tashkeel": len(confused_cases) - has_tashkeel_count,
             "avg_confidence": round(avg_confidence, 4),
-            "sample_verses": sample_verses
+            "sample_verses": sample_verses,
         }
 
     def get_most_corrected_meters(self, top_n: int = 10) -> List[Tuple[str, int]]:
@@ -163,8 +161,7 @@ class ConfusionAnalyzer:
         corrections = self.get_corrections_only()
 
         detected_counts = Counter(
-            fb.get('detected_meter', 'Unknown')
-            for fb in corrections
+            fb.get("detected_meter", "Unknown") for fb in corrections
         )
 
         return detected_counts.most_common(top_n)
@@ -183,8 +180,16 @@ class ConfusionAnalyzer:
 
         print(f"\n📊 OVERALL STATISTICS")
         print(f"   Total feedback entries: {total}")
-        print(f"   Corrections (user changed meter): {corrections} ({corrections/total*100:.1f}%)" if total > 0 else "   No data")
-        print(f"   Validations (user agreed): {validations} ({validations/total*100:.1f}%)" if total > 0 else "")
+        print(
+            f"   Corrections (user changed meter): {corrections} ({corrections/total*100:.1f}%)"
+            if total > 0
+            else "   No data"
+        )
+        print(
+            f"   Validations (user agreed): {validations} ({validations/total*100:.1f}%)"
+            if total > 0
+            else ""
+        )
 
         # Most corrected meters
         print(f"\n🎯 MOST CORRECTED METERS (Top {top_n})")
@@ -214,21 +219,23 @@ class ConfusionAnalyzer:
             print(f"   Average confidence: {analysis['avg_confidence']:.2%}")
 
             print("\n   Directionality:")
-            for direction, count in analysis['directionality'].items():
-                percentage = count / analysis['total_confusions'] * 100
+            for direction, count in analysis["directionality"].items():
+                percentage = count / analysis["total_confusions"] * 100
                 print(f"      {direction}: {count} times ({percentage:.1f}%)")
 
             print(f"\n   With diacritics: {analysis['with_tashkeel']}")
             print(f"   Without diacritics: {analysis['without_tashkeel']}")
 
-            if analysis['sample_verses']:
+            if analysis["sample_verses"]:
                 print(f"\n   Sample verses:")
-                for i, verse in enumerate(analysis['sample_verses'], 1):
+                for i, verse in enumerate(analysis["sample_verses"], 1):
                     print(f"\n      [{i}] {verse['text']}")
-                    print(f"          Detected: {verse['detected']} ({verse['confidence']:.2%})")
+                    print(
+                        f"          Detected: {verse['detected']} ({verse['confidence']:.2%})"
+                    )
                     print(f"          User selected: {verse['user_selected']}")
                     print(f"          Has diacritics: {verse['has_tashkeel']}")
-                    if verse['comment']:
+                    if verse["comment"]:
                         print(f"          Comment: {verse['comment']}")
 
         print("\n" + "=" * 80)
@@ -247,8 +254,8 @@ class ConfusionAnalyzer:
         # Build confusion matrix
         matrix = defaultdict(lambda: defaultdict(int))
         for fb in corrections:
-            detected = fb.get('detected_meter', 'Unknown')
-            selected = fb.get('user_selected_meter', 'Unknown')
+            detected = fb.get("detected_meter", "Unknown")
+            selected = fb.get("user_selected_meter", "Unknown")
             matrix[detected][selected] += 1
 
         # Convert to regular dict for JSON serialization
@@ -257,7 +264,7 @@ class ConfusionAnalyzer:
             for detected, selected_counts in matrix.items()
         }
 
-        with open(output_file, 'w', encoding='utf-8') as f:
+        with open(output_file, "w", encoding="utf-8") as f:
             json.dump(matrix_dict, f, ensure_ascii=False, indent=2)
 
         print(f"✓ Confusion matrix exported to: {output_file}")
@@ -270,27 +277,22 @@ def main():
         description="Analyze meter detection confusion patterns from user feedback"
     )
     parser.add_argument(
-        '--feedback-file',
+        "--feedback-file",
         type=Path,
-        default=Path('data/feedback/meter_feedback.jsonl'),
-        help='Path to feedback JSONL file (default: data/feedback/meter_feedback.jsonl)'
+        default=Path("data/feedback/meter_feedback.jsonl"),
+        help="Path to feedback JSONL file (default: data/feedback/meter_feedback.jsonl)",
     )
     parser.add_argument(
-        '--top',
-        type=int,
-        default=5,
-        help='Number of top results to show (default: 5)'
+        "--top", type=int, default=5, help="Number of top results to show (default: 5)"
     )
     parser.add_argument(
-        '--export-matrix',
-        type=Path,
-        help='Export confusion matrix to JSON file'
+        "--export-matrix", type=Path, help="Export confusion matrix to JSON file"
     )
     parser.add_argument(
-        '--analyze-pair',
+        "--analyze-pair",
         nargs=2,
-        metavar=('METER1', 'METER2'),
-        help='Analyze specific meter pair (e.g., --analyze-pair الطويل الرجز)'
+        metavar=("METER1", "METER2"),
+        help="Analyze specific meter pair (e.g., --analyze-pair الطويل الرجز)",
     )
 
     args = parser.parse_args()
@@ -314,14 +316,14 @@ def main():
 
         analysis = analyzer.analyze_specific_pair(meter1, meter2)
 
-        if analysis['total_confusions'] == 0:
+        if analysis["total_confusions"] == 0:
             print(f"\n⚠️  {analysis['message']}")
         else:
             print(f"\nTotal confusions: {analysis['total_confusions']}")
             print(f"Average confidence: {analysis['avg_confidence']:.2%}")
 
             print("\nDirectionality:")
-            for direction, count in analysis['directionality'].items():
+            for direction, count in analysis["directionality"].items():
                 print(f"  {direction}: {count} times")
 
             print(f"\nWith diacritics: {analysis['with_tashkeel']}")

@@ -25,28 +25,23 @@ class MeterFeedback(BaseModel):
         user_comment: Optional comment from the user
         timestamp: When the feedback was submitted
     """
+
     text: str = Field(..., description="Original input text")
     normalized_text: str = Field(..., description="Normalized text")
     detected_meter: str = Field(..., description="Detected meter (Arabic name)")
     detected_confidence: float = Field(
-        ...,
-        ge=0.0,
-        le=1.0,
-        description="Confidence score of detected meter"
+        ..., ge=0.0, le=1.0, description="Confidence score of detected meter"
     )
-    user_selected_meter: str = Field(..., description="User-selected meter (Arabic name)")
+    user_selected_meter: str = Field(
+        ..., description="User-selected meter (Arabic name)"
+    )
     alternatives_shown: List[str] = Field(
-        default_factory=list,
-        description="Alternative meters shown to user"
+        default_factory=list, description="Alternative meters shown to user"
     )
     has_tashkeel: bool = Field(..., description="Whether text had diacritics")
-    user_comment: Optional[str] = Field(
-        default="",
-        description="Optional user comment"
-    )
+    user_comment: Optional[str] = Field(default="", description="Optional user comment")
     timestamp: datetime = Field(
-        default_factory=datetime.now,
-        description="Feedback submission timestamp"
+        default_factory=datetime.now, description="Feedback submission timestamp"
     )
 
     model_config = {
@@ -61,7 +56,7 @@ class MeterFeedback(BaseModel):
                     "alternatives_shown": ["الرجز", "الطويل", "السريع"],
                     "has_tashkeel": False,
                     "user_comment": "This is the famous Mu'allaqah verse by Imru' al-Qais",
-                    "timestamp": "2025-11-12T10:30:00Z"
+                    "timestamp": "2025-11-12T10:30:00Z",
                 }
             ]
         }
@@ -77,6 +72,7 @@ class FeedbackResponse(BaseModel):
         message: User-friendly message (bilingual)
         feedback_id: Unique identifier for this feedback
     """
+
     status: str = Field(..., description="Status (success or error)")
     message: str = Field(..., description="User-friendly message")
     feedback_id: str = Field(..., description="Unique feedback identifier")
@@ -87,7 +83,7 @@ class FeedbackResponse(BaseModel):
                 {
                     "status": "success",
                     "message": "شكراً لملاحظاتك! | Thank you for your feedback!",
-                    "feedback_id": "fb_1731409800"
+                    "feedback_id": "fb_1731409800",
                 }
             ]
         }

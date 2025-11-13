@@ -18,14 +18,21 @@ from app.core.normalization import normalize_arabic_text
 from app.core.phonetics import text_to_phonetic_pattern
 from app.core.prosody.detector_v2 import BahrDetectorV2
 from app.core.prosody.fallback_detector import detect_with_all_strategies
-from app.core.prosody.phoneme_based_detector import detect_meter_from_text, detect_with_phoneme_fitness
+from app.core.prosody.phoneme_based_detector import (
+    detect_meter_from_text,
+    detect_with_phoneme_fitness,
+)
 from app.core.quality import analyze_verse_quality
 from app.core.rhyme import analyze_verse_rhyme
 from app.core.taqti3 import perform_taqti3
 from app.db.redis import cache_get, cache_set, generate_cache_key
 from app.schemas.analyze import (
-    AnalyzeRequest, AnalyzeResponse, BahrInfo, RhymeInfo,
-    AlternativeMeter, DetectionUncertainty
+    AnalyzeRequest,
+    AnalyzeResponse,
+    BahrInfo,
+    RhymeInfo,
+    AlternativeMeter,
+    DetectionUncertainty,
 )
 
 logger = logging.getLogger(__name__)
@@ -182,14 +189,15 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                         detection_results = bahr_detector_v2.detect(
                             phonetic_pattern,
                             top_k=1,
-                            expected_meter_ar=request.expected_meter
+                            expected_meter_ar=request.expected_meter,
                         )
-                        detection_result = detection_results[0] if detection_results else None
+                        detection_result = (
+                            detection_results[0] if detection_results else None
+                        )
                     else:
                         # Use fallback detection
                         detection_result = detect_with_all_strategies(
-                            bahr_detector_v2,
-                            phonetic_pattern
+                            bahr_detector_v2, phonetic_pattern
                         )
                 else:
                     # Extract hemistichs for real user input
@@ -203,7 +211,9 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                         # No explicit separator - split at midpoint by words
                         # Arabic verses typically have equal-length hemistichs
                         words = normalized_text.strip().split()
-                        if len(words) > 8:  # If verse has many words, likely has 2 hemistichs
+                        if (
+                            len(words) > 8
+                        ):  # If verse has many words, likely has 2 hemistichs
                             mid = len(words) // 2
                             first_hemistich = " ".join(words[:mid])
                             logger.info(
@@ -216,9 +226,12 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                     # Use HYBRID detection (combines fitness + similarity)
                     # This is the recommended approach that solves the pattern mismatch issue
                     from app.core.normalization import has_diacritics
+
                     has_tashkeel = has_diacritics(first_hemistich)
 
-                    logger.info(f"[V2] Using hybrid detection (fitness + similarity, has_tashkeel={has_tashkeel})")
+                    logger.info(
+                        f"[V2] Using hybrid detection (fitness + similarity, has_tashkeel={has_tashkeel})"
+                    )
 
                     # Try hybrid detection first
                     detection_result = detect_meter_from_text(
@@ -226,7 +239,7 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                         has_tashkeel,
                         bahr_detector_v2,
                         min_score=0.50,  # 50% minimum score
-                        use_hybrid=True  # Enable hybrid scoring
+                        use_hybrid=True,  # Enable hybrid scoring
                     )
 
                     if detection_result:
@@ -236,13 +249,16 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                         )
                     else:
                         # Fallback to traditional pattern-based detection if hybrid fails
-                        logger.info("[V2] Hybrid detection failed, trying pattern-based fallback")
+                        logger.info(
+                            "[V2] Hybrid detection failed, trying pattern-based fallback"
+                        )
                         phonetic_pattern = text_to_phonetic_pattern(normalized_text)
-                        logger.info(f"[V2] Extracted phonetic pattern: {phonetic_pattern}")
+                        logger.info(
+                            f"[V2] Extracted phonetic pattern: {phonetic_pattern}"
+                        )
 
                         detection_result = detect_with_all_strategies(
-                            bahr_detector_v2,
-                            phonetic_pattern
+                            bahr_detector_v2, phonetic_pattern
                         )
 
                 if detection_result:
@@ -255,6 +271,7 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                         # Only for real user input (hybrid detection path)
                         try:
                             from app.core.normalization import has_diacritics
+
                             has_tashkeel = has_diacritics(normalized_text)
 
                             # Get top 3 candidates for comparison
@@ -263,7 +280,7 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                                 has_tashkeel,
                                 bahr_detector_v2,
                                 top_k=3,
-                                use_hybrid_scoring=True
+                                use_hybrid_scoring=True,
                             )
 
                             # Determine if detection is uncertain
@@ -274,13 +291,20 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                             if detection_result.confidence < 0.90:
                                 is_uncertain = True
                                 reason = "low_confidence"
-                                logger.info(f"[V2] Uncertain: low confidence ({detection_result.confidence:.2%})")
+                                logger.info(
+                                    f"[V2] Uncertain: low confidence ({detection_result.confidence:.2%})"
+                                )
                             elif len(all_candidates) >= 2:
-                                top_diff = all_candidates[0][2] - all_candidates[1][2]  # score diff
+                                top_diff = (
+                                    all_candidates[0][2] - all_candidates[1][2]
+                                )  # score diff
                                 # Show as uncertain if:
                                 # 1. Very close race (diff < 2%) - always show alternatives
                                 # 2. Moderately close race (diff < 5%) AND confidence not very high (< 97%)
-                                if top_diff < 0.02 or (top_diff < 0.05 and detection_result.confidence < 0.97):
+                                if top_diff < 0.02 or (
+                                    top_diff < 0.05
+                                    and detection_result.confidence < 0.97
+                                ):
                                     is_uncertain = True
                                     reason = "close_candidates"
                                     logger.info(
@@ -293,20 +317,27 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                             if is_uncertain and len(all_candidates) > 1:
                                 from app.core.prosody.meters import METERS_REGISTRY
 
-                                for meter_id, name_ar, score, pattern in all_candidates[1:]:
+                                for meter_id, name_ar, score, pattern in all_candidates[
+                                    1:
+                                ]:
                                     meter = METERS_REGISTRY.get(meter_id)
                                     if meter:
                                         # Get transformations for this alternative (simplified - just show "base")
                                         # Full transformation tracking would require re-running detector
-                                        alternative_meters_list.append(AlternativeMeter(
-                                            id=meter_id,
-                                            name_ar=name_ar,
-                                            name_en=meter.name_en,
-                                            confidence=score,
-                                            matched_pattern=pattern,
-                                            transformations=["base"],  # Simplified for alternatives
-                                            confidence_diff=all_candidates[0][2] - score
-                                        ))
+                                        alternative_meters_list.append(
+                                            AlternativeMeter(
+                                                id=meter_id,
+                                                name_ar=name_ar,
+                                                name_en=meter.name_en,
+                                                confidence=score,
+                                                matched_pattern=pattern,
+                                                transformations=[
+                                                    "base"
+                                                ],  # Simplified for alternatives
+                                                confidence_diff=all_candidates[0][2]
+                                                - score,
+                                            )
+                                        )
 
                                 logger.info(
                                     f"[V2] Added {len(alternative_meters_list)} alternative meter(s): "
@@ -318,8 +349,14 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                                 detection_uncertainty_info = DetectionUncertainty(
                                     is_uncertain=is_uncertain,
                                     reason=reason,
-                                    top_diff=top_diff if len(all_candidates) >= 2 else None,
-                                    recommendation="add_diacritics" if not has_tashkeel and is_uncertain else None
+                                    top_diff=(
+                                        top_diff if len(all_candidates) >= 2 else None
+                                    ),
+                                    recommendation=(
+                                        "add_diacritics"
+                                        if not has_tashkeel and is_uncertain
+                                        else None
+                                    ),
                                 )
 
                                 logger.info(
@@ -328,7 +365,10 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
                                 )
 
                         except Exception as e:
-                            logger.warning(f"[V2] Multi-candidate detection failed: {e}", exc_info=True)
+                            logger.warning(
+                                f"[V2] Multi-candidate detection failed: {e}",
+                                exc_info=True,
+                            )
                             # Continue with single detection result
 
                     # Extract explanation parts (bilingual)
@@ -493,7 +533,9 @@ async def analyze_v2(request: AnalyzeRequest) -> AnalyzeResponse:
             taqti3=taqti3_result,
             bahr=bahr_info,
             rhyme=rhyme_info,
-            alternative_meters=alternative_meters_list if alternative_meters_list else None,
+            alternative_meters=(
+                alternative_meters_list if alternative_meters_list else None
+            ),
             detection_uncertainty=detection_uncertainty_info,
             errors=[],
             suggestions=suggestions if request.suggest_corrections else [],
