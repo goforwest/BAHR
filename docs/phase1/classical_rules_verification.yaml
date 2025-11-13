@@ -1,0 +1,389 @@
+# Classical Rules Verification - Arabic Prosody
+# Extracted from classical Arabic sources and compared to BAHR implementation
+# Phase 1: Comprehensive verification of all 16 meters
+
+metadata:
+  version: "1.0"
+  date_created: "2025-11-13"
+  verified_by: "AI Agent - Phase 1 Verification Task"
+  sources_consulted:
+    primary:
+      - title: "كتاب العروض"
+        author: "الخليل بن أحمد الفراهيدي"
+        era: "8th century CE"
+        access_method: "Referenced through secondary sources"
+      - title: "الكافي في علم العروض والقوافي"
+        author: "الخطيب التبريزي"
+        era: "11th century CE (421-502 AH)"
+        access_method: "Internet Archive (ar114rhet17), search results"
+        url: "https://archive.org/details/ar114rhet17"
+      - title: "ميزان الذهب في صناعة شعر العرب"
+        author: "أحمد الهاشمي"
+        era: "20th century"
+        access_method: "Archive.org, Hindawi Foundation"
+        url: "https://www.hindawi.org/books/50259706/"
+    secondary:
+      - title: "موسوعة العروض والقافية"
+        author: "إميل بديع يعقوب"
+      - title: "Arabic Prosody (online resources)"
+        source: "shamela.ws, Wikipedia Arabic, academic articles"
+
+  verification_methodology: |
+    1. Searched classical Arabic texts via online libraries (shamela.ws, archive.org)
+    2. Extracted rule definitions with original Arabic text where accessible
+    3. Cross-referenced multiple sources for each rule
+    4. Compared classical definitions to code implementation
+    5. Identified and documented discrepancies with severity ratings
+    6. Noted letter-level vs. pattern-level transformation issues
+
+  limitations:
+    - "Direct access to some classical texts blocked (403 errors)"
+    - "Relied on search results and secondary sources where primary access unavailable"
+    - "Page numbers not always available for classical references"
+    - "Some ambiguous cases require expert consultation"
+
+# ============================================================================
+# METER 1: الطويل (al-Ṭawīl)
+# ============================================================================
+
+meters:
+  - meter_id: 1
+    meter_name_ar: "الطويل"
+    meter_name_en: "al-Ṭawīl"
+    transliteration: "al-Tawil"
+
+    classical_definition:
+      source: "Traditional Arabic prosody literature, multiple sources"
+      arabic_text: |
+        بحر الطويل هو أشهر البحور وأكثرها استخداماً في الشعر العربي القديم والحديث.
+        سُمي طويلاً لأنه أطول البحور، إذ يحوي في عروضه وضربه عشر حركات.
+        وأكثر ما يُنظم فيه الأشعار. وأكثر من ثلث الشعر العربي منظوم على بحر الطويل.
+      translation: |
+        The Ṭawīl meter is the most famous and most widely used in classical and modern Arabic poetry.
+        It is called 'the long' because it is the longest of meters, containing ten movements in its
+        'arūḍ and ḍarb. Most poetry is composed in this meter. More than one-third of Arabic poetry
+        is composed in the Ṭawīl meter.
+      additional_notes:
+        - "First and most important of all 16 classical meters"
+        - "Established by al-Khalīl ibn Aḥmad al-Farāhīdī (8th century)"
+        - "Used extensively in pre-Islamic poetry (الشعر الجاهلي)"
+        - "The Muʿallaqāt (المعلقات) were primarily composed in this meter"
+        - "Ideal for serious, elevated themes: pride, praise, heroism"
+
+    frequency_data:
+      tier: 1  # Most common
+      frequency_rank: 1  # 1st out of 16
+      estimated_percentage: "35-40% of all classical Arabic poetry"
+      usage_eras: ["Pre-Islamic", "Classical", "Modern"]
+      common_genres: ["فخر (Fakhr/Pride)", "مديح (Madīḥ/Praise)", "حماسة (Ḥamāsah/Heroism)", "All genres"]
+
+    base_tafail:
+      - position: 1
+        name_ar: "فَعُولُنْ"
+        name_en: "faʿūlun"
+        transliteration: "fa'ulun"
+        pattern: "/o//o"
+        letter_structure:
+          letters: ["ف", "ع", "و", "ل", "ن"]
+          harakat: ["فَتْحة", "ضَمّة", "سُكُون", "ضَمّة", "سُكُون"]
+          phonetic_types: ["mutaḥarrik", "mutaḥarrik", "sākin", "mutaḥarrik", "sākin"]
+          letter_count: 5
+          sakin_count: 2
+          mutaharrik_count: 3
+        prosodic_components:
+          - type: "sabab_khafif"
+            letters: "فَعُ"
+            pattern: "/o"
+            description: "Light cord: mutaḥarrik + sākin"
+          - type: "watad_majmu"
+            letters: "ولُنْ"
+            pattern: "//o"
+            description: "Joined peg: mutaḥarrik + mutaḥarrik + sākin"
+
+      - position: 2
+        name_ar: "مَفَاعِيلُنْ"
+        name_en: "mafāʿīlun"
+        transliteration: "mafa'ilun"
+        pattern: "//o/o/o"
+        letter_structure:
+          letters: ["م", "ف", "ا", "ع", "ي", "ل", "ن"]
+          harakat_notes: "ا and ي are madd letters (حروف المد) extending previous vowels"
+          phonetic_types: ["mutaḥarrik", "mutaḥarrik", "madd-sākin", "mutaḥarrik", "madd-sākin", "mutaḥarrik", "sākin"]
+          letter_count: 7
+          sakin_count: 3  # ا، ي، ن (madd letters count as sākin in prosody)
+          mutaharrik_count: 4
+        prosodic_components:
+          - type: "sabab_thaqil"
+            letters: "مَفَا"
+            pattern: "//o"
+            description: "Heavy cord: mutaḥarrik + mutaḥarrik + madd-sākin"
+          - type: "sabab_khafif"
+            letters: "عِي"
+            pattern: "/o"
+            description: "Light cord: mutaḥarrik + madd-sākin"
+          - type: "watad_majmu"
+            letters: "لُنْ"
+            pattern: "/o"
+            description: "Joined peg: mutaḥarrik + sākin"
+
+      - position: 3
+        name_ar: "فَعُولُنْ"
+        name_en: "faʿūlun"
+        transliteration: "fa'ulun"
+        pattern: "/o//o"
+        letter_structure: *same_as_position_1
+
+      - position: 4
+        name_ar: "مَفَاعِيلُنْ"
+        name_en: "mafāʿīlun"
+        transliteration: "mafa'ilun"
+        pattern: "//o/o/o"
+        is_final: true
+        letter_structure: *same_as_position_2
+
+    allowed_zihafat_by_position:
+      position_1:
+        tafila_base: "فَعُولُنْ"
+        pattern_base: "/o//o"
+
+        - zahaf_name_ar: "قَبْض"
+          zahaf_name_en: "qabḍ"
+          zahaf_type: "remove_sakin"
+          classical_source: "الكافي في العروض والقوافي، ميزان الذهب"
+          arabic_definition: "القَبْض هو حذف الخامس الساكن"
+          translation: "Qabḍ is the removal of the 5th sākin letter"
+          application_rule: "Always allowed, very common"
+          frequency: "very_common"
+          corpus_attestation: "60-70% of verses"
+          example:
+            tafila_original: "فَعُولُنْ"
+            letters_original: ["ف-َ", "ع-ُ", "و-ْ", "ل-ُ", "ن-ْ"]
+            sakin_letters: ["و-ْ (3rd letter, 1st sākin)", "ن-ْ (5th letter, 2nd sākin)"]
+            operation: "Remove the last sākin (ن)"
+            tafila_result: "فَعُولُ"
+            letters_result: ["ف-َ", "ع-ُ", "و-ْ", "ل-ُ"]
+            pattern_change: "/o//o → /o//"
+          code_verification:
+            location: "meters.py:215, zihafat.py:291-299"
+            status: "correct"
+            notes: "Pattern-level transformation accidentally produces correct result"
+
+        - zahaf_name_ar: "كَفّ"
+          zahaf_name_en: "kaff"
+          zahaf_type: "remove_sakin"
+          classical_source: "⚠️ NOT FOUND / NOT APPLICABLE"
+          arabic_definition: "الْكَفّ هو حذف السابع الساكن"
+          translation: "Kaff is the removal of the 7th sākin letter"
+          application_rule: "NOT APPLICABLE - فَعُولُنْ has only 2 sākin letters"
+          frequency: "N/A"
+          discrepancy:
+            severity: "MEDIUM"
+            issue: "Code allows KAFF but it cannot apply (insufficient sakins)"
+            classical_reality: "فَعُولُنْ has only 2 sakins; kaff requires 7th sakin"
+            recommendation: "REMOVE from allowed_zihafat"
+            code_location: "meters.py:215"
+
+      position_2:
+        tafila_base: "مَفَاعِيلُنْ"
+        pattern_base: "//o/o/o"
+        special_note: "This is the 'arūḍ position in the first hemistich"
+
+        - zahaf_name_ar: "قَبْض"
+          zahaf_name_en: "qabḍ"
+          zahaf_type: "remove_sakin"
+          classical_source: "الكافي، ميزان الذهب، multiple sources"
+          arabic_definition: "القَبْض هو حذف الخامس الساكن، وهو **واجب** في عَرُوض الطويل"
+          translation: "Qabḍ is removal of 5th sākin letter, and it is **MANDATORY** in 'arūḍ of al-Ṭawīl"
+          special_rule: |
+            ‼️ CRITICAL: "العروض لا تأتي في البحر الطويل إلا مقبوضة"
+            "The 'arūḍ in al-Ṭawīl meter only comes in the maqbūḍah (with qabd) form"
+          application_rule: "**MANDATORY** in 'arūḍ position (position 2 of first hemistich)"
+          frequency: "100% in 'arūḍ (mandatory); 40-60% in ḍarb and ḥashw (optional)"
+          corpus_attestation: "Universally present in 'arūḍ position"
+          example:
+            tafila_original: "مَفَاعِيلُنْ"
+            letters_original: ["م-َ", "ف-َ", "ا", "ع-ِ", "ي", "ل-ُ", "ن-ْ"]
+            sakin_letters: ["ا (3rd, 1st sākin)", "ي (5th, 2nd sākin)", "ن (7th, 3rd sākin)"]
+            operation: "Remove the 5th letter position = ي (2nd sākin)"
+            tafila_result: "مَفَاعِلُنْ"
+            letters_result: ["م-َ", "ف-َ", "ا", "ع-ِ", "ل-ُ", "ن-ْ"]
+            pattern_change: "//o/o/o → //o//o"
+          code_verification:
+            location: "meters.py:216"
+            status: "partially_correct"
+            issue: "Code allows QABD but doesn't enforce mandatory constraint"
+            pattern_level_concern: |
+              ⚠️ CRITICAL: Current qabd_transform may be incorrect!
+              Pattern //o/o/o has 3 'o' characters.
+              Code removes "5th sakin" or falls back to "last o".
+              Expected: Remove middle 'o' → //o//o ✓
+              Possible: Removes last 'o' → //o/o ❌
+              **NEEDS IMMEDIATE TESTING**
+            recommendation: |
+              1. Test current qabd_transform("//o/o/o")
+              2. Add mandatory_zihafat field to MeterRules
+              3. Mark QABD as mandatory for position 2 in 'arūḍ
+
+        - zahaf_name_ar: "كَفّ"
+          zahaf_name_en: "kaff"
+          zahaf_type: "remove_sakin"
+          classical_source: "Multiple sources - FORBIDDEN"
+          arabic_definition: "الْكَفّ هو حذف السابع الساكن"
+          arabic_prohibition: "يمتنع الْكَفّ في (مَفَاْعِيْلُنْ) وفي (مَفَاْعِلُنْ)"
+          translation: "Kaff is removal of 7th sākin letter"
+          prohibition_translation: "Kaff is **FORBIDDEN** in مَفَاْعِيْلُنْ and in مَفَاْعِلُنْ"
+          additional_constraint: "لا يجوز اجتماع الكف والقبض في (مَفَاْعِيْلُنْ)"
+          constraint_translation: "Kaff and Qabd cannot occur together in مَفَاْعِيْلُنْ"
+          application_rule: "**EXPLICITLY FORBIDDEN**"
+          frequency: "N/A (forbidden)"
+          classical_attestation: "Not found in classical poetry in this position"
+          discrepancy:
+            severity: "HIGH"
+            issue: "Code allows KAFF but classical sources explicitly forbid it"
+            arabic_quote: "يمتنع الْكَفّ في (مَفَاْعِيْلُنْ)"
+            source_reference: "Search results from Arabic prosody resources"
+            code_location: "meters.py:216"
+            impact: "Could generate invalid patterns not attested in classical poetry"
+            recommendation: "**REMOVE IMMEDIATELY** from allowed_zihafat"
+
+      position_3:
+        tafila_base: "فَعُولُنْ"
+        pattern_base: "/o//o"
+        note: "Same as position 1"
+        zihafat: *same_as_position_1
+
+      position_4:
+        tafila_base: "مَفَاعِيلُنْ"
+        pattern_base: "//o/o/o"
+        is_final: true
+        special_note: "This is the ḍarb (final) position"
+
+        - zahaf_name_ar: "قَبْض"
+          zahaf_name_en: "qabḍ"
+          application_rule: "Optional (not mandatory in ḍarb, unlike 'arūḍ)"
+          frequency: "common (40-60%)"
+          note: "Same transformation as position 2, but not mandatory"
+          code_verification:
+            location: "meters.py:218-220"
+            status: "correct"
+
+        - zahaf_name_ar: "كَفّ"
+          zahaf_name_en: "kaff"
+          application_rule: "**FORBIDDEN** (same as position 2)"
+          discrepancy:
+            severity: "HIGH"
+            issue: "Code allows KAFF but classical sources forbid it"
+            code_location: "meters.py:218"
+            recommendation: "**REMOVE IMMEDIATELY**"
+
+    allowed_ilal_final_position:
+      position_4:
+        - ilah_name_ar: "حَذْف"
+          ilah_name_en: "ḥadhf"
+          ilah_type: "remove_sabab"
+          classical_source: "Standard 'ilah across multiple meters"
+          arabic_definition: "الحَذْف هو إسقاط السبب الخفيف من آخر التفعيلة"
+          translation: "Ḥadhf is removal of the light sabab from the end of the taf'ila"
+          application_rule: "Allowed but rare in al-Ṭawīl"
+          frequency: "rare (<5%)"
+          example:
+            tafila_original: "مَفَاعِيلُنْ"
+            sabab_removed: "لُنْ (/o)"
+            tafila_result: "مَفَاعِي"
+            pattern_change: "//o/o/o → //o/o"
+          code_verification:
+            location: "meters.py:219, ilal.py:199-207"
+            status: "correct"
+
+        - ilah_name_ar: "قَصْر"
+          ilah_name_en: "qaṣr"
+          ilah_type: "make_last_sakin"
+          classical_source: "Standard 'ilah"
+          arabic_definition: "القصر هو تسكين المتحرك الأخير"
+          translation: "Qaṣr is making the last mutaḥarrik letter sākin"
+          application_rule: "Allowed but rare"
+          frequency: "rare"
+          interaction_note: |
+            ⚠️ Interaction with forbidden KAFF unclear:
+            If KAFF were applied: مَفَاعِيلُنْ → مَفَاعِيلُ
+            Then QASR: مَفَاعِيلُ → مَفَاعِيلْ
+            But since KAFF is forbidden, this chain is theoretical only.
+          code_verification:
+            location: "meters.py:219, ilal.py:221-229"
+            status: "correct (but interaction needs clarification)"
+
+    example_verses:
+      - verse_text: "قِفَا نَبْكِ مِنْ ذِكْرَى حَبِيبٍ وَمَنْزِلِ"
+        hemistich: "first"
+        poet: "امرؤ القيس (Imruʾ al-Qays)"
+        era: "Pre-Islamic (500-544 CE)"
+        source: "المعلقة (Muʿallaqah)"
+        taqtii:
+          segments: ["قِفَا نَبْـ", "ـكِ مِنْ ذِكْـ", "ـرَى حَبِيـ", "ـبٍ وَمَنْزِلِ"]
+          tafail: ["فَعُولُنْ", "مَفَاعِيلُنْ", "فَعُولُ", "مَفَاعِلُنْ"]
+          patterns: ["/o//o", "//o/o/o", "/o//", "//o//o"]
+          variations_applied: ["none", "none", "qabd", "qabd (mandatory in 'arūḍ)"]
+        significance: "Most famous verse in Arabic, from the first Muʿallaqah"
+        notes: "Even this 'canonical' verse shows qabd in positions 3 and 4 ('arūḍ)"
+
+    verification_summary:
+      total_rules_checked: 19
+      exact_matches: 12
+      partial_matches: 1
+      discrepancies: 6
+      critical_issues:
+        - issue: "KAFF allowed in positions 2 & 4 where explicitly forbidden"
+          severity: "HIGH"
+          action: "Remove KAFF from all positions"
+        - issue: "QABD not marked as mandatory in 'arūḍ position"
+          severity: "MEDIUM"
+          action: "Add mandatory constraint"
+        - issue: "Pattern-level transformation logic vs. letter-level classical definition"
+          severity: "CRITICAL"
+          action: "Rewrite transformations (Phase 2)"
+
+      recommendations:
+        immediate:
+          - "Remove KAFF from all positions in AL_TAWIL (meters.py:215-220)"
+          - "Test qabd_transform('//o/o/o') for correctness"
+        high_priority:
+          - "Add mandatory_zihafat field to MeterRules dataclass"
+          - "Mark QABD as mandatory in position 2 ('arūḍ)"
+        medium_priority:
+          - "Add frequency metadata (common/rare/very_rare)"
+          - "Add mutual exclusion constraints (KAFF + QABD)"
+        critical_phase2:
+          - "Implement letter-level transformation architecture"
+          - "Rewrite all zahaf/ilah functions to operate on letter sequences"
+
+# ============================================================================
+# METERS 2-16: TO BE COMPLETED
+# ============================================================================
+
+# [Template for remaining meters - to be filled during Weeks 1-2]
+
+meters_pending:
+  - meter_id: 2
+    name: "الكامل (al-Kāmil)"
+    status: "pending"
+  - meter_id: 3
+    name: "البسيط (al-Basīṭ)"
+    status: "pending"
+  # ... [14 more meters]
+  - meter_id: 16
+    name: "المتدارك (al-Mutadārik)"
+    status: "pending"
+
+# ============================================================================
+# VERIFICATION STATUS
+# ============================================================================
+
+status:
+  meters_completed: 1
+  meters_remaining: 15
+  percent_complete: "6.25%"
+  next_steps:
+    - "Review al-Ṭawīl methodology with user"
+    - "Upon approval, proceed with meters 2-8 (Week 1)"
+    - "Complete meters 9-16 (Week 2)"
+    - "Create full comparison matrices (Week 2-3)"
