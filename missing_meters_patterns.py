@@ -1,10 +1,10 @@
-"""
-Empirical patterns for missing meters.
-Extracted from golden dataset.
-"""
+# Generated empirical patterns for missing meters
+# Source: Golden dataset extraction
+# Date: 2025-11-13
 
 MISSING_METERS_PATTERNS = {
-    8: {  # السريع
+    # السريع (al-Sari')
+    8: {
         'name_ar': 'السريع',
         'name_en': 'al-Sari',
         'patterns': [
@@ -42,10 +42,10 @@ MISSING_METERS_PATTERNS = {
             '/o/o//o/o/o/o////o/o/o//o//o//',
             '/o/o/o//o/oo//o/o/o//o///',
             '/o/oo//o///o//oo/oo//oo',
-        ],
-        # Extracted from 34 verses
+        ]
     },
-    9: {  # المديد
+    # المديد (al-Madid)
+    9: {
         'name_ar': 'المديد',
         'name_en': 'al-Madid',
         'patterns': [
@@ -69,37 +69,10 @@ MISSING_METERS_PATTERNS = {
             '/o/o/o/o/o/o/////o',
             '/o/oo//o///o//o///o//',
             '/ooo//////o////o///o//o/o/o//o/o//////o////',
-        ],
-        # Extracted from 20 verses
+        ]
     },
-    10: {  # المنسرح
-        'name_ar': 'المنسرح',
-        'name_en': 'al-Munsarih',
-        'patterns': [
-            '/////o/o//o//o///o',
-            '///o///o///o/////o/o///////////o',
-            '///o//o//////oo//////o',
-            '///o//o/o//////o///o',
-            '///o/o/o//o///o//o/',
-            '//o///o//o//o///o//o/o',
-            '//o///o//o/o/o//o/o//o//oo',
-            '//o/o//o///o//o/o/o//o///',
-            '//o/o//o///o/o/o//o///',
-            '/o////o/o//o/o///o/o/',
-            '/o///o/o//o/o/o//o///',
-            '/o//o////o/oo///o',
-            '/o//o/o/oo//o//',
-            '/o/o//o/////////o/////////o///o',
-            '/o/o//o/////o//o////o',
-            '/o/o//o///o//o//o//',
-            '/o/o//o///o/oo/o//o///o',
-            '/o/o//o/o//o////o////o',
-            '/o/o//o/o/o/o//o///o',
-            '/o/o//o/o/oo//o///o//o',
-        ],
-        # Extracted from 20 verses
-    },
-    13: {  # المجتث
+    # المجتث (al-Mujtathth)
+    10: {
         'name_ar': 'المجتث',
         'name_en': 'al-Mujtathth',
         'patterns': [
@@ -123,10 +96,37 @@ MISSING_METERS_PATTERNS = {
             '/o/o//o/o/o/o//////o/////////o/o',
             '/o/o/o//o/o//o///o///',
             '/oo//o/o/o//o/o/o//o/o',
-        ],
-        # Extracted from 20 verses
+        ]
     },
-    14: {  # المقتضب
+    # المنسرح (al-Munsarih)
+    13: {
+        'name_ar': 'المنسرح',
+        'name_en': 'al-Munsarih',
+        'patterns': [
+            '/////o/o//o//o///o',
+            '///o///o///o/////o/o///////////o',
+            '///o//o//////oo//////o',
+            '///o//o/o//////o///o',
+            '///o/o/o//o///o//o/',
+            '//o///o//o//o///o//o/o',
+            '//o///o//o/o/o//o/o//o//oo',
+            '//o/o//o///o//o/o/o//o///',
+            '//o/o//o///o/o/o//o///',
+            '/o////o/o//o/o///o/o/',
+            '/o///o/o//o/o/o//o///',
+            '/o//o////o/oo///o',
+            '/o//o/o/oo//o//',
+            '/o/o//o/////////o/////////o///o',
+            '/o/o//o/////o//o////o',
+            '/o/o//o///o//o//o//',
+            '/o/o//o///o/oo/o//o///o',
+            '/o/o//o/o//o////o////o',
+            '/o/o//o/o/o/o//o///o',
+            '/o/o//o/o/oo//o///o//o',
+        ]
+    },
+    # المقتضب (al-Muqtadab)
+    14: {
         'name_ar': 'المقتضب',
         'name_en': 'al-Muqtadab',
         'patterns': [
@@ -159,10 +159,10 @@ MISSING_METERS_PATTERNS = {
             '/o/o//o/o/o//o///o//o',
             '/o/o//o/o/o//o/o//o//o',
             '/ooo//o///o//o///o/ooo//o////o//////',
-        ],
-        # Extracted from 30 verses
+        ]
     },
-    15: {  # المضارع
+    # المضارع (al-Mudari')
+    15: {
         'name_ar': 'المضارع',
         'name_en': 'al-Mudari',
         'patterns': [
@@ -189,10 +189,10 @@ MISSING_METERS_PATTERNS = {
             '//o/o/o//o/o/oo//o/o//o//o',
             '/o////////o/o//o/o//o/o/o//o/o',
             '/o/o//o////o//o///o//o',
-        ],
-        # Extracted from 25 verses
+        ]
     },
-    16: {  # المتدارك
+    # المتدارك (al-Mutadarik)
+    16: {
         'name_ar': 'المتدارك',
         'name_en': 'al-Mutadarik',
         'patterns': [
@@ -217,7 +217,9 @@ MISSING_METERS_PATTERNS = {
             '/o/o/o/o//o//o/o/o//o/oo/o/o//o///o///o//o/o/o//oo',
             '/o/o/oo//o///o/o///o/o/oo/////o',
             '/o/oo/o//o///o//o//o///o///o///o//o//o/',
-        ],
-        # Extracted from 21 verses
+        ]
     },
 }
+
+# Usage: Add these to EMPIRICAL_PATTERNS in detector_v2_hybrid.py
+# EMPIRICAL_PATTERNS.update(MISSING_METERS_PATTERNS)

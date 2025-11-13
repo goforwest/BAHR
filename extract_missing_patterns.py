@@ -1,30 +1,39 @@
 #!/usr/bin/env python3
 """
-Extract empirical patterns for missing meters from golden dataset.
+Extract empirical patterns for 7 missing meters from golden dataset.
+
+This will restore the 50.3% Phase 2 baseline accuracy by adding patterns for:
+- السريع (al-Sari')
+- المديد (al-Madid)
+- المجتث (al-Mujtathth)
+- المنسرح (al-Munsarih)
+- المقتضب (al-Muqtadab)
+- المضارع (al-Mudari')
+- المتدارك (al-Mutadarik)
 """
 
 import sys
 import json
+from pathlib import Path
 from collections import defaultdict
 
-sys.path.insert(0, '/home/user/BAHR/backend')
+sys.path.insert(0, 'backend')
 
 from app.core.phonetics import text_to_phonetic_pattern
 
-# Missing meter IDs and names
+# The 7 missing meters (from your analysis)
 MISSING_METERS = {
-    8: ('السريع', 'al-Sari'),
-    9: ('المديد', 'al-Madid'),
-    10: ('المنسرح', 'al-Munsarih'),
-    13: ('المجتث', 'al-Mujtathth'),
-    14: ('المقتضب', 'al-Muqtadab'),
-    15: ('المضارع', 'al-Mudari'),
-    16: ('المتدارك', 'al-Mutadarik'),
+    "السريع": 8,
+    "المديد": 9,
+    "المجتث": 10,
+    "المنسرح": 13,
+    "المقتضب": 14,
+    "المضارع": 15,
+    "المتدارك": 16
 }
 
-
-def load_verses(filepath: str):
-    """Load verses from JSONL file."""
+def load_golden_dataset(filepath: str):
+    """Load golden dataset JSONL."""
     verses = []
     with open(filepath, 'r', encoding='utf-8') as f:
         for line in f:
@@ -32,126 +41,149 @@ def load_verses(filepath: str):
                 verses.append(json.loads(line))
     return verses
 
-
 def extract_patterns_for_meter(verses, meter_name_ar):
     """Extract all unique patterns for a specific meter."""
     patterns = set()
     verse_count = 0
 
     for verse in verses:
-        verse_meter = verse.get('meter', '')
+        # Check if this verse belongs to the target meter
+        verse_meter = verse.get('meter', verse.get('meter_ar', verse.get('bahr', '')))
         if verse_meter == meter_name_ar:
-            text = verse.get('text', '')
+            verse_count += 1
+            text = verse.get('text', verse.get('original', ''))
+
             if text:
                 try:
-                    pattern = text_to_phonetic_pattern(text, has_tashkeel=True)
-                    patterns.add(pattern)
-                    verse_count += 1
+                    # Extract phonetic pattern
+                    pattern = text_to_phonetic_pattern(text)
+                    if pattern:
+                        patterns.add(pattern)
                 except Exception as e:
-                    print(f"  Warning: Failed to extract pattern for verse: {text[:50]}... Error: {e}")
+                    print(f"  ⚠️  Error extracting pattern from: {text[:50]}... ({e})")
 
     return sorted(patterns), verse_count
 
+def generate_empirical_patterns_code(meter_patterns):
+    """Generate Python code for EMPIRICAL_PATTERNS dictionary."""
+    lines = []
+    lines.append("# Generated empirical patterns for missing meters")
+    lines.append("# Source: Golden dataset extraction")
+    lines.append("# Date: 2025-11-13")
+    lines.append("")
+    lines.append("MISSING_METERS_PATTERNS = {")
 
-def generate_patterns_file(patterns_by_meter, output_path):
-    """Generate Python file with extracted patterns."""
+    for meter_id, (meter_name_ar, meter_name_en, patterns) in meter_patterns.items():
+        lines.append(f"    # {meter_name_ar} ({meter_name_en})")
+        lines.append(f"    {meter_id}: {{")
+        lines.append(f"        'name_ar': '{meter_name_ar}',")
+        lines.append(f"        'name_en': '{meter_name_en}',")
+        lines.append(f"        'patterns': [")
+        for pattern in patterns:
+            lines.append(f"            '{pattern}',")
+        lines.append(f"        ]")
+        lines.append(f"    }},")
 
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write('"""\n')
-        f.write('Empirical patterns for missing meters.\n')
-        f.write('Extracted from golden dataset.\n')
-        f.write('"""\n\n')
+    lines.append("}")
+    lines.append("")
+    lines.append("# Usage: Add these to EMPIRICAL_PATTERNS in detector_v2_hybrid.py")
+    lines.append("# EMPIRICAL_PATTERNS.update(MISSING_METERS_PATTERNS)")
 
-        f.write('MISSING_METERS_PATTERNS = {\n')
-
-        for meter_id in sorted(patterns_by_meter.keys()):
-            meter_data = patterns_by_meter[meter_id]
-            name_ar = meter_data['name_ar']
-            name_en = meter_data['name_en']
-            patterns = meter_data['patterns']
-            verse_count = meter_data['verse_count']
-
-            f.write(f'    {meter_id}: {{  # {name_ar}\n')
-            f.write(f"        'name_ar': '{name_ar}',\n")
-            f.write(f"        'name_en': '{name_en}',\n")
-            f.write(f'        \'patterns\': [\n')
-
-            for pattern in patterns:
-                f.write(f"            '{pattern}',\n")
-
-            f.write('        ],\n')
-            f.write(f'        # Extracted from {verse_count} verses\n')
-            f.write('    },\n')
-
-        f.write('}\n')
-
+    return "\n".join(lines)
 
 def main():
-    """Main extraction."""
-    dataset_path = '/home/user/BAHR/dataset/evaluation/golden_set_v1_3_with_sari.jsonl'
-    output_path = '/home/user/BAHR/missing_meters_patterns.py'
-
     print("=" * 80)
-    print("EXTRACTING EMPIRICAL PATTERNS FOR MISSING METERS")
+    print("Extracting Empirical Patterns for 7 Missing Meters")
     print("=" * 80)
     print()
 
-    print(f"Loading dataset: {dataset_path}")
-    verses = load_verses(dataset_path)
-    print(f"✓ Loaded {len(verses)} verses")
+    # Find golden dataset
+    golden_dataset_paths = [
+        'dataset/evaluation/golden_set_v1_3_with_sari.jsonl',
+        'dataset/evaluation/golden_set_v1_0_with_patterns.jsonl',
+        'dataset/evaluation/golden_set_v1_0_with_patterns_fixed.jsonl'
+    ]
+
+    golden_dataset_path = None
+    for path in golden_dataset_paths:
+        if Path(path).exists():
+            golden_dataset_path = path
+            break
+
+    if not golden_dataset_path:
+        print("❌ ERROR: Could not find golden dataset!")
+        print("   Searched paths:")
+        for path in golden_dataset_paths:
+            print(f"   - {path}")
+        sys.exit(1)
+
+    print(f"✅ Found golden dataset: {golden_dataset_path}")
     print()
 
-    patterns_by_meter = {}
+    # Load golden dataset
+    print("Loading golden dataset...")
+    verses = load_golden_dataset(golden_dataset_path)
+    print(f"✅ Loaded {len(verses)} verses")
+    print()
+
+    # Extract patterns for each missing meter
+    meter_patterns = {}
     total_patterns = 0
-    total_verses = 0
 
-    print("Extracting patterns for missing meters:")
-    print("-" * 80)
+    for meter_name_ar, meter_id in MISSING_METERS.items():
+        print(f"📊 Extracting patterns for: {meter_name_ar} (meter_id={meter_id})")
 
-    for meter_id, (name_ar, name_en) in MISSING_METERS.items():
-        print(f"\nMeter {meter_id}: {name_ar} ({name_en})")
+        patterns, verse_count = extract_patterns_for_meter(verses, meter_name_ar)
 
-        patterns, verse_count = extract_patterns_for_meter(verses, name_ar)
-
-        print(f"  Verses: {verse_count}")
-        print(f"  Unique patterns: {len(patterns)}")
-
-        if len(patterns) > 0:
-            print(f"  Sample pattern: {patterns[0]}")
-
-        patterns_by_meter[meter_id] = {
-            'name_ar': name_ar,
-            'name_en': name_en,
-            'patterns': patterns,
-            'verse_count': verse_count,
+        # Get English name (approximate mapping)
+        meter_name_en_map = {
+            "السريع": "al-Sari'",
+            "المديد": "al-Madid",
+            "المجتث": "al-Mujtathth",
+            "المنسرح": "al-Munsarih",
+            "المقتضب": "al-Muqtadab",
+            "المضارع": "al-Mudari'",
+            "المتدارك": "al-Mutadarik"
         }
+        meter_name_en = meter_name_en_map.get(meter_name_ar, meter_name_ar)
 
+        meter_patterns[meter_id] = (meter_name_ar, meter_name_en, patterns)
         total_patterns += len(patterns)
-        total_verses += verse_count
 
-    print()
-    print("-" * 80)
-    print(f"TOTAL: {total_patterns} unique patterns from {total_verses} verses")
+        print(f"   Verses: {verse_count}")
+        print(f"   Unique patterns: {len(patterns)}")
+        if patterns:
+            print(f"   Sample: {patterns[0]}")
+        print()
+
+    # Generate Python code
+    print("=" * 80)
+    print("📝 Generated Python Code")
+    print("=" * 80)
     print()
 
-    print(f"Generating patterns file: {output_path}")
-    generate_patterns_file(patterns_by_meter, output_path)
-    print(f"✓ Generated: {output_path}")
+    code = generate_empirical_patterns_code(meter_patterns)
+    print(code)
     print()
+
+    # Save to file
+    output_file = "missing_meters_patterns.py"
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(code)
 
     print("=" * 80)
-    print("SUMMARY")
+    print("✅ EXTRACTION COMPLETE")
     print("=" * 80)
-    print(f"Missing meters: {len(MISSING_METERS)}")
-    print(f"Total patterns extracted: {total_patterns}")
-    print(f"Total verses processed: {total_verses}")
-    print(f"Output file: {output_path}")
+    print(f"Total missing meters: {len(MISSING_METERS)}")
+    print(f"Total unique patterns extracted: {total_patterns}")
+    print(f"Output file: {output_file}")
     print()
-    print("✓ Extraction complete!")
+    print("Next steps:")
+    print("1. Review the generated patterns in missing_meters_patterns.py")
+    print("2. Add them to detector_v2_hybrid.py:")
+    print("   EMPIRICAL_PATTERNS.update(MISSING_METERS_PATTERNS)")
+    print("3. Re-validate on golden dataset (expected: 50%+ accuracy)")
     print()
-
-    return 0
-
 
 if __name__ == '__main__':
-    sys.exit(main())
+    main()
