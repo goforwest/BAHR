@@ -39,20 +39,20 @@ class TestQabdTransformation:
         mafacilun = parse_tafila_from_text('مفاعيلن', 'مَفَاعِيلُنْ')
 
         # Verify input structure
-        assert mafacilun.phonetic_pattern == "/oo/o"
-        assert len(mafacilun.letters) == 5
+        assert mafacilun.phonetic_pattern == "//o/o/o"
+        assert len(mafacilun.letters) == 7
 
         # Apply QABD
         result = qabd_transform_letters(mafacilun)
 
         # Verify output
-        assert result.phonetic_pattern == "/o/o", \
-            f"Expected /o/o, got {result.phonetic_pattern}"
-        assert len(result.letters) == 4, "Should have 4 letters after QABD"
+        assert result.phonetic_pattern == "//o//o", \
+            f"Expected //o//o, got {result.phonetic_pattern}"
+        assert len(result.letters) == 6, "Should have 6 letters after QABD"
 
-        # Verify the correct letter was removed (عي)
+        # Verify the correct letter was removed (ي madd letter)
         result_consonants = [l.consonant for l in result.letters]
-        assert result_consonants == ['م', 'ف', 'ل', 'ن'], \
+        assert result_consonants == ['م', 'ف', 'ا', 'ع', 'ل', 'ن'], \
             f"Wrong letters after QABD: {result_consonants}"
 
     def test_qabd_on_faculun_applies(self):
@@ -68,7 +68,7 @@ class TestQabdTransformation:
         faculun = parse_tafila_from_text('فعولن', 'فَعُولُنْ')
 
         # Verify input - actual pattern from phoneme extraction
-        assert faculun.phonetic_pattern == "/o/o"
+        assert faculun.phonetic_pattern == "//o/o"
         sakin_count = len(faculun.get_sakin_and_madd_letters())
         assert sakin_count == 2
 
@@ -76,29 +76,29 @@ class TestQabdTransformation:
         result = qabd_transform_letters(faculun)
 
         # Result should have removed the final ن
-        assert result.phonetic_pattern == "/o/"
-        assert len(result.letters) == 3
+        assert result.phonetic_pattern == "//o/"
+        assert len(result.letters) == 4
 
     def test_qabd_on_facilun(self):
         """
         Test QABD on فَاعِلُنْ (fāʿilun).
 
         Actual phoneme extraction gives:
-        Input: فَاعِلُنْ = فا(o) ع(/) ل(/) ن(o) = o//o
-        Sakins: فا (1st madd), ن (2nd sakin)
+        Input: فَاعِلُنْ = ف(/) ا(o) ع(/) ل(/) ن(o) = /o//o
+        Sakins: ا (1st madd), ن (2nd sakin)
         Remove: ن (2nd sakin)
-        Output: فا(o) ع(/) ل(/) = o//
+        Output: ف(/) ا(o) ع(/) ل(/) = /o//
         """
         facilun = parse_tafila_from_text('فاعلن', 'فَاعِلُنْ')
 
         # Verify input - actual pattern from phoneme extraction
-        assert facilun.phonetic_pattern == "o//o"
+        assert facilun.phonetic_pattern == "/o//o"
 
         # Apply QABD
         result = qabd_transform_letters(facilun)
 
         # Should remove final ن (2nd sakin)
-        assert result.phonetic_pattern == "o//"
+        assert result.phonetic_pattern == "/o//"
         assert len(result.letters) == len(facilun.letters) - 1
 
     def test_qabd_on_mustafcilun(self):
@@ -217,15 +217,17 @@ class TestQabdTransformation:
 
         # This prosodically represents مَفَاعِلُنْ
         # Verify the transformation is correct
-        assert result.phonetic_pattern == "/o/o"
+        assert result.phonetic_pattern == "//o//o"
 
         # The result should have these consonants
         consonants = [l.consonant for l in result.letters]
         assert 'م' in consonants
         assert 'ف' in consonants
+        assert 'ا' in consonants
+        assert 'ع' in consonants  # ع mutaharrik remains
         assert 'ل' in consonants
         assert 'ن' in consonants
-        assert 'ع' not in consonants  # عي was removed
+        assert 'ي' not in consonants  # ي madd letter was removed
 
 
 class TestQabdEdgeCases:
@@ -317,26 +319,27 @@ class TestKhabnTransformation:
         This is commonly used in المتدارك meter.
 
         Actual phoneme extraction gives:
-        Input: فَاعِلُنْ = فا(o) ع(/) ل(/) ن(o) = o//o
-        Sakins: فا (1st madd), ن (2nd sakin)
-        Remove: فا (1st madd/sakin)
-        Output: ع(/) ل(/) ن(o) = //o
+        Input: فَاعِلُنْ = ف(/) ا(o) ع(/) ل(/) ن(o) = /o//o
+        Sakins: ا (1st madd), ن (2nd sakin)
+        Remove: ا (1st madd/sakin)
+        Output: ف(/) ع(/) ل(/) ن(o) = ///o
         """
         facilun = parse_tafila_from_text('فاعلن', 'فَاعِلُنْ')
 
         # Verify input - actual pattern from phoneme extraction
-        assert facilun.phonetic_pattern == "o//o"
+        assert facilun.phonetic_pattern == "/o//o"
 
         # Apply KHABN
         result = khabn_transform_letters(facilun)
 
-        # Should remove first madd/sakin (فا)
-        assert result.phonetic_pattern == "//o"
+        # Should remove first madd/sakin (ا)
+        assert result.phonetic_pattern == "///o"
         assert len(result.letters) == len(facilun.letters) - 1
 
-        # Verify فا was removed
+        # Verify ا was removed
         result_consonants = [l.consonant for l in result.letters]
-        assert 'ف' not in result_consonants, "ف should have been removed (part of فا)"
+        assert 'ا' not in result_consonants, "ا should have been removed"
+        assert 'ف' in result_consonants, "ف should remain"
         assert 'ع' in result_consonants, "ع should remain"
         assert 'ل' in result_consonants, "ل should remain"
         assert 'ن' in result_consonants, "ن should remain"
@@ -345,21 +348,21 @@ class TestKhabnTransformation:
         """
         Test KHABN on فَعُولُنْ (faʿūlun).
 
-        Input:  فَعُولُنْ = ف(/) ع(o) ل(/) ن(o) = /o/o
-        Sakins: ع (1st madd), ن (2nd sakin)
-        Remove: ع (1st sakin/madd)
-        Output: ف(/) ل(/) ن(o) = //o
+        Input:  فَعُولُنْ = ف(/) ع(/) و(o) ل(/) ن(o) = //o/o
+        Sakins: و (1st madd), ن (2nd sakin)
+        Remove: و (1st sakin/madd)
+        Output: ف(/) ع(/) ل(/) ن(o) = ///o
         """
         faculun = parse_tafila_from_text('فعولن', 'فَعُولُنْ')
 
         # Verify input - actual pattern from phoneme extraction
-        assert faculun.phonetic_pattern == "/o/o"
+        assert faculun.phonetic_pattern == "//o/o"
 
         # Apply KHABN
         result = khabn_transform_letters(faculun)
 
-        # Should remove first sakin/madd (ع with madd)
-        assert result.phonetic_pattern == "//o"
+        # Should remove first sakin/madd (و)
+        assert result.phonetic_pattern == "///o"
         assert len(result.letters) == len(faculun.letters) - 1
 
     def test_khabn_on_facilatan(self):
@@ -377,13 +380,13 @@ class TestKhabnTransformation:
         facilatan = parse_tafila_from_text('فاعلاتن', 'فَاعِلَاتُنْ')
 
         # Verify input - actual pattern from phoneme extraction
-        assert facilatan.phonetic_pattern == "o/o/o"
+        assert facilatan.phonetic_pattern == "/o//o/o"
 
         # Apply KHABN
         result = khabn_transform_letters(facilatan)
 
-        # Should remove first madd (فا)
-        assert result.phonetic_pattern == "/o/o"
+        # Should remove first madd (ا)
+        assert result.phonetic_pattern == "///o/o"
         assert len(result.letters) == len(facilatan.letters) - 1
 
     def test_khabn_with_no_sakins(self):
@@ -551,14 +554,14 @@ class TestIdmarTransformation:
         mutafacilun = parse_tafila_from_text('متفاعلن', 'مُتَفَاعِلُنْ')
 
         # Verify input structure (actual pattern from phoneme extraction)
-        assert mutafacilun.phonetic_pattern == "//o//o"
+        assert mutafacilun.phonetic_pattern == "///o//o"
 
         # Apply IḌMĀR
         result = idmar_transform_letters(mutafacilun)
 
         # Verify output
-        assert result.phonetic_pattern == "/oo//o", \
-            f"Expected /oo//o, got {result.phonetic_pattern}"
+        assert result.phonetic_pattern == "/o/o//o", \
+            f"Expected /o/o//o, got {result.phonetic_pattern}"
 
         # Should have same number of letters (IḌMĀR changes, doesn't remove)
         assert len(result.letters) == len(mutafacilun.letters), \
@@ -665,7 +668,7 @@ class TestIdmarTransformation:
         mutafacilun = parse_tafila_from_text('متفاعلن', 'مُتَفَاعِلُنْ')
 
         # Verify input pattern (actual from phoneme extraction)
-        assert mutafacilun.phonetic_pattern == "//o//o"
+        assert mutafacilun.phonetic_pattern == "///o//o"
 
         # Get mutaharriks to verify which one will change
         mutaharriks = mutafacilun.get_mutaharrik_letters()
@@ -679,8 +682,8 @@ class TestIdmarTransformation:
         result = idmar_transform_letters(mutafacilun)
 
         # Verify output pattern (actual from phoneme extraction)
-        assert result.phonetic_pattern == "/oo//o", \
-            f"Expected /oo//o, got {result.phonetic_pattern}"
+        assert result.phonetic_pattern == "/o/o//o", \
+            f"Expected /o/o//o, got {result.phonetic_pattern}"
 
         # Verify ت is now sakin
         position = second_mutaharrik[0]
@@ -711,7 +714,7 @@ class TestIdmarTransformation:
         Test IḌMĀR on various tafāʿīl to ensure robustness.
         """
         test_cases = [
-            ('متفاعلن', 'مُتَفَاعِلُنْ', '/oo//o'),  # Actual phoneme pattern
+            ('متفاعلن', 'مُتَفَاعِلُنْ', '/o/o//o'),  # Actual phoneme pattern
         ]
 
         for name, vocalized, expected in test_cases:
