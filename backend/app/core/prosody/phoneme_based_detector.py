@@ -7,10 +7,11 @@ This approach handles the mismatch between actual syllable scansion and
 theoretical tafila patterns.
 """
 
-from typing import List, Optional, Tuple
 from dataclasses import dataclass
+from typing import List, Optional, Tuple
 
 from app.core.phonetics import Phoneme, extract_phonemes
+
 from .detector_v2 import BahrDetectorV2, DetectionResult, MatchQuality
 from .meters import METERS_REGISTRY
 
@@ -109,8 +110,9 @@ def detect_with_phoneme_fitness(
     Returns:
         List of (meter_id, meter_name_ar, score, best_pattern) tuples
     """
-    from app.core.phonetics import text_to_phonetic_pattern
     from difflib import SequenceMatcher
+
+    from app.core.phonetics import text_to_phonetic_pattern
 
     # Extract phonemes
     try:
