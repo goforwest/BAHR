@@ -366,6 +366,199 @@ def idmar_transform_letters(tafila_structure):
     return new_tafila
 
 
+def tayy_transform_letters(tafila_structure):
+    """
+    طَيّ (Ṭayy) - Remove 4th sākin/madd letter (letter-level implementation).
+
+    Classical Definition:
+    "الطَّي هو حذف الساكن الرابع"
+    Translation: "Ṭayy is the removal of the 4th sākin"
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 4th sākin/madd removed
+    """
+    from .letter_structure import TafilaLetterStructure
+
+    # Get 4th sākin/madd letter
+    sakin_result = tafila_structure.get_nth_sakin(4, include_madd=True)
+
+    if sakin_result is None:
+        # Fewer than 4 sakins/madds - tayy cannot apply
+        return tafila_structure
+
+    position, letter = sakin_result
+    new_tafila = tafila_structure.remove_letter_at_position(position)
+
+    return new_tafila
+
+
+def kaff_transform_letters(tafila_structure):
+    """
+    كَفّ (Kaff) - Remove 7th sākin/madd letter (letter-level implementation).
+
+    Classical Definition:
+    "الْكَفّ هو حذف السابع الساكن"
+    Translation: "Kaff is the removal of the 7th sākin"
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 7th sākin/madd removed
+    """
+    from .letter_structure import TafilaLetterStructure
+
+    # Get 7th sākin/madd letter
+    sakin_result = tafila_structure.get_nth_sakin(7, include_madd=True)
+
+    if sakin_result is None:
+        # Fewer than 7 sakins/madds - kaff cannot apply
+        return tafila_structure
+
+    position, letter = sakin_result
+    new_tafila = tafila_structure.remove_letter_at_position(position)
+
+    return new_tafila
+
+
+def waqs_transform_letters(tafila_structure):
+    """
+    وَقْص (Waqṣ) - Remove 2nd mutaḥarrik letter (letter-level implementation).
+
+    Classical Definition:
+    "الوَقْص هو حذف الحرف الثاني المتحرك"
+    Translation: "Waqṣ is the removal of the 2nd mutaḥarrik letter"
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 2nd mutaḥarrik removed
+    """
+    from .letter_structure import TafilaLetterStructure
+
+    # Get 2nd mutaḥarrik letter
+    mutaharrik_result = tafila_structure.get_nth_mutaharrik(2)
+
+    if mutaharrik_result is None:
+        # Fewer than 2 mutaharriks - waqs cannot apply
+        return tafila_structure
+
+    position, letter = mutaharrik_result
+    new_tafila = tafila_structure.remove_letter_at_position(position)
+
+    return new_tafila
+
+
+def asb_transform_letters(tafila_structure):
+    """
+    عَصْب (ʿAṣb) - Remove 5th mutaḥarrik letter (letter-level implementation).
+
+    Classical Definition:
+    "العَصْب هو حذف الخامس المتحرك"
+    Translation: "ʿAṣb is the removal of the 5th mutaḥarrik letter"
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 5th mutaḥarrik removed
+    """
+    from .letter_structure import TafilaLetterStructure
+
+    # Get 5th mutaḥarrik letter
+    mutaharrik_result = tafila_structure.get_nth_mutaharrik(5)
+
+    if mutaharrik_result is None:
+        # Fewer than 5 mutaharriks - asb cannot apply
+        return tafila_structure
+
+    position, letter = mutaharrik_result
+    new_tafila = tafila_structure.remove_letter_at_position(position)
+
+    return new_tafila
+
+
+def khabl_transform_letters(tafila_structure):
+    """
+    خَبْل (Khabl) - Double zahaf: KHABN + ṬAYY (letter-level implementation).
+
+    Classical Definition:
+    "الخَبْل هو حذف الساكن الثاني والرابع معاً"
+    Translation: "Khabl is the removal of both 2nd and 4th sākin letters"
+
+    This is equivalent to applying KHABN (remove 1st sākin) followed by ṬAYY (remove 4th sākin).
+    Note: After removing the 1st sākin, positions shift, so we apply transformations sequentially.
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with both transformations applied
+    """
+    # Apply KHABN first (remove 1st sākin)
+    result = khabn_transform_letters(tafila_structure)
+
+    # Then apply ṬAYY (remove 4th sākin from the result)
+    # Note: The 4th sākin is now in a different position after KHABN
+    result = tayy_transform_letters(result)
+
+    return result
+
+
+def khazl_transform_letters(tafila_structure):
+    """
+    خَزْل (Khazl) - Double zahaf: IḌMĀR + ṬAYY (letter-level implementation).
+
+    Classical Definition:
+    "الخَزْل هو الإضمار والطي معاً"
+    Translation: "Khazl is iḍmār and ṭayy together"
+
+    This applies IḌMĀR (make 2nd mutaharrik sākin) followed by ṬAYY (remove 4th sākin).
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with both transformations applied
+    """
+    # Apply IḌMĀR first (make 2nd mutaharrik sākin)
+    result = idmar_transform_letters(tafila_structure)
+
+    # Then apply ṬAYY (remove 4th sākin from the result)
+    result = tayy_transform_letters(result)
+
+    return result
+
+
+def shakl_transform_letters(tafila_structure):
+    """
+    شَكْل (Shakl) - Double zahaf: KHABN + KAFF (letter-level implementation).
+
+    Classical Definition:
+    "الشَّكْل هو الخبن والكف معاً"
+    Translation: "Shakl is khabn and kaff together"
+
+    This applies KHABN (remove 1st sākin) followed by KAFF (remove 7th sākin).
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with both transformations applied
+    """
+    # Apply KHABN first (remove 1st sākin)
+    result = khabn_transform_letters(tafila_structure)
+
+    # Then apply KAFF (remove 7th sākin from the result)
+    result = kaff_transform_letters(result)
+
+    return result
+
+
 def kaff_transform(pattern: str) -> str:
     """كف - Remove 7th sakin."""
     sakin_count = 0
