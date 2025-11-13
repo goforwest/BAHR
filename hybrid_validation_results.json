@@ -1,0 +1,619 @@
+{
+  "total": 471,
+  "correct_top1": 194,
+  "correct_top3": 3,
+  "no_match": 23,
+  "accuracy_top1": 41.18895966029724,
+  "by_meter": {
+    "الطويل": {
+      "total": 45,
+      "correct": 32,
+      "top3": 33
+    },
+    "الرجز": {
+      "total": 20,
+      "correct": 20,
+      "top3": 20
+    },
+    "الرمل": {
+      "total": 20,
+      "correct": 18,
+      "top3": 18
+    },
+    "البسيط": {
+      "total": 25,
+      "correct": 23,
+      "top3": 23
+    },
+    "الكامل": {
+      "total": 30,
+      "correct": 26,
+      "top3": 26
+    },
+    "المتقارب": {
+      "total": 20,
+      "correct": 17,
+      "top3": 17
+    },
+    "الخفيف": {
+      "total": 20,
+      "correct": 18,
+      "top3": 18
+    },
+    "الهزج": {
+      "total": 20,
+      "correct": 20,
+      "top3": 20
+    },
+    "الوافر": {
+      "total": 21,
+      "correct": 16,
+      "top3": 18
+    },
+    "السريع": {
+      "total": 34,
+      "correct": 0,
+      "top3": 0
+    },
+    "المديد": {
+      "total": 20,
+      "correct": 0,
+      "top3": 0
+    },
+    "المنسرح": {
+      "total": 20,
+      "correct": 1,
+      "top3": 1
+    },
+    "المجتث": {
+      "total": 20,
+      "correct": 0,
+      "top3": 0
+    },
+    "المقتضب": {
+      "total": 30,
+      "correct": 0,
+      "top3": 0
+    },
+    "المضارع": {
+      "total": 25,
+      "correct": 0,
+      "top3": 0
+    },
+    "المتدارك": {
+      "total": 21,
+      "correct": 1,
+      "top3": 1
+    },
+    "السريع (مفعولات)": {
+      "total": 20,
+      "correct": 0,
+      "top3": 0
+    },
+    "الكامل (3 تفاعيل)": {
+      "total": 20,
+      "correct": 1,
+      "top3": 1
+    },
+    "الكامل (مجزوء)": {
+      "total": 20,
+      "correct": 1,
+      "top3": 1
+    },
+    "الهزج (مجزوء)": {
+      "total": 20,
+      "correct": 0,
+      "top3": 0
+    }
+  },
+  "match_types": {
+    "exact_empirical": 118,
+    "fuzzy_empirical": 324,
+    "exact_theoretical": 6
+  },
+  "avg_confidence": 0.910524565604177,
+  "avg_similarity": 0.9156077817275861,
+  "failures_count": 251,
+  "failures": [
+    {
+      "verse_id": 145,
+      "text": "لا تَعذُليهِ فَإِنَّ العَذلَ يولَعُهُ",
+      "pattern": "/o////o///o/o/////o///",
+      "expected": "السريع",
+      "detected": "الرمل",
+      "confidence": 0.8772727272727273,
+      "similarity": 0.9090909090909091,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 146,
+      "text": "إِذا قالَتِ حَذامِ فَصَدِّقوها",
+      "pattern": "//o/o////o///o//o/o",
+      "expected": "المديد",
+      "detected": "الخفيف",
+      "confidence": 0.98,
+      "similarity": 1.0,
+      "match_type": "exact_empirical"
+    },
+    {
+      "verse_id": 149,
+      "text": "قَومٌ لَهُم ساحَةُ العِراقِ إِذا",
+      "pattern": "///o//o/o//////o///o",
+      "expected": "المنسرح",
+      "detected": "الهزج",
+      "confidence": 0.875,
+      "similarity": 0.9,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 150,
+      "text": "يا سائِلي بِالضَعيفِ خُذ خَبَراً",
+      "pattern": "/o/o//o/////o//o////o",
+      "expected": "المنسرح",
+      "detected": "الخفيف",
+      "confidence": 0.8801136363636364,
+      "similarity": 0.9204545454545454,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 151,
+      "text": "قالَت وَقَد راعَها البُكاءُ دَماً",
+      "pattern": "/o/o//o/o//o////o////o",
+      "expected": "المنسرح",
+      "detected": "الوافر",
+      "confidence": 0.8772727272727273,
+      "similarity": 0.9090909090909091,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 152,
+      "text": "سَأَلتُ مَن شَفَّني هَواهُ وَمَن",
+      "pattern": "/////o/o//o//o///o",
+      "expected": "المنسرح",
+      "detected": "الخفيف",
+      "confidence": 0.8769736842105263,
+      "similarity": 0.9078947368421053,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 153,
+      "text": "بَينَ الرُصافَةِ وَالجِسرِ مِن جانِبِ الكَرخِ نُزه",
+      "pattern": "///o///o///o/////o/o///////////o",
+      "expected": "المنسرح",
+      "detected": "الطويل",
+      "confidence": 0.858984375,
+      "similarity": 0.8359375,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 154,
+      "text": "قَومٌ إِذا اِستَنصَروا هَزَزنَ لَهُم",
+      "pattern": "///o//o//////oo//////o",
+      "expected": "المنسرح",
+      "detected": "الكامل",
+      "confidence": 0.8772727272727273,
+      "similarity": 0.9090909090909091,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 155,
+      "text": "لَو كانَ في جَوفِ الأَرضِ أَو قَدَمِ الحَوتِ راحَت",
+      "pattern": "/o/o//o/////////o/////////o///o",
+      "expected": "المنسرح",
+      "detected": "الطويل",
+      "confidence": 0.8596774193548388,
+      "similarity": 0.8387096774193549,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 156,
+      "text": "طوبى لِعَبدٍ تَقِيٍّ لَم يَأَل في الخَيرِ جُهداً",
+      "pattern": "/o/o////o//o/o/o//o/o/////////o",
+      "expected": "المجتث",
+      "detected": "الرمل",
+      "confidence": 0.8637096774193549,
+      "similarity": 0.8548387096774194,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 157,
+      "text": "يا قاتِلَ الوَقتِ مَهلاً ما أَنتَ بِالحَيِّ بَعدَه",
+      "pattern": "/o/o//o////////o/o///////o/////",
+      "expected": "المجتث",
+      "detected": "الطويل",
+      "confidence": 0.8516129032258064,
+      "similarity": 0.8064516129032258,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 158,
+      "text": "يا ظالِماً لَستُ أَدري أَدعو لَهُ أَم عَلَيهِ",
+      "pattern": "/o/o///o//////o///o///o////",
+      "expected": "المجتث",
+      "detected": "الرجز",
+      "confidence": 0.8768518518518519,
+      "similarity": 0.9074074074074074,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 159,
+      "text": "يا مالِكَ الناسِ في مَسيرِهِمُ وَفي المُقامِ المُط",
+      "pattern": "/o/o//o//o//o//o/////o////o/////o//o///o",
+      "expected": "المجتث",
+      "detected": "الطويل",
+      "confidence": 0.8390625,
+      "similarity": 0.75625,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 160,
+      "text": "يا سائِلي عَن حالي بَعدَكُمُ لَم أَلقَ بَعدَكُمُ ر",
+      "pattern": "/o/o//o/o/o/o//////o/////////o/o",
+      "expected": "المجتث",
+      "detected": "الكامل",
+      "confidence": 0.858984375,
+      "similarity": 0.8359375,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 161,
+      "text": "هَل مِن مُعينٍ لِمَكروبٍ فَيَنفَعَهُ أَو مُعِينٍ ل",
+      "pattern": "/o/o//o/o////o/o///////o//o/o////o/o//////",
+      "expected": "المجتث",
+      "detected": "الرمل",
+      "confidence": 0.8300595238095239,
+      "similarity": 0.7202380952380952,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 162,
+      "text": "يا رَبِّ إِن عَظُمَت ذُنوبي كَثرَةً فَلَقَد عَلِمت",
+      "pattern": "/o/o//o///o//o/o////o///o//////o/////////",
+      "expected": "المقتضب",
+      "detected": "الطويل",
+      "confidence": 0.826829268292683,
+      "similarity": 0.7073170731707317,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 163,
+      "text": "دَعِ المَساجِدَ لِلعُبّادِ تَعمُرُها وَطُف بِنا حَ",
+      "pattern": "//////o/////oo///////o//o//o////oo///o//o/",
+      "expected": "المقتضب",
+      "detected": "الطويل",
+      "confidence": 0.8270833333333334,
+      "similarity": 0.7083333333333333,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 164,
+      "text": "أَمّا وَرَبِّكَ لَن أُسَلِّمَهُم حَتّى أُذَلَّ وَأ",
+      "pattern": "/ooo//o///o//o///o/ooo//o////o//////",
+      "expected": "المقتضب",
+      "detected": "الرمل",
+      "confidence": 0.8427083333333334,
+      "similarity": 0.7708333333333334,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 165,
+      "text": "قُل لِلَّذي لامَني في الحُبِّ مُعتَذِراً لَو كُنتَ",
+      "pattern": "/o/o//o/o//o/o///o///////o/o////////o/o/o////o",
+      "expected": "المقتضب",
+      "detected": "الرمل",
+      "confidence": 0.8252717391304348,
+      "similarity": 0.7010869565217391,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 166,
+      "text": "وَقَفنا عَلى الرِجالِ فَلَم نَلقَ مِثلَ زَيدِ",
+      "pattern": "////o//o////o///o/////////",
+      "expected": "المضارع",
+      "detected": "الطويل",
+      "confidence": 0.8745370370370371,
+      "similarity": 0.8981481481481481,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 167,
+      "text": "أَيا لَيلُ لا اِنقَضَيتَ وَيا صُبحُ لا أَتَيتا",
+      "pattern": "//o////o////////o////o////o",
+      "expected": "المضارع",
+      "detected": "الطويل",
+      "confidence": 0.8861111111111111,
+      "similarity": 0.9444444444444444,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 168,
+      "text": "سَلاماً يا مُرتَجانا سَئِمنا جَورَ دُنيانا",
+      "pattern": "//o//o/o////o/o////o/////o//o",
+      "expected": "المضارع",
+      "detected": "الطويل",
+      "confidence": 0.8698275862068966,
+      "similarity": 0.8793103448275862,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 169,
+      "text": "يا دَهرُ وَيحَكَ مِن صاحِبٍ لَم تَدَع لي مِن خَليل",
+      "pattern": "/o////////o/o//o/o//o/o/o//o/o",
+      "expected": "المضارع",
+      "detected": "الرمل",
+      "confidence": 0.86875,
+      "similarity": 0.875,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 170,
+      "text": "ما أَجوَدَ شِعريَ في خَبَبٍ وَالشِعرُ قَليلٌ جَيِّ",
+      "pattern": "/o/////////o///o/o//////o/o/o///",
+      "expected": "المتدارك",
+      "detected": "الطويل",
+      "confidence": 0.851171875,
+      "similarity": 0.8046875,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 171,
+      "text": "يا لَيلَةً طالَ فيها السَهَرُ حَتّى اِستَطارَ الفِ",
+      "pattern": "/o////o/o//o/o//////ooo////o/o////",
+      "expected": "المتدارك",
+      "detected": "الرمل",
+      "confidence": 0.8503676470588235,
+      "similarity": 0.8014705882352942,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 172,
+      "text": "قُل لِلمُليحِ الَّذي أَسَرَ الفُؤادَ بِلَحظَتِه",
+      "pattern": "/o////o//o//o///o///o//////o",
+      "expected": "المتدارك",
+      "detected": "الرمل",
+      "confidence": 0.8762931034482759,
+      "similarity": 0.9051724137931034,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 173,
+      "text": "حُبُّكَ يا مَن هَواهُ عَذابي مَلَكَ كُلَّ أَمري",
+      "pattern": "/o///o/o//o///o/o////o////o",
+      "expected": "المتدارك",
+      "detected": "الطويل",
+      "confidence": 0.8699074074074075,
+      "similarity": 0.8796296296296297,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 174,
+      "text": "قَد طالَ لَيلي وَأَرَّقَني الأَلَمُ",
+      "pattern": "/o/o////o//o///o/////",
+      "expected": "المتدارك",
+      "detected": "الهزج",
+      "confidence": 0.888095238095238,
+      "similarity": 0.9523809523809523,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 176,
+      "text": "يا دَهرُ وَيحَكَ ما أَبقَيتَ مِن أَحَدِ",
+      "pattern": "/o////////o//////o///",
+      "expected": "السريع",
+      "detected": "الرجز",
+      "confidence": 0.8836956521739131,
+      "similarity": 0.9347826086956522,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 177,
+      "text": "إِنَّ الكَريمَ إِذا أَعطى تَفَضُّلاً",
+      "pattern": "/o/o///o///o///o//o///o",
+      "expected": "السريع",
+      "detected": "الطويل",
+      "confidence": 0.8921875,
+      "similarity": 0.96875,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 178,
+      "text": "ما كُلُّ ما يَتَمَنّى المَرءُ يُدرِكُهُ",
+      "pattern": "/o/o//o///ooo//////////",
+      "expected": "السريع",
+      "detected": "الخفيف",
+      "confidence": 0.8809782608695652,
+      "similarity": 0.9239130434782609,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 179,
+      "text": "لَيسَ الحَياةُ بِعَدَدِ السِنينَ وَلا",
+      "pattern": "///o///o/////////o///o",
+      "expected": "السريع",
+      "detected": "الطويل",
+      "confidence": 0.8772727272727273,
+      "similarity": 0.9090909090909091,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 180,
+      "text": "قَد رَشَّحوكَ لِأَمرٍ لَو فَطِنتَ لَهُ",
+      "pattern": "/o/o//o/////o/o//////",
+      "expected": "السريع",
+      "detected": "الخفيف",
+      "confidence": 0.8801136363636364,
+      "similarity": 0.9204545454545454,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 181,
+      "text": "إِنَّ الأُمورَ إِذا اِنسَدَّت مَسالِكُها",
+      "pattern": "/o/o///o///o///o/o//o///o",
+      "expected": "السريع",
+      "detected": "الطويل",
+      "confidence": 0.8825000000000001,
+      "similarity": 0.9299999999999999,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 182,
+      "text": "لا تَسأَلي القَومَ عَن مالي وَكَثرَتِهِ",
+      "pattern": "/o////o//////o/o/o//////",
+      "expected": "السريع",
+      "detected": "الكامل",
+      "confidence": 0.8759615384615385,
+      "similarity": 0.9038461538461539,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 183,
+      "text": "أَعلى الفَضائِلِ ما اِستَحَيتَ مِن نَفسِكَ",
+      "pattern": "///o////o///o///////o////",
+      "expected": "السريع",
+      "detected": "الطويل",
+      "confidence": 0.8725,
+      "similarity": 0.89,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 184,
+      "text": "مَن راقَبَ الناسَ ماتَ هَمّاً وَفازَ بِاللَذَّةِ ا",
+      "pattern": "/o/o//o//o//o//oo/o//o/////o//////o/",
+      "expected": "السريع",
+      "detected": "الرمل",
+      "confidence": 0.8496527777777778,
+      "similarity": 0.7986111111111112,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 185,
+      "text": "لا تَحسَبي المَجدَ تَمراً أَنتِ آكِلَتُهُ",
+      "pattern": "/o////o/////////o////////",
+      "expected": "السريع",
+      "detected": "الطويل",
+      "confidence": 0.88,
+      "similarity": 0.92,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 186,
+      "text": "تَحسَبُ الهَجرَ حَلالاً لَها وَتَرى الوَصلَ عَلَيه",
+      "pattern": "///////////o//o//o///o///////////o/o",
+      "expected": "المديد",
+      "detected": "الطويل",
+      "confidence": 0.8392361111111111,
+      "similarity": 0.7569444444444444,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 187,
+      "text": "وَقَرينُ السُّوءِ مَجلَبَةٌ لِدَواعي الهَمِّ وَالم",
+      "pattern": "///o///o/o//////o///o/o///o//o////",
+      "expected": "المديد",
+      "detected": "الكامل",
+      "confidence": 0.8558823529411765,
+      "similarity": 0.8235294117647058,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 188,
+      "text": "إِنَّ لِلدُّنيا حِبالَ غُرورٍ فَاِختَرِقها تَنجُ م",
+      "pattern": "/o///o//oo//o///o/o///////o//////o////o/o",
+      "expected": "المديد",
+      "detected": "الطويل",
+      "confidence": 0.8359756097560975,
+      "similarity": 0.7439024390243902,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 189,
+      "text": "كانَ لي قَلبٌ أَعيشُ بِهِ فَاِصطَلى بِالحُبِّ فَاِ",
+      "pattern": "/o//o///o//o////////o////o///////o",
+      "expected": "المديد",
+      "detected": "الطويل",
+      "confidence": 0.8503676470588235,
+      "similarity": 0.8014705882352942,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 190,
+      "text": "لَيسَ مَن ماتَ فَاِستَراحَ بِمَيتٍ إِنَّما المَيتُ",
+      "pattern": "////o/o//////o/////o/o//o////////////o//",
+      "expected": "المديد",
+      "detected": "الطويل",
+      "confidence": 0.8296875,
+      "similarity": 0.71875,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 192,
+      "text": "يا لَيلَ الصَبُّ مَتى غَدُهُ أَقِيامُ السّاعَةِ مَ",
+      "pattern": "/o///o//o///o/////o////oo////////",
+      "expected": "المديد",
+      "detected": "الطويل",
+      "confidence": 0.8469696969696969,
+      "similarity": 0.7878787878787878,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 193,
+      "text": "هَل غادَرَ الشُعَراءُ مِن مُتَرَدَّمِ أَم هَل عَرَ",
+      "pattern": "/o/o//o////o//o///o///o/o////o//o//////o//",
+      "expected": "المديد",
+      "detected": "الرمل",
+      "confidence": 0.8360119047619048,
+      "similarity": 0.7440476190476191,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 194,
+      "text": "لَمّا رَأَيتُ بَني الزَمانِ وَما بِهِم خُلٌّ وَفِي",
+      "pattern": "/ooo//////o////o///o//o/o/o//o/o//////o////",
+      "expected": "المديد",
+      "detected": "الرمل",
+      "confidence": 0.8273255813953488,
+      "similarity": 0.7093023255813953,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 195,
+      "text": "رُبَّ نارٍ بِتُّ أَرمُقُها تَقضِمُ الهِنديَّ وَالغ",
+      "pattern": "/o//o/o/o//////o/////////o//o//o/o",
+      "expected": "المديد",
+      "detected": "الطويل",
+      "confidence": 0.8540441176470588,
+      "similarity": 0.8161764705882353,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 196,
+      "text": "يا لِثاراتِ الحُسَينِ صَريعاً بِالطُفوفِ وَلَم يُو",
+      "pattern": "/o//o/o/////////o//o/////o///o/o//",
+      "expected": "السريع (مفعولات)",
+      "detected": "الرمل",
+      "confidence": 0.8540441176470588,
+      "similarity": 0.8161764705882353,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 198,
+      "text": "لا تَغُرَّنكَ مِنَ الظالِمِ حالَتُهُ إِنَّ الزَمان",
+      "pattern": "/o//o/////o//o///o////o/o///o////o////////o/",
+      "expected": "السريع (مفعولات)",
+      "detected": "الرمل",
+      "confidence": 0.8303977272727273,
+      "similarity": 0.7215909090909092,
+      "match_type": "fuzzy_empirical"
+    },
+    {
+      "verse_id": 199,
+      "text": "لَم أَكُن مِن جُناتِها عَلِمَ اللَهُ وَإِنّي بِحُب",
+      "pattern": "/o//o/o//o//o///o/////ooo//o//o///o/",
+      "expected": "السريع (مفعولات)",
+      "detected": "الرمل",
+      "confidence": 0.8496527777777778,
+      "similarity": 0.7986111111111112,
+      "match_type": "fuzzy_empirical"
+    }
+  ]
+}
