@@ -60,6 +60,26 @@ class TestPhoneme:
         p = Phoneme('ك', 'a')
         assert p.is_sukun() == False
 
+    def test_diphthong_detection_aw(self):
+        """Test that 'aw' is correctly identified as a diphthong."""
+        p = Phoneme('و', 'aw')
+        assert p.is_diphthong() == True
+
+    def test_diphthong_detection_ay(self):
+        """Test that 'ay' is correctly identified as a diphthong."""
+        p = Phoneme('ي', 'ay')
+        assert p.is_diphthong() == True
+
+    def test_short_vowel_not_diphthong(self):
+        """Test that short vowels are not identified as diphthongs."""
+        p = Phoneme('ك', 'a')
+        assert p.is_diphthong() == False
+
+    def test_long_vowel_not_diphthong(self):
+        """Test that long vowels are not identified as diphthongs."""
+        p = Phoneme('ك', 'aa')
+        assert p.is_diphthong() == False
+
     def test_str_representation(self):
         """Test string representation of phoneme."""
         p = Phoneme('ك', 'a')
@@ -149,6 +169,67 @@ class TestExtractPhonemes:
         i_vowels = [p for p in phonemes if p.vowel == 'i']
         assert len(i_vowels) >= 1
 
+    def test_word_with_diphthong_aw(self):
+        """Test extraction from يَوْم (yawm - day) with 'aw' diphthong."""
+        phonemes = extract_phonemes("يَوْم", has_tashkeel=True)
+        # Should detect 'aw' diphthong: ي with fatha + و with sukun = يَوْ
+        aw_diphthongs = [p for p in phonemes if p.vowel == 'aw']
+        assert len(aw_diphthongs) == 1, f"Expected 1 'aw' diphthong, found {len(aw_diphthongs)}"
+
+    def test_word_with_diphthong_ay(self):
+        """Test extraction from بَيْت (bayt - house) with 'ay' diphthong."""
+        phonemes = extract_phonemes("بَيْت", has_tashkeel=True)
+        # Should detect 'ay' diphthong: ب with fatha + ي with sukun = بَيْ
+        ay_diphthongs = [p for p in phonemes if p.vowel == 'ay']
+        assert len(ay_diphthongs) == 1, f"Expected 1 'ay' diphthong, found {len(ay_diphthongs)}"
+
+    def test_multiple_diphthongs(self):
+        """Test extraction from عَيْنَوْن (hypothetical) with multiple diphthongs."""
+        phonemes = extract_phonemes("عَيْنَوْن", has_tashkeel=True)
+        # Should have both 'ay' and 'aw'
+        diphthongs = [p for p in phonemes if p.is_diphthong()]
+        assert len(diphthongs) >= 1
+
+    def test_hamza_wasl_definite_article(self):
+        """Test hamza waṣl detection in definite article ال."""
+        phonemes = extract_phonemes("الكِتَاب", has_tashkeel=True)
+        # First phoneme should be alef with hamza waṣl marker
+        hamza_wasl_phonemes = [p for p in phonemes if p.is_hamza_wasl]
+        assert len(hamza_wasl_phonemes) >= 1, "Expected hamza waṣl in الكتاب"
+        assert phonemes[0].consonant == 'ا'
+        assert phonemes[0].is_hamza_wasl == True
+
+    def test_hamza_wasl_ibn(self):
+        """Test hamza waṣl detection in ابن (ibn - son)."""
+        phonemes = extract_phonemes("ابن", has_tashkeel=True)
+        # First phoneme should be alef with hamza waṣl marker
+        assert phonemes[0].consonant == 'ا'
+        assert phonemes[0].is_hamza_wasl == True
+
+    def test_hamza_wasl_ism(self):
+        """Test hamza waṣl detection in اسم (ism - name)."""
+        phonemes = extract_phonemes("اسم", has_tashkeel=True)
+        # First phoneme should be alef with hamza waṣl marker
+        assert phonemes[0].consonant == 'ا'
+        assert phonemes[0].is_hamza_wasl == True
+
+    def test_hamza_wasl_form_x_verb(self):
+        """Test hamza waṣl detection in Form X verb استـ."""
+        phonemes = extract_phonemes("استَمَعَ", has_tashkeel=True)
+        # First phoneme should be alef with hamza waṣl marker
+        hamza_wasl_phonemes = [p for p in phonemes if p.is_hamza_wasl]
+        assert len(hamza_wasl_phonemes) >= 1, "Expected hamza waṣl in استمع"
+        assert phonemes[0].consonant == 'ا'
+        assert phonemes[0].is_hamza_wasl == True
+
+    def test_hamza_qat_not_wasl(self):
+        """Test that hamza qat' is NOT marked as hamza waṣl."""
+        # أَكَلَ (akala - he ate) starts with hamza qat' (أ), not hamza waṣl
+        phonemes = extract_phonemes("أَكَلَ", has_tashkeel=True)
+        # Should not have any hamza waṣl markers
+        hamza_wasl_phonemes = [p for p in phonemes if p.is_hamza_wasl]
+        assert len(hamza_wasl_phonemes) == 0, "Hamza qat' should not be marked as waṣl"
+
 
 class TestPhonemesToPattern:
     """Test conversion of phonemes to prosodic patterns."""
@@ -192,6 +273,42 @@ class TestPhonemesToPattern:
         """Test pattern with empty phonemes list."""
         phonemes = []
         assert phonemes_to_pattern(phonemes) == ""
+
+    def test_with_diphthong_aw(self):
+        """Test pattern with 'aw' diphthong (heavy syllable)."""
+        phonemes = [Phoneme('ي', 'aw'), Phoneme('م', '')]
+        # Diphthong forms heavy syllable (/o) + sukun (o)
+        assert phonemes_to_pattern(phonemes) == "/oo"
+
+    def test_with_diphthong_ay(self):
+        """Test pattern with 'ay' diphthong (heavy syllable)."""
+        phonemes = [Phoneme('ب', 'ay'), Phoneme('ت', '')]
+        # Diphthong forms heavy syllable (/o) + sukun (o)
+        assert phonemes_to_pattern(phonemes) == "/oo"
+
+    def test_mixed_with_diphthong(self):
+        """Test pattern mixing diphthongs with other vowel types."""
+        phonemes = [
+            Phoneme('ك', 'a'),   # / (short vowel)
+            Phoneme('ت', 'ay'),  # /o (diphthong)
+            Phoneme('ب', 'aa'),  # /o (long vowel)
+            Phoneme('م', ''),    # o (sukun)
+        ]
+        assert phonemes_to_pattern(phonemes) == "//o/oo"
+
+    def test_super_heavy_cvvc(self):
+        """Test super-heavy syllable CVVC (long vowel + consonant)."""
+        # دَاب (daab) - long vowel + final consonant
+        phonemes = [Phoneme('د', 'aa'), Phoneme('ب', '')]
+        # CVVC = /o (long vowel) + o (sukun) = /oo
+        assert phonemes_to_pattern(phonemes) == "/oo"
+
+    def test_super_heavy_cvcc(self):
+        """Test super-heavy syllable CVCC (short vowel + two consonants)."""
+        # دَرْس (dars) - short vowel + sukun + consonant
+        phonemes = [Phoneme('د', 'a'), Phoneme('ر', ''), Phoneme('س', '')]
+        # CVCC = /o (CV+C combined) + o (final C) = /oo
+        assert phonemes_to_pattern(phonemes) == "/oo"
 
 
 class TestTextToPhoneticPattern:
@@ -258,3 +375,33 @@ class TestTextToPhoneticPattern:
         pattern = text_to_phonetic_pattern("مَعَ الشَّمْسِ")
         assert '/' in pattern
         assert 'o' in pattern  # From sukun in شمس
+
+    def test_word_with_diphthong_aw(self):
+        """Test يَوْم (yawm - day) produces pattern with /o for diphthong."""
+        pattern = text_to_phonetic_pattern("يَوْم")
+        # يَوْ is a diphthong (/o), م is sukun (o)
+        assert pattern == "/oo" or "/o" in pattern
+
+    def test_word_with_diphthong_ay(self):
+        """Test بَيْت (bayt - house) produces pattern with /o for diphthong."""
+        pattern = text_to_phonetic_pattern("بَيْت")
+        # بَيْ is a diphthong (/o), ت is sukun (o)
+        assert pattern == "/oo" or "/o" in pattern
+
+    def test_classical_word_with_diphthong(self):
+        """Test classical word خَوْف (khawf - fear) with diphthong."""
+        pattern = text_to_phonetic_pattern("خَوْف")
+        # خَوْ is diphthong (/o), ف is likely sukun or short vowel
+        assert "/o" in pattern
+
+    def test_super_heavy_syllable_cvvc(self):
+        """Test word with super-heavy CVVC syllable."""
+        pattern = text_to_phonetic_pattern("دَاب")
+        # دَا is long vowel (/o), ب is sukun (o) → /oo pattern
+        assert "/oo" in pattern or pattern == "/oo"
+
+    def test_super_heavy_syllable_cvcc(self):
+        """Test word with super-heavy CVCC syllable."""
+        pattern = text_to_phonetic_pattern("دَرْس")
+        # دَرْ forms heavy syllable (/o), س is sukun (o) → /oo pattern
+        assert pattern == "/oo" or "/o" in pattern

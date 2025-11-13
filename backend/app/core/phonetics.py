@@ -20,21 +20,72 @@ def normalize_alef_maksura_ar(text: str) -> str:
     return text.replace("ى", "ي")
 
 
+def is_hamza_wasl_context(text: str, position: int) -> bool:
+    """
+    Check if alef at given position is a hamza waṣl (connecting hamza).
+
+    Hamza waṣl appears in:
+    - Definite article: ال (al-)
+    - Common nouns: ابن، ابنة، امرؤ، امرأة، اسم، اثنان، اثنتان
+    - Form VII-X verb patterns: است، انـ، اقت، افت، افع
+    - Command forms of derived verbs
+
+    Args:
+        text: The full text being analyzed
+        position: Position of alef in text
+
+    Returns:
+        True if this alef is a hamza waṣl, False otherwise
+    """
+    if position >= len(text) or text[position] != 'ا':
+        return False
+
+    # Check if this is at the beginning of a word (start of text or after space)
+    if position > 0 and not text[position - 1].isspace():
+        return False
+
+    # Check for definite article: ال
+    if position + 1 < len(text) and text[position + 1] == 'ل':
+        return True
+
+    # Check for common hamza waṣl words
+    hamza_wasl_patterns = [
+        'ابن', 'ابنة', 'ابنت',  # son, daughter
+        'امرؤ', 'امرأة', 'امرأت',  # man, woman
+        'اسم', 'اسماء',  # name, names
+        'اثنان', 'اثنين', 'اثنتان', 'اثنتين',  # two (masculine/feminine)
+        'است',  # Form X verbs (استفعل)
+        'انف', 'انت', 'انط', 'انق', 'انك',  # Form VII verbs (انفعل, etc.)
+        'افت', 'افع',  # Form VIII verbs (افتعل, افعلّ)
+        'اقت',  # Form VIII verbs (اقتعل)
+    ]
+
+    # Check if text starting at position matches any pattern
+    for pattern in hamza_wasl_patterns:
+        if text[position:position + len(pattern)] == pattern:
+            return True
+
+    return False
+
+
 @dataclass
 class Phoneme:
     """
     Represents a phonetic unit in Arabic text.
 
     A phoneme consists of a consonant, a vowel (or absence thereof), and optionally
-    a shadda (gemination marker).
+    a shadda (gemination marker) or hamza waṣl marker.
 
     Attributes:
         consonant: The consonant character
         vowel: The vowel type. Can be:
             - 'a', 'u', 'i': short vowels (fatha, damma, kasra)
             - 'aa', 'uu', 'ii': long vowels (madd)
+            - 'aw', 'ay': diphthongs (fatha + waw/ya sakin)
             - '': sukun (no vowel)
         has_shadda: Whether the consonant has shadda (gemination)
+        is_hamza_wasl: Whether this is a hamza waṣl (connecting hamza that
+                       can be elided in connected speech)
 
     Example:
         >>> p = Phoneme('ك', 'a', False)
@@ -43,8 +94,9 @@ class Phoneme:
     """
 
     consonant: str
-    vowel: str  # 'a', 'u', 'i', 'aa', 'uu', 'ii', '' (sukun)
+    vowel: str  # 'a', 'u', 'i', 'aa', 'uu', 'ii', 'aw', 'ay', '' (sukun)
     has_shadda: bool = False
+    is_hamza_wasl: bool = False
 
     def __str__(self):
         """Return string representation of phoneme."""
@@ -80,6 +132,26 @@ class Phoneme:
             False
         """
         return self.vowel == ""
+
+    def is_diphthong(self) -> bool:
+        """
+        Check if phoneme has a diphthong.
+
+        A diphthong is a complex vowel sound that consists of a short vowel
+        followed by a semivowel (و or ي) with sukun.
+
+        Returns:
+            True if vowel is 'aw' or 'ay', False otherwise
+
+        Example:
+            >>> Phoneme('ي', 'aw').is_diphthong()
+            True
+            >>> Phoneme('ب', 'ay').is_diphthong()
+            True
+            >>> Phoneme('ك', 'a').is_diphthong()
+            False
+        """
+        return self.vowel in ["aw", "ay"]
 
 
 def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
@@ -202,6 +274,11 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
                 vowel_on_this_char if vowel_on_this_char is not None else ""
             )  # Convert None to ''
 
+            # Check if this is a hamza waṣl (connecting hamza)
+            is_wasl = False
+            if consonant == 'ا':
+                is_wasl = is_hamza_wasl_context(text, i)
+
             # Handle shadda: consonant gemination (doubling)
             # Shadda means the consonant is pronounced twice
             # First occurrence has sukun, second has the vowel
@@ -210,16 +287,16 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
                 if vowel in ["an", "un", "in"]:
                     base_vowel = vowel[0]  # 'a', 'u', or 'i'
                     # First consonant (with sukun - geminated part)
-                    phonemes.append(Phoneme(consonant, "", True))
+                    phonemes.append(Phoneme(consonant, "", True, is_wasl))
                     # Second consonant (with short vowel)
-                    phonemes.append(Phoneme(consonant, base_vowel, True))
+                    phonemes.append(Phoneme(consonant, base_vowel, True, is_wasl))
                     # Add separate phoneme for 'n' (noon sakinah from tanween)
-                    phonemes.append(Phoneme("ن", "", False))
+                    phonemes.append(Phoneme("ن", "", False, False))
                 else:
                     # First consonant (with sukun - geminated part)
-                    phonemes.append(Phoneme(consonant, "", True))
+                    phonemes.append(Phoneme(consonant, "", True, is_wasl))
                     # Second consonant (with the vowel or sukun)
-                    phonemes.append(Phoneme(consonant, vowel, True))
+                    phonemes.append(Phoneme(consonant, vowel, True, is_wasl))
                 i = j
                 continue
 
@@ -227,9 +304,9 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
             if vowel in ["an", "un", "in"]:
                 # Add phoneme with short vowel
                 base_vowel = vowel[0]  # 'a', 'u', or 'i'
-                phonemes.append(Phoneme(consonant, base_vowel, False))
+                phonemes.append(Phoneme(consonant, base_vowel, False, is_wasl))
                 # Add separate phoneme for 'n' (noon sakinah)
-                phonemes.append(Phoneme("ن", "", False))
+                phonemes.append(Phoneme("ن", "", False, False))
                 i = j
                 continue
 
@@ -267,7 +344,41 @@ def extract_phonemes(text: str, has_tashkeel: bool = False) -> List[Phoneme]:
                     # (but this is already handled - vowel stays '')
                 # else: leave as '' (sukun)
 
-            phonemes.append(Phoneme(consonant, vowel, False))
+            # DIPHTHONG DETECTION: Check if current consonant + next char form a diphthong
+            # Diphthongs occur when:
+            # - Current consonant has fatha ('a' or 'an')
+            # - Next character is و or ي with explicit sukun
+            # This creates the complex vowels /aw/ and /ay/
+            if vowel in ["a", "an"] and j < len(text):
+                # Look ahead to check for و or ي with sukun
+                next_char = text[j]
+                if next_char in ["و", "ي"]:
+                    # Check if next character has explicit sukun
+                    k = j + 1
+                    next_has_sukun = False
+                    next_has_vowel = False
+
+                    while k < len(text) and (
+                        text[k] in VOWEL_MAP.keys() or text[k] == "\u0651"
+                    ):
+                        if text[k] == "\u0652":  # Explicit sukun
+                            next_has_sukun = True
+                        elif text[k] in VOWEL_MAP.keys():
+                            next_has_vowel = True
+                        k += 1
+
+                    # Form diphthong if next char has explicit sukun and no vowel
+                    if next_has_sukun and not next_has_vowel:
+                        if next_char == "و":
+                            vowel = "aw"  # Diphthong /aw/
+                        elif next_char == "ي":
+                            vowel = "ay"  # Diphthong /ay/
+                        # Skip the و/ي character since we consumed it
+                        i = k
+                        phonemes.append(Phoneme(consonant, vowel, False, is_wasl))
+                        continue
+
+            phonemes.append(Phoneme(consonant, vowel, False, is_wasl))
             i = j
         else:
             i += 1
@@ -290,11 +401,13 @@ def phonemes_to_pattern(phonemes: List[Phoneme]) -> str:
     - Light (open): CV = consonant + short vowel = `/`
     - Heavy (closed): CVC = consonant + short vowel + sakin consonant = `/o`
     - Heavy (long): CVV = consonant + long vowel = `/o`
+    - Heavy (diphthong): CVD = consonant + diphthong (aw/ay) = `/o`
 
     Pattern rules:
     - Short vowel followed by sakin → `/o` (combine into one heavy syllable)
     - Short vowel followed by vowel → `/` (light syllable)
     - Long vowel → `/o` (heavy syllable)
+    - Diphthong (aw, ay) → `/o` (heavy syllable)
     - Sakin alone → `o` (continuation of previous syllable)
 
     Args:
@@ -311,6 +424,10 @@ def phonemes_to_pattern(phonemes: List[Phoneme]) -> str:
         >>> phonemes = [Phoneme('ك', 'aa'), Phoneme('ت', 'a')]
         >>> phonemes_to_pattern(phonemes)
         "/o/"  # كَاتَ = heavy + light
+
+        >>> phonemes = [Phoneme('ب', 'ay'), Phoneme('ت', '')]
+        >>> phonemes_to_pattern(phonemes)
+        "/oo"  # بَيْتْ = heavy + sakin (diphthong example)
     """
     pattern = ""
     i = 0
@@ -320,6 +437,10 @@ def phonemes_to_pattern(phonemes: List[Phoneme]) -> str:
 
         if phoneme.is_long_vowel():
             # Long vowel = heavy syllable
+            pattern += "/o"
+            i += 1
+        elif phoneme.is_diphthong():
+            # Diphthong (aw, ay) = heavy syllable
             pattern += "/o"
             i += 1
         elif phoneme.is_sukun():

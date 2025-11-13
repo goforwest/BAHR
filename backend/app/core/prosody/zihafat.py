@@ -58,7 +58,8 @@ class Zahaf:
         name_ar: Arabic name (e.g., "خبن")
         name_en: English transliteration (e.g., "khabn")
         description: What the zahaf does
-        transformation: Function to apply the transformation
+        transformation: Function to apply the transformation (pattern-based, legacy)
+        letter_transformation: Function to apply transformation (letter-based, new)
         result_pattern: Expected resulting phonetic pattern
         is_double: Whether this is a double zahaf (مزدوج)
         allowed_meters: Set of meter IDs where this zahaf is allowed
@@ -71,6 +72,7 @@ class Zahaf:
     name_en: str
     description: str
     transformation: Callable[[str], str]
+    letter_transformation: Optional[Callable] = None  # NEW: letter-level transformation
     result_pattern: Optional[str] = None
     is_double: bool = False
     allowed_meters: Optional[Set[int]] = None
@@ -89,6 +91,9 @@ class Zahaf:
         """
         Apply this zahaf to a taf'ila.
 
+        Uses letter-level transformation if available and tafila has letter_structure.
+        Falls back to pattern-based transformation for backward compatibility.
+
         Args:
             tafila: Base taf'ila to transform
 
@@ -99,17 +104,34 @@ class Zahaf:
             ValueError: If transformation fails
         """
         try:
-            new_phonetic = self.transformation(tafila.phonetic)
+            # Try letter-level transformation first (if available)
+            if self.letter_transformation is not None and hasattr(tafila, 'letter_structure') and tafila.letter_structure is not None:
+                result_structure = self.letter_transformation(tafila.letter_structure)
+                new_phonetic = result_structure.phonetic_pattern
 
-            # Create new taf'ila name indicating the zahaf
-            new_name = f"{tafila.name} ({self.name_ar})"
+                # Create new taf'ila name indicating the zahaf
+                new_name = f"{tafila.name} ({self.name_ar})"
 
-            return Tafila(
-                name=new_name,
-                phonetic=new_phonetic,
-                structure=f"{tafila.structure} + {self.name_ar}",
-                syllable_count=tafila.syllable_count,  # May change
-            )
+                return Tafila(
+                    name=new_name,
+                    phonetic=new_phonetic,
+                    structure=f"{tafila.structure} + {self.name_ar}",
+                    syllable_count=tafila.syllable_count,  # May change
+                    letter_structure=result_structure,  # Preserve letter structure
+                )
+            else:
+                # Fall back to pattern-based transformation
+                new_phonetic = self.transformation(tafila.phonetic)
+
+                # Create new taf'ila name indicating the zahaf
+                new_name = f"{tafila.name} ({self.name_ar})"
+
+                return Tafila(
+                    name=new_name,
+                    phonetic=new_phonetic,
+                    structure=f"{tafila.structure} + {self.name_ar}",
+                    syllable_count=tafila.syllable_count,  # May change
+                )
         except Exception as e:
             raise ValueError(f"Failed to apply {self.name_ar} to {tafila.name}: {e}")
 
@@ -311,6 +333,254 @@ def khabn_transform_letters(tafila_structure):
     return new_tafila
 
 
+def idmar_transform_letters(tafila_structure):
+    """
+    إِضْمَار (Iḍmār) - Make 2nd mutaḥarrik letter sākin (letter-level implementation).
+
+    Classical Definition:
+    "الإضمار هو تسكين الحرف الثاني المتحرك"
+    Translation: "Iḍmār is making the 2nd mutaḥarrik letter sākin"
+
+    Classical Interpretation:
+    Unlike QABD and KHABN which REMOVE letters, IḌMĀR CHANGES a letter's ḥaraka.
+    It takes a mutaḥarrik letter and adds sukūn to it, making it sākin.
+
+    Example (from verification document):
+        Input:  مُتَفَاعِلُنْ (mutafāʿilun) = م(/) ت(/) ف(/) ا(o) ع(/) ل(/) ن(o)
+                Mutaḥarrik positions: م (1st), ت (2nd), ف (3rd), ع (4th), ل (5th)
+
+        Change: ت (2nd mutaharrik) → add sukūn
+        Result: مُتْفَاعِلُنْ (mutfāʿilun) = م(/) ت(o) ف(/) ا(o) ع(/) ل(/) ن(o)
+                Pattern: ///o//o → /o/o//o ✓
+
+    Note: This transformation is very common in الكامل meter.
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 2nd mutaḥarrik made sākin
+
+    Raises:
+        ValueError: If tafʿīlah has fewer than 2 mutaḥarrik letters
+    """
+    from .letter_structure import TafilaLetterStructure, HarakaType, VowelQuality
+
+    # Get 2nd mutaḥarrik letter
+    mutaharrik_result = tafila_structure.get_nth_mutaharrik(2)
+
+    if mutaharrik_result is None:
+        # Fewer than 2 mutaharriks - idmar cannot apply
+        # Return unchanged (not an error - just means this tafʿīlah doesn't support idmar)
+        return tafila_structure
+
+    position, letter = mutaharrik_result
+
+    # Change this letter from mutaharrik to sakin
+    new_tafila = tafila_structure.change_haraka_at_position(
+        position,
+        HarakaType.SAKIN,
+        VowelQuality.SUKUN
+    )
+
+    # Note: We don't modify the name here as that's handled by the Zahaf.apply() method
+
+    return new_tafila
+
+
+def tayy_transform_letters(tafila_structure):
+    """
+    طَيّ (Ṭayy) - Remove 4th sākin/madd letter (letter-level implementation).
+
+    Classical Definition:
+    "الطَّي هو حذف الساكن الرابع"
+    Translation: "Ṭayy is the removal of the 4th sākin"
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 4th sākin/madd removed
+    """
+    from .letter_structure import TafilaLetterStructure
+
+    # Get 4th sākin/madd letter
+    sakin_result = tafila_structure.get_nth_sakin(4, include_madd=True)
+
+    if sakin_result is None:
+        # Fewer than 4 sakins/madds - tayy cannot apply
+        return tafila_structure
+
+    position, letter = sakin_result
+    new_tafila = tafila_structure.remove_letter_at_position(position)
+
+    return new_tafila
+
+
+def kaff_transform_letters(tafila_structure):
+    """
+    كَفّ (Kaff) - Remove 7th sākin/madd letter (letter-level implementation).
+
+    Classical Definition:
+    "الْكَفّ هو حذف السابع الساكن"
+    Translation: "Kaff is the removal of the 7th sākin"
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 7th sākin/madd removed
+    """
+    from .letter_structure import TafilaLetterStructure
+
+    # Get 7th sākin/madd letter
+    sakin_result = tafila_structure.get_nth_sakin(7, include_madd=True)
+
+    if sakin_result is None:
+        # Fewer than 7 sakins/madds - kaff cannot apply
+        return tafila_structure
+
+    position, letter = sakin_result
+    new_tafila = tafila_structure.remove_letter_at_position(position)
+
+    return new_tafila
+
+
+def waqs_transform_letters(tafila_structure):
+    """
+    وَقْص (Waqṣ) - Remove 2nd mutaḥarrik letter (letter-level implementation).
+
+    Classical Definition:
+    "الوَقْص هو حذف الحرف الثاني المتحرك"
+    Translation: "Waqṣ is the removal of the 2nd mutaḥarrik letter"
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 2nd mutaḥarrik removed
+    """
+    from .letter_structure import TafilaLetterStructure
+
+    # Get 2nd mutaḥarrik letter
+    mutaharrik_result = tafila_structure.get_nth_mutaharrik(2)
+
+    if mutaharrik_result is None:
+        # Fewer than 2 mutaharriks - waqs cannot apply
+        return tafila_structure
+
+    position, letter = mutaharrik_result
+    new_tafila = tafila_structure.remove_letter_at_position(position)
+
+    return new_tafila
+
+
+def asb_transform_letters(tafila_structure):
+    """
+    عَصْب (ʿAṣb) - Remove 5th mutaḥarrik letter (letter-level implementation).
+
+    Classical Definition:
+    "العَصْب هو حذف الخامس المتحرك"
+    Translation: "ʿAṣb is the removal of the 5th mutaḥarrik letter"
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with 5th mutaḥarrik removed
+    """
+    from .letter_structure import TafilaLetterStructure
+
+    # Get 5th mutaḥarrik letter
+    mutaharrik_result = tafila_structure.get_nth_mutaharrik(5)
+
+    if mutaharrik_result is None:
+        # Fewer than 5 mutaharriks - asb cannot apply
+        return tafila_structure
+
+    position, letter = mutaharrik_result
+    new_tafila = tafila_structure.remove_letter_at_position(position)
+
+    return new_tafila
+
+
+def khabl_transform_letters(tafila_structure):
+    """
+    خَبْل (Khabl) - Double zahaf: KHABN + ṬAYY (letter-level implementation).
+
+    Classical Definition:
+    "الخَبْل هو حذف الساكن الثاني والرابع معاً"
+    Translation: "Khabl is the removal of both 2nd and 4th sākin letters"
+
+    This is equivalent to applying KHABN (remove 1st sākin) followed by ṬAYY (remove 4th sākin).
+    Note: After removing the 1st sākin, positions shift, so we apply transformations sequentially.
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with both transformations applied
+    """
+    # Apply KHABN first (remove 1st sākin)
+    result = khabn_transform_letters(tafila_structure)
+
+    # Then apply ṬAYY (remove 4th sākin from the result)
+    # Note: The 4th sākin is now in a different position after KHABN
+    result = tayy_transform_letters(result)
+
+    return result
+
+
+def khazl_transform_letters(tafila_structure):
+    """
+    خَزْل (Khazl) - Double zahaf: IḌMĀR + ṬAYY (letter-level implementation).
+
+    Classical Definition:
+    "الخَزْل هو الإضمار والطي معاً"
+    Translation: "Khazl is iḍmār and ṭayy together"
+
+    This applies IḌMĀR (make 2nd mutaharrik sākin) followed by ṬAYY (remove 4th sākin).
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with both transformations applied
+    """
+    # Apply IḌMĀR first (make 2nd mutaharrik sākin)
+    result = idmar_transform_letters(tafila_structure)
+
+    # Then apply ṬAYY (remove 4th sākin from the result)
+    result = tayy_transform_letters(result)
+
+    return result
+
+
+def shakl_transform_letters(tafila_structure):
+    """
+    شَكْل (Shakl) - Double zahaf: KHABN + KAFF (letter-level implementation).
+
+    Classical Definition:
+    "الشَّكْل هو الخبن والكف معاً"
+    Translation: "Shakl is khabn and kaff together"
+
+    This applies KHABN (remove 1st sākin) followed by KAFF (remove 7th sākin).
+
+    Args:
+        tafila_structure: TafilaLetterStructure with letter-level representation
+
+    Returns:
+        New TafilaLetterStructure with both transformations applied
+    """
+    # Apply KHABN first (remove 1st sākin)
+    result = khabn_transform_letters(tafila_structure)
+
+    # Then apply KAFF (remove 7th sākin from the result)
+    result = kaff_transform_letters(result)
+
+    return result
+
+
 def kaff_transform(pattern: str) -> str:
     """كف - Remove 7th sakin."""
     sakin_count = 0
@@ -388,6 +658,7 @@ KHABN = Zahaf(
     name_en="khabn",
     description="Remove 2nd sakin letter",
     transformation=khabn_transform,
+    letter_transformation=khabn_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={3, 5, 6, 7, 8, 9, 10, 11, 13, 16},  # البسيط, الرجز, الخفيف, etc.
     frequency="common",
@@ -400,6 +671,7 @@ TAYY = Zahaf(
     name_en="tayy",
     description="Remove 4th sakin letter",
     transformation=tayy_transform,
+    letter_transformation=tayy_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={3, 5, 7, 8, 10, 12},  # البسيط, الرجز, الخفيف, السريع
     frequency="common",
@@ -412,6 +684,7 @@ QABD = Zahaf(
     name_en="qabd",
     description="Remove 5th sakin letter (often last)",
     transformation=qabd_transform,
+    letter_transformation=qabd_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={1, 6, 9, 12, 15},  # الطويل, الهزج, المتقارب
     frequency="common",
@@ -424,6 +697,7 @@ KAFF = Zahaf(
     name_en="kaff",
     description="Remove 7th sakin letter",
     transformation=kaff_transform,
+    letter_transformation=kaff_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={1, 4, 6, 9},  # الطويل, الرمل, الهزج, المديد
     frequency="rare",
@@ -436,6 +710,7 @@ WAQS = Zahaf(
     name_en="waqs",
     description="Remove 2nd mutaharrik letter",
     transformation=waqs_transform,
+    letter_transformation=waqs_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={2},  # الكامل
     frequency="rare",
@@ -448,6 +723,7 @@ ASB = Zahaf(
     name_en="'asb",
     description="Remove 5th mutaharrik letter",
     transformation=asb_transform,
+    letter_transformation=asb_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={4},  # الوافر
     frequency="common",
@@ -460,6 +736,7 @@ IDMAR = Zahaf(
     name_en="idmar",
     description="Make 2nd letter sakin",
     transformation=idmar_transform,
+    letter_transformation=idmar_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={2},  # الكامل
     frequency="very_common",
@@ -472,6 +749,7 @@ KHABL = Zahaf(
     name_en="khabl",
     description="Khabn + Tayy (double)",
     transformation=khabl_transform,
+    letter_transformation=khabl_transform_letters,  # NEW: letter-level
     is_double=True,
     allowed_meters={3, 5, 7},  # البسيط, الرجز, الخفيف
     frequency="rare",
@@ -484,6 +762,7 @@ KHAZL = Zahaf(
     name_en="khazl",
     description="Idmar + Tayy (double)",
     transformation=khazl_transform,
+    letter_transformation=khazl_transform_letters,  # NEW: letter-level
     is_double=True,
     allowed_meters={2},  # الكامل
     frequency="very_rare",
@@ -496,6 +775,7 @@ SHAKL = Zahaf(
     name_en="shakl",
     description="Khabn + Kaff (double)",
     transformation=shakl_transform,
+    letter_transformation=shakl_transform_letters,  # NEW: letter-level
     is_double=True,
     allowed_meters={4, 6},  # الرمل, المديد
     frequency="very_rare",
