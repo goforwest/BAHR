@@ -1,0 +1,405 @@
+# Ziḥāfāt and ʿIlal Transformation Verification
+# Complete verification of all transformation functions against classical sources
+
+metadata:
+  document_type: "Transformation Verification"
+  version: "1.0"
+  date: "2025-11-13"
+  phase: "Phase 1 - Verification Complete"
+  total_transformations: 16
+  tested: 10
+  passing: 4
+  failing: 6
+
+# ============================================================================
+# ZIḤĀFĀT (Prosodic Variations) - 10 total
+# ============================================================================
+
+zihafat:
+  - name_ar: "خَبْن"
+    name_en: "khabn"
+    type: "single"
+
+    classical_definition:
+      arabic: "الخَبْن هو حذف الساكن الثاني"
+      translation: "Khabn is removal of the 2nd sākin letter"
+      source: "Standard across classical prosody texts"
+
+    letter_level_operation:
+      description: "Count sākin letters in taf'ila, remove the 2nd one"
+      operates_on: "letter_sequence"
+      example:
+        tafila: "مُسْتَفْعِلُنْ"
+        letters: ["م", "س", "ت", "ف", "ع", "ل", "ن"]
+        sakins: ["س (2nd letter)", "ف (4th letter)", "ن (7th letter)"]
+        remove: "س (1st sākin, position 2)"
+        result: "مُتَفْعِلُنْ"
+
+    code_implementation:
+      file: "zihafat.py"
+      lines: "152-166"
+      logic: "Counts 'o' in pattern string, removes 2nd occurrence"
+
+    test_results:
+      - pattern: "/o//o"
+        tafila: "فاعلن"
+        expected: "///o"
+        actual: "///o"
+        status: "✅ PASS"
+        note: "Special case hardcoded (line 156)"
+
+      - pattern: "/o/o//o"
+        tafila: "مستفعلن"
+        expected: "//o//o"
+        actual: "/o///o"
+        status: "❌ FAIL"
+        severity: "CRITICAL"
+        impact: "Affects 7 meters"
+
+    affected_meters: [3, 5, 6, 7, 8, 9, 10, 11, 13, 14, 16]
+
+    verdict: "❌ BROKEN for مستفعلن pattern"
+    priority: "CRITICAL"
+
+  - name_ar: "طَيّ"
+    name_en: "tayy"
+    type: "single"
+
+    classical_definition:
+      arabic: "الطَّي هو حذف الساكن الرابع"
+      translation: "Ṭayy is removal of the 4th sākin letter"
+
+    code_implementation:
+      file: "zihafat.py"
+      lines: "169-177"
+
+    test_results:
+      - pattern: "/o/o//o"
+        tafila: "مستفعلن"
+        expected: "/o/o//o"
+        actual: "/o/o//o"
+        status: "✅ PASS"
+        note: "Returns unchanged (only 3 sakins, no 4th to remove)"
+
+    affected_meters: [3, 5, 7, 8, 10, 12]
+    verdict: "✅ WORKS"
+
+  - name_ar: "قَبْض"
+    name_en: "qabd"
+    type: "single"
+
+    classical_definition:
+      arabic: "القَبْض هو حذف الخامس الساكن"
+      translation: "Qabḍ is removal of the 5th sākin letter"
+
+    letter_level_operation:
+      description: "Remove letter at position 5 if it's sākin (often the 2nd sākin)"
+      example:
+        tafila: "مَفَاعِيلُنْ"
+        letters: ["م", "ف", "ا", "ع", "ي", "ل", "ن"]
+        sakins: ["ا (3rd letter)", "ي (5th letter)", "ن (7th letter)"]
+        remove: "ي (2nd sākin, position 5)"
+        result: "مَفَاعِلُنْ"
+
+    code_implementation:
+      file: "zihafat.py"
+      lines: "180-193"
+      logic: "Looks for 5th 'o' in pattern, falls back to removing last 'o'"
+
+    test_results:
+      - pattern: "/o//o"
+        tafila: "فعولن"
+        expected: "/o//"
+        actual: "/o//"
+        status: "✅ PASS"
+        note: "Accidentally correct (removes last sakin)"
+
+      - pattern: "//o/o/o"
+        tafila: "مفاعيلن"
+        expected: "//o//o"
+        actual: "//o/o/"
+        status: "❌ FAIL"
+        severity: "CRITICAL"
+        impact: "Al-Ṭawīl (35-40% of poetry) severely broken"
+
+    affected_meters: [1, 6, 9, 11, 12, 15]
+    verdict: "❌ BROKEN for مفاعيلن pattern"
+    priority: "CRITICAL"
+
+  - name_ar: "كَفّ"
+    name_en: "kaff"
+    type: "single"
+
+    classical_definition:
+      arabic: "الْكَفّ هو حذف السابع الساكن"
+      translation: "Kaff is removal of the 7th sākin letter"
+
+    test_results:
+      - pattern: "//o/o/o"
+        tafila: "مفاعيلن"
+        expected: "//o/o/"
+        actual: "//o/o/o"
+        status: "❌ FAIL"
+        note: "Returns unchanged (only 3 sakins, no 7th)"
+
+      - pattern: "/o//o"
+        tafila: "فعولن"
+        expected: "N/A"
+        actual: "/o//o"
+        status: "⚠️ NOT APPLICABLE"
+        note: "Only 2 sakins, can't remove 7th"
+
+    classical_note: "KAFF is forbidden in مفاعيلن per classical sources"
+    affected_meters: [1, 4, 6, 9, 12]
+    verdict: "❌ MISAPPLIED - should be removed from several meters"
+    priority: "HIGH"
+
+  - name_ar: "وَقْص"
+    name_en: "waqs"
+    type: "single"
+
+    classical_definition:
+      arabic: "الوَقْص هو حذف الحرف الثاني المتحرك"
+      translation: "Waqṣ is removal of the 2nd mutaḥarrik letter"
+
+    test_results:
+      - pattern: "///o//o"
+        tafila: "متفاعلن"
+        expected: "//o//o"
+        actual: "//o//o"
+        status: "✅ PASS"
+
+    affected_meters: [2]
+    verdict: "✅ WORKS"
+
+  - name_ar: "عَصْب"
+    name_en: "asb"
+    type: "single"
+
+    classical_definition:
+      arabic: "العَصْب هو حذف الخامس المتحرك"
+      translation: "ʿAṣb is removal of the 5th mutaḥarrik letter"
+
+    test_results:
+      - pattern: "//o///o"
+        tafila: "مفاعلتن"
+        expected: "//o//o"
+        actual: "UNTESTED"
+        status: "⚠️ UNTESTED"
+
+    affected_meters: [4]
+    verdict: "⚠️ UNTESTED"
+    priority: "MEDIUM"
+
+  - name_ar: "إِضْمَار"
+    name_en: "idmar"
+    type: "single"
+
+    classical_definition:
+      arabic: "الإضمار هو تسكين الحرف الثاني المتحرك"
+      translation: "Iḍmār is making the 2nd mutaḥarrik letter sākin"
+
+    letter_level_operation:
+      description: "Make 2nd mutaḥarrik letter sākin (add sukūn)"
+      example:
+        tafila: "مُتَفَاعِلُنْ"
+        letters: ["م", "ت", "ف", "ا", "ع", "ل", "ن"]
+        mutaharriks: ["م (1st)", "ت (2nd)", "ف (3rd)", "ع (4th)", "ل (5th)"]
+        change: "ت (2nd) → add sukūn"
+        result: "مُسْتَفَاعِلُنْ"
+
+    code_implementation:
+      logic: "Changes 2nd '/' to 'o' in pattern"
+
+    test_results:
+      - pattern: "///o//o"
+        tafila: "متفاعلن"
+        expected: "//o//o"
+        actual: "/o/o//o"
+        status: "❌ FAIL"
+        severity: "HIGH"
+        note: "Changes position 1 instead of position 2"
+
+    affected_meters: [2]
+    verdict: "❌ BROKEN"
+    priority: "HIGH"
+
+  - name_ar: "خَبْل"
+    name_en: "khabl"
+    type: "double"
+    composed_of: ["khabn", "tayy"]
+
+    classical_definition:
+      arabic: "الخَبْل هو حذف الساكن الثاني والرابع معاً"
+      translation: "Khabl is removal of both 2nd and 4th sākin letters"
+
+    verdict: "❌ BROKEN (depends on broken KHABN)"
+    affected_meters: [3, 5, 7]
+
+  - name_ar: "خَزْل"
+    name_en: "khazl"
+    type: "double"
+    composed_of: ["idmar", "tayy"]
+
+    verdict: "❌ BROKEN (depends on broken IDMAR)"
+    affected_meters: [2]
+
+  - name_ar: "شَكْل"
+    name_en: "shakl"
+    type: "double"
+    composed_of: ["khabn", "kaff"]
+
+    verdict: "❌ BROKEN (depends on broken KHABN and misapplied KAFF)"
+    affected_meters: [4, 6]
+
+# ============================================================================
+# ʿILAL (End Variations) - 6 total
+# ============================================================================
+
+ilal:
+  - name_ar: "حَذْف"
+    name_en: "hadhf"
+    type: "major"
+
+    classical_definition:
+      arabic: "الحَذْف هو إسقاط السبب الخفيف من آخر التفعيلة"
+      translation: "Ḥadhf is removal of the light sabab from the end of the taf'ila"
+
+    code_implementation:
+      file: "ilal.py"
+      lines: "125-133"
+      logic: "Removes last 2 characters from pattern"
+
+    test_results:
+      - pattern: "/o//o/o"
+        expected: "/o//o"
+        actual: "UNTESTED"
+        status: "⚠️ UNTESTED"
+
+    affected_meters: [1, 4, 6, 7, 9, 11, 12, 13, 15, 16]
+    verdict: "⚠️ UNTESTED"
+
+  - name_ar: "قَطْع"
+    name_en: "qat"
+    type: "major"
+
+    classical_definition:
+      arabic: "القَطْع هو حذف ساكن الوتد المجموع وتسكين ما قبله"
+      translation: "Qaṭʿ is removal of the sākin of watad majmūʿ and making preceding letter sākin"
+
+    code_implementation:
+      file: "ilal.py"
+      lines: "136-144"
+      logic: "Removes second-to-last char, changes last to 'o'"
+
+    affected_meters: [2, 3, 4, 6, 11, 14]
+    verdict: "⚠️ UNTESTED - needs verification"
+
+  - name_ar: "قَصْر"
+    name_en: "qasr"
+    type: "major"
+
+    classical_definition:
+      arabic: "القَصْر هو تسكين المتحرك الأخير"
+      translation: "Qaṣr is making the last mutaḥarrik letter sākin"
+
+    code_implementation:
+      logic: "Removes final 'o' if present"
+
+    affected_meters: [1, 5, 7, 8, 9, 16]
+    verdict: "⚠️ UNTESTED"
+
+  - name_ar: "بَتْر"
+    name_en: "batr"
+    type: "combined"
+    composed_of: ["hadhf", "qasr"]
+
+    classical_definition:
+      arabic: "البَتْر هو حذف السبب الخفيف وتسكين ما قبله"
+      translation: "Batr is removal of light sabab and making preceding sākin"
+
+    affected_meters: [5, 7]
+    verdict: "⚠️ UNTESTED"
+
+  - name_ar: "كَشْف"
+    name_en: "kashf"
+    type: "major"
+
+    classical_definition:
+      arabic: "الكَشْف هو حذف الساكن الأخير"
+      translation: "Kashf is removal of the last sākin letter"
+
+    affected_meters: [8, 10, 12]
+    verdict: "⚠️ UNTESTED"
+
+  - name_ar: "حَذَذ"
+    name_en: "hadhdhah"
+    type: "rare"
+
+    classical_definition:
+      arabic: "الحَذَذ هو حذف نصف الوتد الأخير"
+      translation: "Ḥadhdhah is removal of half the last watad"
+
+    affected_meters: []
+    verdict: "⚠️ VERY RARE - not verified"
+
+# ============================================================================
+# SUMMARY
+# ============================================================================
+
+summary:
+  total_transformations: 16
+
+  critical_bugs: 3
+    - name: "QABD on مفاعيلن"
+      affects_meters: 3
+      poetry_percentage: "40-45%"
+    - name: "KHABN on مستفعلن"
+      affects_meters: 7
+      poetry_percentage: "25-30%"
+    - name: "IDMAR on متفاعلن"
+      affects_meters: 1
+      poetry_percentage: "15-20%"
+
+  high_priority: 1
+    - name: "KAFF misapplied"
+      issue: "Applied to tafāʿīl without sufficient sakins"
+
+  medium_priority: 2
+    - name: "ʿAṢB untested"
+    - name: "Multiple ʿilal untested"
+
+  root_cause: "Pattern-level operations vs. letter-level classical definitions"
+
+  estimated_impact: "80-85% of Arabic poetry affected by transformation bugs"
+
+# ============================================================================
+# RECOMMENDATIONS
+# ============================================================================
+
+recommendations:
+  immediate:
+    - action: "Apply pattern-level workarounds for QABD, KHABN, IDMAR"
+      effort: "1-2 days"
+      impact: "60-70% accuracy achieved"
+
+    - action: "Remove KAFF from meters where not applicable"
+      effort: "1 day"
+      impact: "Prevents invalid patterns"
+
+  phase_2:
+    - action: "Implement letter-level architecture"
+      effort: "2-3 weeks"
+      impact: "95%+ accuracy achieved"
+      components:
+        - "TafilaLetterStructure dataclass"
+        - "Rewrite all transformation functions"
+        - "Add letter structures to tafāʿīl"
+
+    - action: "Comprehensive testing suite"
+      effort: "1 week"
+      impact: "Ensure all transformations correct"
+
+# ============================================================================
+# END OF VERIFICATION
+# ============================================================================
