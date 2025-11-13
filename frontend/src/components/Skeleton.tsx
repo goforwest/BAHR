@@ -3,9 +3,9 @@
  * Provides smooth placeholder animations while content is loading.
  */
 
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 interface SkeletonProps {
   className?: string;
@@ -13,12 +13,7 @@ interface SkeletonProps {
 
 export function Skeleton({ className }: SkeletonProps) {
   return (
-    <div
-      className={cn(
-        'animate-pulse rounded-md bg-gray-200/60',
-        className
-      )}
-    />
+    <div className={cn("animate-pulse rounded-md bg-gray-200/60", className)} />
   );
 }
 
@@ -27,7 +22,11 @@ export function Skeleton({ className }: SkeletonProps) {
  */
 export function AnalysisLoadingSkeleton() {
   return (
-    <div className="w-full max-w-3xl mx-auto mt-8 space-y-6" role="status" aria-label="جارٍ تحليل البيت الشعري">
+    <div
+      className="w-full max-w-3xl mx-auto mt-8 space-y-6"
+      role="status"
+      aria-label="جارٍ تحليل البيت الشعري"
+    >
       {/* Verse Text Skeleton */}
       <div className="bg-white shadow-lg rounded-lg p-6">
         <Skeleton className="h-4 w-24 mb-3" />

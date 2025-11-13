@@ -4,15 +4,15 @@
  */
 
 export type AnalyticsEventName =
-  | 'page_view'
-  | 'analyze_submit'
-  | 'analyze_success'
-  | 'analyze_error'
-  | 'example_click'
-  | 'retry_click'
-  | 'reset_click'
-  | 'api_call'
-  | 'api_error';
+  | "page_view"
+  | "analyze_submit"
+  | "analyze_success"
+  | "analyze_error"
+  | "example_click"
+  | "retry_click"
+  | "reset_click"
+  | "api_call"
+  | "api_error";
 
 export interface AnalyticsEvent {
   name: AnalyticsEventName;

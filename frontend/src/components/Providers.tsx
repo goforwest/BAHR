@@ -3,10 +3,10 @@
  * Must be a client component to use React Query hooks
  */
 
-'use client';
+"use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode, useState } from 'react';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactNode, useState } from "react";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -32,12 +32,10 @@ export function Providers({ children }: ProvidersProps) {
             gcTime: 5 * 60 * 1000,
           },
         },
-      })
+      }),
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }

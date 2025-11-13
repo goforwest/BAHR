@@ -2,7 +2,7 @@
  * Example verses component - clickable examples for users to try
  */
 
-'use client';
+"use client";
 
 interface ExampleVerse {
   text: string;
@@ -12,19 +12,19 @@ interface ExampleVerse {
 
 const examples: ExampleVerse[] = [
   {
-    text: 'إذا غامرت في شرف مروم *** فلا تقنع بما دون النجوم',
-    poet: 'المتنبي',
-    meter: 'الطويل',
+    text: "إذا غامرت في شرف مروم *** فلا تقنع بما دون النجوم",
+    poet: "المتنبي",
+    meter: "الطويل",
   },
   {
-    text: 'قفا نبك من ذكرى حبيب ومنزل *** بسقط اللوى بين الدخول فحومل',
-    poet: 'امرؤ القيس',
-    meter: 'الطويل',
+    text: "قفا نبك من ذكرى حبيب ومنزل *** بسقط اللوى بين الدخول فحومل",
+    poet: "امرؤ القيس",
+    meter: "الطويل",
   },
   {
-    text: 'أَلا لَيتَ الشَبابَ يَعودُ يَوماً *** فَأُخبِرَهُ بِما فَعَلَ المَشيبُ',
-    poet: 'أبو العتاهية',
-    meter: 'الوافر',
+    text: "أَلا لَيتَ الشَبابَ يَعودُ يَوماً *** فَأُخبِرَهُ بِما فَعَلَ المَشيبُ",
+    poet: "أبو العتاهية",
+    meter: "الوافر",
   },
 ];
 
@@ -33,11 +33,18 @@ interface ExampleVersesProps {
   disabled?: boolean;
 }
 
-export function ExampleVerses({ onSelect, disabled = false }: ExampleVersesProps) {
+export function ExampleVerses({
+  onSelect,
+  disabled = false,
+}: ExampleVersesProps) {
   return (
     <div className="space-y-3">
       <h3 className="text-sm font-medium text-gray-700 flex items-center gap-2">
-        <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+        <svg
+          className="w-4 h-4 text-blue-600"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
           <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
         </svg>
         أو جرّب أحد الأمثلة:

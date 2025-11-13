@@ -5,8 +5,8 @@
  * with recommendations for improving accuracy.
  */
 
-import React from 'react';
-import type { DetectionUncertainty } from '@/types/analyze';
+import React from "react";
+import type { DetectionUncertainty } from "@/types/analyze";
 
 interface UncertaintyBannerProps {
   uncertainty: DetectionUncertainty;
@@ -27,20 +27,20 @@ export default function UncertaintyBanner({
   // Determine message based on reason
   const getMessage = () => {
     switch (uncertainty.reason) {
-      case 'low_confidence':
+      case "low_confidence":
         return {
-          ar: 'الثقة في التحديد منخفضة',
-          en: 'Detection confidence is low',
+          ar: "الثقة في التحديد منخفضة",
+          en: "Detection confidence is low",
         };
-      case 'close_candidates':
+      case "close_candidates":
         return {
-          ar: 'هناك عدة احتمالات قريبة',
-          en: 'Multiple close possibilities detected',
+          ar: "هناك عدة احتمالات قريبة",
+          en: "Multiple close possibilities detected",
         };
       default:
         return {
-          ar: 'التحديد غير مؤكد',
-          en: 'Detection is uncertain',
+          ar: "التحديد غير مؤكد",
+          en: "Detection is uncertain",
         };
     }
   };
@@ -73,20 +73,19 @@ export default function UncertaintyBanner({
             <p className="mb-2">
               {uncertainty.top_diff !== undefined && (
                 <>
-                  الفرق بين أعلى اختيارين: {(uncertainty.top_diff * 100).toFixed(2)}% |{' '}
-                  Top 2 difference: {(uncertainty.top_diff * 100).toFixed(2)}%
+                  الفرق بين أعلى اختيارين:{" "}
+                  {(uncertainty.top_diff * 100).toFixed(2)}% | Top 2 difference:{" "}
+                  {(uncertainty.top_diff * 100).toFixed(2)}%
                 </>
               )}
             </p>
 
-            {uncertainty.recommendation === 'add_diacritics' && (
+            {uncertainty.recommendation === "add_diacritics" && (
               <div className="mt-3 space-y-2">
-                <p className="font-medium">
-                  💡 توصية | Recommendation:
-                </p>
+                <p className="font-medium">💡 توصية | Recommendation:</p>
                 <p>
-                  إضافة التشكيل ستحسن الدقة بشكل كبير |
-                  Adding diacritics (tashkeel) will significantly improve accuracy
+                  إضافة التشكيل ستحسن الدقة بشكل كبير | Adding diacritics
+                  (tashkeel) will significantly improve accuracy
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {onAddDiacritics && (

@@ -5,9 +5,13 @@
  * Allows users to report the correct meter and add optional comments.
  */
 
-import React, { useState } from 'react';
-import { submitMeterFeedback } from '@/lib/api';
-import type { MeterFeedback, BahrInfo, AlternativeMeter } from '@/types/analyze';
+import React, { useState } from "react";
+import { submitMeterFeedback } from "@/lib/api";
+import type {
+  MeterFeedback,
+  BahrInfo,
+  AlternativeMeter,
+} from "@/types/analyze";
 
 interface FeedbackDialogProps {
   isOpen: boolean;
@@ -30,10 +34,12 @@ export default function FeedbackDialog({
   alternatives,
   selectedMeter,
 }: FeedbackDialogProps) {
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Collect all meter options
   const allMeters = [
@@ -42,14 +48,14 @@ export default function FeedbackDialog({
   ];
 
   const [correctMeter, setCorrectMeter] = useState(
-    selectedMeter || detectedMeter.name_ar
+    selectedMeter || detectedMeter.name_ar,
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus('idle');
-    setErrorMessage('');
+    setSubmitStatus("idle");
+    setErrorMessage("");
 
     try {
       // Check if text has diacritics (تشكيل)
@@ -71,21 +77,21 @@ export default function FeedbackDialog({
       // Submit to API
       const response = await submitMeterFeedback(feedbackData);
 
-      if (response.status === 'success') {
-        setSubmitStatus('success');
+      if (response.status === "success") {
+        setSubmitStatus("success");
         // Close dialog after 2 seconds
         setTimeout(() => {
           onClose();
           // Reset state
-          setComment('');
-          setSubmitStatus('idle');
+          setComment("");
+          setSubmitStatus("idle");
         }, 2000);
       }
     } catch (error) {
-      console.error('Failed to submit feedback:', error);
-      setSubmitStatus('error');
+      console.error("Failed to submit feedback:", error);
+      setSubmitStatus("error");
       setErrorMessage(
-        error instanceof Error ? error.message : 'Failed to submit feedback'
+        error instanceof Error ? error.message : "Failed to submit feedback",
       );
     } finally {
       setIsSubmitting(false);
@@ -144,7 +150,7 @@ export default function FeedbackDialog({
             </label>
             <div className="p-3 bg-red-50 rounded border border-red-200">
               <p className="text-lg font-bold">
-                {detectedMeter.name_ar} ({detectedMeter.name_en}) -{' '}
+                {detectedMeter.name_ar} ({detectedMeter.name_en}) -{" "}
                 {(detectedMeter.confidence * 100).toFixed(2)}%
               </p>
             </div>
@@ -164,7 +170,7 @@ export default function FeedbackDialog({
               {allMeters.map((meter) => (
                 <option key={meter} value={meter}>
                   {meter}
-                  {meter === detectedMeter.name_ar && ' (مكتشف | detected)'}
+                  {meter === detectedMeter.name_ar && " (مكتشف | detected)"}
                 </option>
               ))}
             </select>
@@ -185,7 +191,7 @@ export default function FeedbackDialog({
           </div>
 
           {/* Status messages */}
-          {submitStatus === 'success' && (
+          {submitStatus === "success" && (
             <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
               <p className="text-green-800 text-sm">
                 ✓ شكراً لملاحظاتك! | Thank you for your feedback!
@@ -193,7 +199,7 @@ export default function FeedbackDialog({
             </div>
           )}
 
-          {submitStatus === 'error' && (
+          {submitStatus === "error" && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
               <p className="text-red-800 text-sm">
                 ✗ فشل في إرسال الملاحظات | Failed to submit feedback
@@ -216,7 +222,7 @@ export default function FeedbackDialog({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting || submitStatus === 'success'}
+              disabled={isSubmitting || submitStatus === "success"}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
@@ -244,7 +250,7 @@ export default function FeedbackDialog({
                   جاري الإرسال... | Submitting...
                 </>
               ) : (
-                'إرسال | Submit'
+                "إرسال | Submit"
               )}
             </button>
           </div>
