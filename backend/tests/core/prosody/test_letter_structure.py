@@ -468,28 +468,30 @@ class TestParseTafilaFromText:
         """
         Test parsing فَعُولُنْ (faculun).
 
-        Note: Phoneme extraction combines عُو into single long vowel phoneme.
-        Actual phonemes: ف(mut,a) + عو(madd,uu) + ل(mut,u) + ن(sakin)
-        Pattern: / + o + / + o = /o/o
+        Note: After encoding fix, long vowels create TWO letters.
+        Actual letters: ف(mut,a) + ع(mut,u) + و(madd,uu) + ل(mut,u) + ن(sakin)
+        Pattern: / + / + o + / + o = //o/o
         """
         structure = parse_tafila_from_text("فعولن", "فَعُولُنْ")
 
         assert structure.name == "فعولن"
-        assert len(structure.letters) == 4  # Not 5, because عُو is one phoneme
+        assert len(structure.letters) == 5  # Fixed: عُو is now TWO letters (ع + و)
 
         # Check letters
         assert structure.letters[0].consonant == 'ف'
         assert structure.letters[0].is_mutaharrik()
         assert structure.letters[1].consonant == 'ع'
-        assert structure.letters[1].is_madd()  # Combined عُو as long vowel
-        assert structure.letters[2].consonant == 'ل'
-        assert structure.letters[2].is_mutaharrik()
-        assert structure.letters[3].consonant == 'ن'
-        assert structure.letters[3].is_sakin()
+        assert structure.letters[1].is_mutaharrik()  # Fixed: First part of long vowel
+        assert structure.letters[2].consonant == 'و'
+        assert structure.letters[2].is_madd()  # Fixed: Madd letter
+        assert structure.letters[3].consonant == 'ل'
+        assert structure.letters[3].is_mutaharrik()
+        assert structure.letters[4].consonant == 'ن'
+        assert structure.letters[4].is_sakin()
 
         # Check pattern
         assert all(c in '/o' for c in structure.phonetic_pattern)
-        assert structure.phonetic_pattern == "/o/o"
+        assert structure.phonetic_pattern == "//o/o"  # Fixed: Correct pattern
 
     def test_parse_facilun(self):
         """
