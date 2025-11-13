@@ -490,6 +490,213 @@ class BahrDetectorV2:
         """
         return self.pattern_cache.get(meter_id, set())
 
+    def segment_pattern_to_tafail(
+        self, pattern: str, meter: Meter, allow_hemistich: bool = True
+    ) -> Optional[Tuple[List[Tafila], List[str], str]]:
+        """
+        Segment phonetic pattern into sequence of tafāʿīl using deterministic algorithm.
+
+        This implements the Weeks 10-12 segmentation algorithm from the original plan.
+        Instead of fuzzy matching entire patterns, this deterministically segments
+        the pattern into individual tafāʿīl based on meter rules.
+
+        Args:
+            pattern: Phonetic pattern to segment (e.g., "/o//o//o/o/o")
+            meter: Meter to segment against
+            allow_hemistich: Allow matching hemistichs (half-verses) in addition to full verses
+
+        Returns:
+            Tuple of (tafail_sequence, transformation_names, verse_type) if successful, None otherwise
+            verse_type is 'full_verse' or 'hemistich'
+        """
+        from itertools import product
+
+        # Try full verse first
+        result = self._try_segment_with_count(pattern, meter, meter.tafail_count)
+        if result is not None:
+            tafail_seq, trans_names = result
+            return (tafail_seq, trans_names, "full_verse")
+
+        # Try hemistich (half verse) if allowed
+        if allow_hemistich and meter.tafail_count >= 4:
+            hemistich_count = meter.tafail_count // 2
+            result = self._try_segment_with_count(pattern, meter, hemistich_count)
+            if result is not None:
+                tafail_seq, trans_names = result
+                return (tafail_seq, trans_names, "hemistich")
+
+        return None
+
+    def _try_segment_with_count(
+        self, pattern: str, meter: Meter, tafail_count: int
+    ) -> Optional[Tuple[List[Tafila], List[str]]]:
+        """
+        Try to segment pattern with a specific number of tafāʿīl.
+
+        Args:
+            pattern: Phonetic pattern to segment
+            meter: Meter to use for segmentation rules
+            tafail_count: Number of tafāʿīl to expect
+
+        Returns:
+            Tuple of (tafail_sequence, transformation_names) if successful, None otherwise
+        """
+        tafail_sequence = []
+        transformation_names = []
+        remaining = pattern
+
+        for position in range(1, tafail_count + 1):
+            # Use modulo for hemistich support (positions wrap around)
+            meter_position = ((position - 1) % meter.tafail_count) + 1
+
+            base_tafila = meter.get_tafila_at_position(meter_position)
+            allowed_zihafat = meter.get_allowed_zihafat(meter_position)
+
+            # Check if this is the final position (for ʿilal)
+            is_final = (position == tafail_count)
+            allowed_ilal = (
+                meter.get_allowed_ilal(meter_position) if is_final else []
+            )
+
+            # Generate all valid variants for this position
+            variants = [(base_tafila, "base")]
+
+            # Add ziḥāfāt variants
+            for zahaf in allowed_zihafat:
+                try:
+                    modified = zahaf.apply(base_tafila)
+                    variants.append((modified, zahaf.name_ar))
+                except Exception:
+                    pass
+
+            # Add ʿilal variants (if final position)
+            for ilah in allowed_ilal:
+                try:
+                    modified = ilah.apply(base_tafila)
+                    variants.append((modified, ilah.name_ar))
+                except Exception:
+                    pass
+
+            # Try to match any variant against remaining pattern
+            matched = None
+            matched_name = None
+
+            for variant_tafila, variant_name in variants:
+                if remaining.startswith(variant_tafila.phonetic):
+                    matched = variant_tafila
+                    matched_name = variant_name
+                    remaining = remaining[len(variant_tafila.phonetic) :]
+                    break
+
+            if matched is None:
+                # Segmentation failed - no variant matches
+                return None
+
+            tafail_sequence.append(matched)
+            transformation_names.append(matched_name)
+
+        if remaining:
+            # Pattern too long - extra characters remain
+            return None
+
+        return (tafail_sequence, transformation_names)
+
+    def detect_deterministic(
+        self, phonetic_pattern: str, top_k: int = 3
+    ) -> List[DetectionResult]:
+        """
+        Detect meter using deterministic segmentation instead of fuzzy matching.
+
+        This implements the Weeks 10-12 detection algorithm from the original plan.
+        Uses segmentation-based matching for higher accuracy.
+
+        Args:
+            phonetic_pattern: Input phonetic pattern
+            top_k: Return top K matches
+
+        Returns:
+            List of DetectionResult objects, sorted by confidence
+        """
+        candidates = []
+
+        for meter_id, meter in self.meters.items():
+            # Try to segment pattern using this meter's rules
+            segmentation_result = self.segment_pattern_to_tafail(phonetic_pattern, meter)
+
+            if segmentation_result is not None:
+                tafail_sequence, transformation_names, verse_type = segmentation_result
+
+                # Calculate confidence based on transformations used
+                base_confidence = 1.0
+
+                # Count transformation types
+                num_transformations = sum(1 for t in transformation_names if t != "base")
+                num_common = sum(
+                    1
+                    for t in transformation_names
+                    if t != "base"
+                    and t in ["قبض", "خبن", "إضمار", "طي", "كف"]
+                )
+                num_rare = num_transformations - num_common
+
+                # Penalty for transformations (fewer = higher confidence)
+                base_confidence -= num_common * 0.02  # -2% per common transformation
+                base_confidence -= num_rare * 0.05  # -5% per rare transformation
+
+                # Small penalty for hemistich (full verses preferred)
+                if verse_type == "hemistich":
+                    base_confidence -= 0.01  # -1% for hemistich
+
+                # Boost for common meters
+                from .meters import MeterTier
+
+                if meter.tier == MeterTier.TIER_1:
+                    base_confidence = min(1.0, base_confidence * 1.02)
+
+                # Determine match quality
+                if all(t == "base" for t in transformation_names):
+                    match_quality = MatchQuality.EXACT
+                elif num_rare > 0 or num_transformations > 3:
+                    match_quality = MatchQuality.WEAK
+                elif num_transformations > 2:
+                    match_quality = MatchQuality.MODERATE
+                else:
+                    match_quality = MatchQuality.STRONG
+
+                # Create explanation
+                verse_type_ar = "شطر" if verse_type == "hemistich" else "بيت كامل"
+                verse_type_en = "hemistich" if verse_type == "hemistich" else "full verse"
+
+                if all(t == "base" for t in transformation_names):
+                    explanation = f"مطابقة تامة ({verse_type_ar}) | Exact match ({verse_type_en}) with base pattern of {meter.name_en}"
+                else:
+                    non_base = [t for t in transformation_names if t != "base"]
+                    trans_list = ", ".join(non_base)
+                    explanation = (
+                        f"مطابقة ({verse_type_ar}) مع زحافات: {trans_list} | Match ({verse_type_en}) with variations: {trans_list}"
+                    )
+
+                result = DetectionResult(
+                    meter_id=meter.id,
+                    meter_name_ar=meter.name_ar,
+                    meter_name_en=meter.name_en,
+                    confidence=base_confidence,
+                    match_quality=match_quality,
+                    matched_pattern=phonetic_pattern,
+                    input_pattern=phonetic_pattern,
+                    transformations=transformation_names,
+                    explanation=explanation,
+                )
+
+                candidates.append(result)
+
+        # Sort by confidence (descending), then by tier (ascending)
+        candidates.sort(
+            key=lambda x: (-x.confidence, self.meters[x.meter_id].tier.value)
+        )
+
+        return candidates[:top_k]
+
 
 def detect_meter(phonetic_pattern: str) -> Optional[DetectionResult]:
     """

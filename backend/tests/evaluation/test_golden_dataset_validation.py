@@ -69,7 +69,9 @@ class GoldenDatasetValidator:
                 print(f"⚠️  No pattern for {verse_id}")
                 continue
 
-            # Detect meter
+            # Detect meter (using fuzzy matching for golden dataset compatibility)
+            # Note: deterministic segmentation (detect_deterministic) is implemented
+            # but requires pattern encoding alignment with golden dataset
             detections = self.detector.detect(pattern, top_k=top_k)
 
             # Check results
