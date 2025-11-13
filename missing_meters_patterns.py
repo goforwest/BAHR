@@ -6,7 +6,7 @@ MISSING_METERS_PATTERNS = {
     # السريع (al-Sari')
     8: {
         'name_ar': 'السريع',
-        'name_en': 'al-Sari',
+        'name_en': 'al-Sari'',
         'patterns': [
             '///o////o///o///////o////',
             '///o///o/////////o///o',
@@ -164,7 +164,7 @@ MISSING_METERS_PATTERNS = {
     # المضارع (al-Mudari')
     15: {
         'name_ar': 'المضارع',
-        'name_en': 'al-Mudari',
+        'name_en': 'al-Mudari'',
         'patterns': [
             '////o//o////o///o/////////',
             '//o/////o//o///o//o',

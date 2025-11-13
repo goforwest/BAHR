@@ -1,13 +1,15 @@
 """
 BAHR Feature Extractor for Machine Learning.
 
-Extracts comprehensive feature set (50 features) from Arabic poetry verses:
+Extracts comprehensive feature set (71 features) from Arabic poetry verses:
 - 8 pattern features (length, counts, complexity, rhythm)
 - 16 similarity features (distance to each meter's patterns)
+- 5 discriminative features (spread, ratio, std of similarities)
+- 16 relative similarity features (normalized per-meter similarities)
 - 16 rule features (transformation matches for each meter)
 - 10 linguistic features (word count, letter distribution, structure)
 
-Total: 50 features for ML training (XGBoost, Random Forest, etc.)
+Total: 71 features for ML training (XGBoost, Random Forest, etc.)
 """
 
 import numpy as np
@@ -27,10 +29,12 @@ class BAHRFeatureExtractor:
     Features extracted:
     1. Pattern features (8): Basic phonetic pattern characteristics
     2. Similarity features (16): Distance to each meter's empirical patterns
-    3. Rule features (16): Transformation rule matches for each meter
-    4. Linguistic features (10): Word-level and letter-level statistics
+    3. Discriminative features (5): Spread, ratio, std of similarities
+    4. Relative similarity features (16): Normalized per-meter similarities
+    5. Rule features (16): Transformation rule matches for each meter
+    6. Linguistic features (10): Word-level and letter-level statistics
 
-    Total: 50 features
+    Total: 71 features
     """
 
     def __init__(self):
@@ -41,7 +45,7 @@ class BAHRFeatureExtractor:
     def extract_features(self, verse_text: str, include_target: bool = False,
                         target_meter_id: Optional[int] = None) -> Dict[str, float]:
         """
-        Extract all 50 features from a verse.
+        Extract all 71 features from a verse.
 
         Args:
             verse_text: Arabic verse text (with or without tashkeel)
@@ -49,7 +53,7 @@ class BAHRFeatureExtractor:
             target_meter_id: True meter ID (for training data)
 
         Returns:
-            Dictionary with 50 feature values + optional target
+            Dictionary with 71 feature values + optional target
         """
         # Convert text to phonetic pattern
         try:
@@ -65,7 +69,14 @@ class BAHRFeatureExtractor:
         # Extract all feature groups
         features = {}
         features.update(self._extract_pattern_features(pattern))
-        features.update(self._extract_similarity_features(pattern))
+
+        # Extract similarity features (raw similarities)
+        similarity_features = self._extract_similarity_features(pattern)
+        features.update(similarity_features)
+
+        # Extract discriminative features from similarity scores
+        features.update(self._extract_discriminative_features(similarity_features))
+
         features.update(self._extract_rule_features(verse_text, pattern))
         features.update(self._extract_linguistic_features(verse_text))
 
@@ -154,6 +165,69 @@ class BAHRFeatureExtractor:
                 best_similarity = max(best_similarity, similarity)
 
             features[f'similarity_to_meter_{meter_id}'] = best_similarity
+
+        return features
+
+    def _extract_discriminative_features(self, similarity_features: Dict[str, float]) -> Dict[str, float]:
+        """
+        Extract 21 discriminative features from similarity scores.
+
+        These features capture the differences and distributions of similarity scores,
+        which are more informative than absolute similarity values.
+
+        Features:
+        1. similarity_spread: Difference between best and second-best similarity
+        2. similarity_ratio: Ratio of best to second-best similarity
+        3. similarity_std: Standard deviation of all similarities
+        4. similarity_mean: Average of all similarities
+        5. is_clear_winner: Binary feature (1 if spread > 0.1, else 0)
+        6-21. relative_similarity_meter_X: (similarity_to_meter_X - mean) for each meter
+        """
+        features = {}
+
+        # Extract similarity values
+        similarity_values = []
+        for meter_id in self.meter_ids:
+            sim_key = f'similarity_to_meter_{meter_id}'
+            if sim_key in similarity_features:
+                similarity_values.append((meter_id, similarity_features[sim_key]))
+
+        if not similarity_values:
+            # Return zero features if no similarities
+            features['similarity_spread'] = 0.0
+            features['similarity_ratio'] = 1.0
+            features['similarity_std'] = 0.0
+            features['similarity_mean'] = 0.0
+            features['is_clear_winner'] = 0.0
+            for meter_id in self.meter_ids:
+                features[f'relative_similarity_meter_{meter_id}'] = 0.0
+            return features
+
+        # Sort by similarity (descending)
+        similarity_values.sort(key=lambda x: x[1], reverse=True)
+
+        # Compute statistics
+        similarities = [sim for _, sim in similarity_values]
+        mean_sim = np.mean(similarities)
+        std_sim = np.std(similarities)
+
+        # Discriminative features
+        best_sim = similarities[0]
+        second_best_sim = similarities[1] if len(similarities) > 1 else 0.0
+
+        features['similarity_spread'] = best_sim - second_best_sim
+        features['similarity_ratio'] = best_sim / second_best_sim if second_best_sim > 0 else 1.0
+        features['similarity_std'] = std_sim
+        features['similarity_mean'] = mean_sim
+        features['is_clear_winner'] = 1.0 if (best_sim - second_best_sim) > 0.1 else 0.0
+
+        # Relative similarity features (normalized by mean)
+        for meter_id in self.meter_ids:
+            sim_key = f'similarity_to_meter_{meter_id}'
+            if sim_key in similarity_features:
+                features[f'relative_similarity_meter_{meter_id}'] = similarity_features[sim_key] - mean_sim
+            else:
+                features[f'relative_similarity_meter_{meter_id}'] = -mean_sim
 
         return features
 
@@ -282,6 +356,17 @@ class BAHRFeatureExtractor:
         for meter_id in self.meter_ids:
             features[f'similarity_to_meter_{meter_id}'] = 0.0
 
+        # Discriminative features (5)
+        features['similarity_spread'] = 0.0
+        features['similarity_ratio'] = 1.0
+        features['similarity_std'] = 0.0
+        features['similarity_mean'] = 0.0
+        features['is_clear_winner'] = 0.0
+
+        # Relative similarity features (16)
+        for meter_id in self.meter_ids:
+            features[f'relative_similarity_meter_{meter_id}'] = 0.0
+
         # Rule features (16)
         for meter_id in self.meter_ids:
             features[f'rule_match_meter_{meter_id}'] = 0.0
@@ -303,7 +388,7 @@ class BAHRFeatureExtractor:
 
         Returns:
             Tuple of (feature_matrix, target_array)
-            - feature_matrix: Shape (n_verses, 50)
+            - feature_matrix: Shape (n_verses, 71)
             - target_array: Shape (n_verses,) or None if no targets
         """
         feature_list = []
@@ -330,6 +415,15 @@ class BAHRFeatureExtractor:
             for meter_id_feat in self.meter_ids:
                 feature_values.append(features[f'similarity_to_meter_{meter_id_feat}'])
 
+            # Discriminative features (5)
+            for feat in ['similarity_spread', 'similarity_ratio', 'similarity_std',
+                        'similarity_mean', 'is_clear_winner']:
+                feature_values.append(features[feat])
+
+            # Relative similarity features (16)
+            for meter_id_feat in self.meter_ids:
+                feature_values.append(features[f'relative_similarity_meter_{meter_id_feat}'])
+
             # Rule features (16)
             for meter_id_feat in self.meter_ids:
                 feature_values.append(features[f'rule_match_meter_{meter_id_feat}'])
@@ -351,7 +445,7 @@ class BAHRFeatureExtractor:
         return feature_matrix, target_array
 
     def get_feature_names(self) -> List[str]:
-        """Get ordered list of all 50 feature names."""
+        """Get ordered list of all 71 feature names."""
         feature_names = []
 
         # Pattern features (8)
@@ -364,6 +458,16 @@ class BAHRFeatureExtractor:
         # Similarity features (16)
         for meter_id in self.meter_ids:
             feature_names.append(f'similarity_to_meter_{meter_id}')
+
+        # Discriminative features (5)
+        feature_names.extend([
+            'similarity_spread', 'similarity_ratio', 'similarity_std',
+            'similarity_mean', 'is_clear_winner'
+        ])
+
+        # Relative similarity features (16)
+        for meter_id in self.meter_ids:
+            feature_names.append(f'relative_similarity_meter_{meter_id}')
 
         # Rule features (16)
         for meter_id in self.meter_ids:
