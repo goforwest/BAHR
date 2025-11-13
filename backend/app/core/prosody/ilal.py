@@ -58,6 +58,7 @@ class Ilah:
     name_en: str
     description: str
     transformation: Callable[[str], str]
+    letter_transformation: Optional[Callable] = None  # Letter-level transformation (new architecture)
     result_pattern: Optional[str] = None
     allowed_meters: Optional[Set[int]] = None
     frequency: str = "common"  # common, rare, very_rare
@@ -85,17 +86,34 @@ class Ilah:
             ValueError: If transformation fails
         """
         try:
-            new_phonetic = self.transformation(tafila.phonetic)
+            # Try letter-level transformation first (if available)
+            if self.letter_transformation is not None and hasattr(tafila, 'letter_structure') and tafila.letter_structure is not None:
+                result_structure = self.letter_transformation(tafila.letter_structure)
+                new_phonetic = result_structure.phonetic_pattern
 
-            # Create new taf'ila name indicating the 'ilah
-            new_name = f"{tafila.name} ({self.name_ar})"
+                # Create new taf'ila name indicating the 'ilah
+                new_name = f"{tafila.name} ({self.name_ar})"
 
-            return Tafila(
-                name=new_name,
-                phonetic=new_phonetic,
-                structure=f"{tafila.structure} + {self.name_ar}",
-                syllable_count=tafila.syllable_count,  # May change
-            )
+                return Tafila(
+                    name=new_name,
+                    phonetic=new_phonetic,
+                    structure=f"{tafila.structure} + {self.name_ar}",
+                    syllable_count=tafila.syllable_count,
+                    letter_structure=result_structure,  # Preserve letter structure
+                )
+            else:
+                # Fall back to pattern-based transformation (backward compatibility)
+                new_phonetic = self.transformation(tafila.phonetic)
+
+                # Create new taf'ila name indicating the 'ilah
+                new_name = f"{tafila.name} ({self.name_ar})"
+
+                return Tafila(
+                    name=new_name,
+                    phonetic=new_phonetic,
+                    structure=f"{tafila.structure} + {self.name_ar}",
+                    syllable_count=tafila.syllable_count,  # May change
+                )
         except Exception as e:
             raise ValueError(f"Failed to apply {self.name_ar} to {tafila.name}: {e}")
 
@@ -397,6 +415,7 @@ HADHF = Ilah(
     name_en="hadhf",
     description="Remove last sabab (last two letters)",
     transformation=hadhf_transform,
+    letter_transformation=hadhf_transform_letters,
     allowed_meters={1, 4, 6, 7, 9, 11, 12, 13, 15, 16},  # الرمل, الخفيف, المتقارب, etc.
     frequency="very_common",
 )
@@ -408,6 +427,7 @@ QAT = Ilah(
     name_en="qat'",
     description="Make last letter sakin + remove preceding",
     transformation=qat_transform,
+    letter_transformation=qat_transform_letters,
     allowed_meters={2, 3, 4, 6, 11, 14},  # الكامل, البسيط, الوافر
     frequency="rare",
 )
@@ -419,6 +439,7 @@ QASR = Ilah(
     name_en="qasr",
     description="Make last letter sakin (remove final consonant)",
     transformation=qasr_transform,
+    letter_transformation=qasr_transform_letters,
     allowed_meters={1, 5, 7, 8, 9, 16},  # الطويل, الرجز, السريع, المديد
     frequency="common",
 )
@@ -430,6 +451,7 @@ BATR = Ilah(
     name_en="batr",
     description="Remove last sabab + make sakin",
     transformation=batr_transform,
+    letter_transformation=batr_transform_letters,
     allowed_meters={5, 7},  # الرجز, الخفيف
     frequency="rare",
 )
@@ -441,6 +463,7 @@ KASHF = Ilah(
     name_en="kashf",
     description="Remove last sakin",
     transformation=kashf_transform,
+    letter_transformation=kashf_transform_letters,
     allowed_meters={8, 10, 12},  # السريع, المنسرح
     frequency="rare",
 )
@@ -452,6 +475,7 @@ HADHDHAH = Ilah(
     name_en="hadhdhah",
     description="Remove half of last watad",
     transformation=hadhdhah_transform,
+    letter_transformation=hadhdhah_transform_letters,
     allowed_meters={},  # Very specialized usage
     frequency="very_rare",
 )

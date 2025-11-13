@@ -58,7 +58,8 @@ class Zahaf:
         name_ar: Arabic name (e.g., "خبن")
         name_en: English transliteration (e.g., "khabn")
         description: What the zahaf does
-        transformation: Function to apply the transformation
+        transformation: Function to apply the transformation (pattern-based, legacy)
+        letter_transformation: Function to apply transformation (letter-based, new)
         result_pattern: Expected resulting phonetic pattern
         is_double: Whether this is a double zahaf (مزدوج)
         allowed_meters: Set of meter IDs where this zahaf is allowed
@@ -71,6 +72,7 @@ class Zahaf:
     name_en: str
     description: str
     transformation: Callable[[str], str]
+    letter_transformation: Optional[Callable] = None  # NEW: letter-level transformation
     result_pattern: Optional[str] = None
     is_double: bool = False
     allowed_meters: Optional[Set[int]] = None
@@ -89,6 +91,9 @@ class Zahaf:
         """
         Apply this zahaf to a taf'ila.
 
+        Uses letter-level transformation if available and tafila has letter_structure.
+        Falls back to pattern-based transformation for backward compatibility.
+
         Args:
             tafila: Base taf'ila to transform
 
@@ -99,17 +104,34 @@ class Zahaf:
             ValueError: If transformation fails
         """
         try:
-            new_phonetic = self.transformation(tafila.phonetic)
+            # Try letter-level transformation first (if available)
+            if self.letter_transformation is not None and hasattr(tafila, 'letter_structure') and tafila.letter_structure is not None:
+                result_structure = self.letter_transformation(tafila.letter_structure)
+                new_phonetic = result_structure.phonetic_pattern
 
-            # Create new taf'ila name indicating the zahaf
-            new_name = f"{tafila.name} ({self.name_ar})"
+                # Create new taf'ila name indicating the zahaf
+                new_name = f"{tafila.name} ({self.name_ar})"
 
-            return Tafila(
-                name=new_name,
-                phonetic=new_phonetic,
-                structure=f"{tafila.structure} + {self.name_ar}",
-                syllable_count=tafila.syllable_count,  # May change
-            )
+                return Tafila(
+                    name=new_name,
+                    phonetic=new_phonetic,
+                    structure=f"{tafila.structure} + {self.name_ar}",
+                    syllable_count=tafila.syllable_count,  # May change
+                    letter_structure=result_structure,  # Preserve letter structure
+                )
+            else:
+                # Fall back to pattern-based transformation
+                new_phonetic = self.transformation(tafila.phonetic)
+
+                # Create new taf'ila name indicating the zahaf
+                new_name = f"{tafila.name} ({self.name_ar})"
+
+                return Tafila(
+                    name=new_name,
+                    phonetic=new_phonetic,
+                    structure=f"{tafila.structure} + {self.name_ar}",
+                    syllable_count=tafila.syllable_count,  # May change
+                )
         except Exception as e:
             raise ValueError(f"Failed to apply {self.name_ar} to {tafila.name}: {e}")
 
@@ -636,6 +658,7 @@ KHABN = Zahaf(
     name_en="khabn",
     description="Remove 2nd sakin letter",
     transformation=khabn_transform,
+    letter_transformation=khabn_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={3, 5, 6, 7, 8, 9, 10, 11, 13, 16},  # البسيط, الرجز, الخفيف, etc.
     frequency="common",
@@ -648,6 +671,7 @@ TAYY = Zahaf(
     name_en="tayy",
     description="Remove 4th sakin letter",
     transformation=tayy_transform,
+    letter_transformation=tayy_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={3, 5, 7, 8, 10, 12},  # البسيط, الرجز, الخفيف, السريع
     frequency="common",
@@ -660,6 +684,7 @@ QABD = Zahaf(
     name_en="qabd",
     description="Remove 5th sakin letter (often last)",
     transformation=qabd_transform,
+    letter_transformation=qabd_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={1, 6, 9, 12, 15},  # الطويل, الهزج, المتقارب
     frequency="common",
@@ -672,6 +697,7 @@ KAFF = Zahaf(
     name_en="kaff",
     description="Remove 7th sakin letter",
     transformation=kaff_transform,
+    letter_transformation=kaff_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={1, 4, 6, 9},  # الطويل, الرمل, الهزج, المديد
     frequency="rare",
@@ -684,6 +710,7 @@ WAQS = Zahaf(
     name_en="waqs",
     description="Remove 2nd mutaharrik letter",
     transformation=waqs_transform,
+    letter_transformation=waqs_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={2},  # الكامل
     frequency="rare",
@@ -696,6 +723,7 @@ ASB = Zahaf(
     name_en="'asb",
     description="Remove 5th mutaharrik letter",
     transformation=asb_transform,
+    letter_transformation=asb_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={4},  # الوافر
     frequency="common",
@@ -708,6 +736,7 @@ IDMAR = Zahaf(
     name_en="idmar",
     description="Make 2nd letter sakin",
     transformation=idmar_transform,
+    letter_transformation=idmar_transform_letters,  # NEW: letter-level
     is_double=False,
     allowed_meters={2},  # الكامل
     frequency="very_common",
@@ -720,6 +749,7 @@ KHABL = Zahaf(
     name_en="khabl",
     description="Khabn + Tayy (double)",
     transformation=khabl_transform,
+    letter_transformation=khabl_transform_letters,  # NEW: letter-level
     is_double=True,
     allowed_meters={3, 5, 7},  # البسيط, الرجز, الخفيف
     frequency="rare",
@@ -732,6 +762,7 @@ KHAZL = Zahaf(
     name_en="khazl",
     description="Idmar + Tayy (double)",
     transformation=khazl_transform,
+    letter_transformation=khazl_transform_letters,  # NEW: letter-level
     is_double=True,
     allowed_meters={2},  # الكامل
     frequency="very_rare",
@@ -744,6 +775,7 @@ SHAKL = Zahaf(
     name_en="shakl",
     description="Khabn + Kaff (double)",
     transformation=shakl_transform,
+    letter_transformation=shakl_transform_letters,  # NEW: letter-level
     is_double=True,
     allowed_meters={4, 6},  # الرمل, المديد
     frequency="very_rare",
