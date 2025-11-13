@@ -203,7 +203,7 @@ TAFAIL_BASE = {
     # Used in: الطويل, المتقارب, الوافر, الهزج
     "فعولن": Tafila(
         name="فعولن",
-        phonetic="/o/o",  # Updated: actual pattern from phoneme extraction
+        phonetic="//o/o",  # Fixed: actual pattern from فَعُولُنْ = فَ(/) + عُو(/o) + لُ(/) + نْ(o) = //o/o
         structure="sabab+watad",
         syllable_count=3,
         components=[TafilaStructure.SABAB_KHAFIF, TafilaStructure.WATAD_MAJMU],
@@ -300,7 +300,7 @@ TAFAIL_BASE = {
     # Used in: المنسرح (rare)
     "مفتعلن": Tafila(
         name="مفتعلن",
-        phonetic="/o/o//o",
+        phonetic="/o///o",  # Fixed: مُفْتَعِلُنْ = مُ(/) + فْ(o) + تَ(/) + عِ(/) + لُ(/) + نْ(o) = /o///o
         structure="sabab+sabab+watad",
         syllable_count=4,
         components=[
@@ -317,7 +317,7 @@ TAFAIL_BASE = {
     # Used in final position in many meters
     "فعلن": Tafila(
         name="فعلن",
-        phonetic="//o",
+        phonetic="///o",  # Fixed: فَعُلُنْ = فَ(/) + عُ(/) + لُ(/) + نْ(o) = ///o
         structure="sabab+watad_modified",
         syllable_count=2,
         components=[TafilaStructure.SABAB_THAQIL, TafilaStructure.WATAD_MAJMU],
@@ -352,7 +352,7 @@ TAFAIL_BASE = {
     # Used in الرمل
     "فاعلان": Tafila(
         name="فاعلان",
-        phonetic="/o//o",
+        phonetic="/o//oo",  # Fixed: فَاعِلَانْ = فَ(/) + ا(o) + عِ(/) + لَ(/) + ا(o) + نْ(o) = /o//oo
         structure="watad+sabab_modified",
         syllable_count=3,
         components=[TafilaStructure.WATAD_MAFRUQ, TafilaStructure.SABAB_KHAFIF],

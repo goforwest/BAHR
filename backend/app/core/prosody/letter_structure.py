@@ -641,28 +641,69 @@ def parse_tafila_from_text(tafila_name: str, text: str) -> TafilaLetterStructure
 
     # Convert phonemes to letter units
     letters = []
+    position_counter = 1
 
     for i, phoneme in enumerate(phonemes):
         # Determine haraka type and vowel quality
         if phoneme.is_long_vowel():
-            # Long vowel (madd letter)
-            haraka_type = HarakaType.MADD
-            # Map long vowel to VowelQuality
-            vowel_map = {
-                'aa': VowelQuality.AA,
-                'uu': VowelQuality.UU,
-                'ii': VowelQuality.II,
-            }
-            vowel_quality = vowel_map.get(phoneme.vowel, VowelQuality.AA)
+            # Long vowel (madd) = consonant with short vowel + madd letter
+            # Example: عُو (ū) = ع with damma + و (madd)
+
+            # Map long vowel to its short vowel component and madd letter
+            if phoneme.vowel == 'aa':
+                short_vowel = VowelQuality.FATHA
+                madd_consonant = 'ا'
+                madd_quality = VowelQuality.AA
+            elif phoneme.vowel == 'uu':
+                short_vowel = VowelQuality.DAMMA
+                madd_consonant = 'و'
+                madd_quality = VowelQuality.UU
+            elif phoneme.vowel == 'ii':
+                short_vowel = VowelQuality.KASRA
+                madd_consonant = 'ي'
+                madd_quality = VowelQuality.II
+            else:
+                # Fallback
+                short_vowel = VowelQuality.FATHA
+                madd_consonant = 'ا'
+                madd_quality = VowelQuality.AA
+
+            # Create first letter: consonant with short vowel (mutaḥarrik)
+            letter1 = LetterUnit(
+                consonant=phoneme.consonant,
+                haraka_type=HarakaType.MUTAHARRIK,
+                vowel_quality=short_vowel,
+                has_shadda=phoneme.has_shadda,
+                position_in_tafila=position_counter
+            )
+            letters.append(letter1)
+            position_counter += 1
+
+            # Create second letter: madd letter
+            letter2 = LetterUnit(
+                consonant=madd_consonant,
+                haraka_type=HarakaType.MADD,
+                vowel_quality=madd_quality,
+                has_shadda=False,
+                position_in_tafila=position_counter
+            )
+            letters.append(letter2)
+            position_counter += 1
 
         elif phoneme.is_sukun():
             # Sākin (sukūn)
-            haraka_type = HarakaType.SAKIN
-            vowel_quality = VowelQuality.SUKUN
+            letter = LetterUnit(
+                consonant=phoneme.consonant,
+                haraka_type=HarakaType.SAKIN,
+                vowel_quality=VowelQuality.SUKUN,
+                has_shadda=phoneme.has_shadda,
+                position_in_tafila=position_counter
+            )
+            letters.append(letter)
+            position_counter += 1
 
         else:
             # Mutaḥarrik (short vowel)
-            haraka_type = HarakaType.MUTAHARRIK
             # Map short vowel to VowelQuality
             vowel_map = {
                 'a': VowelQuality.FATHA,
@@ -671,15 +712,15 @@ def parse_tafila_from_text(tafila_name: str, text: str) -> TafilaLetterStructure
             }
             vowel_quality = vowel_map.get(phoneme.vowel, VowelQuality.FATHA)
 
-        # Create letter unit
-        letter = LetterUnit(
-            consonant=phoneme.consonant,
-            haraka_type=haraka_type,
-            vowel_quality=vowel_quality,
-            has_shadda=phoneme.has_shadda,
-            position_in_tafila=i + 1  # 1-indexed
-        )
-        letters.append(letter)
+            letter = LetterUnit(
+                consonant=phoneme.consonant,
+                haraka_type=HarakaType.MUTAHARRIK,
+                vowel_quality=vowel_quality,
+                has_shadda=phoneme.has_shadda,
+                position_in_tafila=position_counter
+            )
+            letters.append(letter)
+            position_counter += 1
 
     # Create and return letter structure
     return TafilaLetterStructure(
