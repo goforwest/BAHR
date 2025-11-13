@@ -31,10 +31,17 @@ class PatternGenerator:
         """
         self.meter = meter
         self._cache: Optional[Set[str]] = None
+        self._hemistich_cache: Optional[Set[str]] = None
 
-    def generate_all_patterns(self) -> Set[str]:
+    def generate_all_patterns(self, verse_type: str = 'full_verse') -> Set[str]:
         """
         Generate all valid phonetic patterns for this meter.
+
+        Args:
+            verse_type: Type of verse to generate patterns for:
+                - 'full_verse': Complete verse (all tafāʿīl)
+                - 'hemistich': Half verse (typically half the tafāʿīl count)
+                - 'auto': Generate both hemistich and full verse patterns
 
         Returns:
             Set of all valid phonetic pattern strings
@@ -42,17 +49,32 @@ class PatternGenerator:
         Example:
             >>> from app.core.prosody.meters import AL_TAWIL
             >>> gen = PatternGenerator(AL_TAWIL)
-            >>> patterns = gen.generate_all_patterns()
-            >>> len(patterns)
-            72  # All valid variations of الطويل
+            >>> full_patterns = gen.generate_all_patterns('full_verse')
+            >>> len(full_patterns)
+            72  # All valid variations of الطويل (4 tafāʿīl)
+            >>> hemistich_patterns = gen.generate_all_patterns('hemistich')
+            >>> len(hemistich_patterns)
+            36  # Hemistich patterns (2 tafāʿīl)
         """
-        if self._cache is not None:
+        if verse_type == 'auto':
+            # Generate both and combine
+            full_patterns = self.generate_all_patterns('full_verse')
+            hemistich_patterns = self.generate_all_patterns('hemistich')
+            return full_patterns | hemistich_patterns
+
+        # Check cache
+        if verse_type == 'full_verse' and self._cache is not None:
             return self._cache
+        if verse_type == 'hemistich' and self._hemistich_cache is not None:
+            return self._hemistich_cache
 
         patterns = set()
 
+        # Determine how many tafāʿīl to use
+        tafail_count = self._get_tafail_count_for_type(verse_type)
+
         # Get all possible variations for each position
-        position_variations = self._generate_position_variations()
+        position_variations = self._generate_position_variations(tafail_count)
 
         # Generate all combinations
         for combo in product(*position_variations):
@@ -60,20 +82,48 @@ class PatternGenerator:
             pattern = "".join(tafila.phonetic for tafila in combo)
             patterns.add(pattern)
 
-        self._cache = patterns
+        # Cache result
+        if verse_type == 'full_verse':
+            self._cache = patterns
+        elif verse_type == 'hemistich':
+            self._hemistich_cache = patterns
+
         return patterns
 
-    def _generate_position_variations(self) -> List[List[Tafila]]:
+    def _get_tafail_count_for_type(self, verse_type: str) -> int:
+        """
+        Get the number of tafāʿīl for a given verse type.
+
+        Args:
+            verse_type: 'full_verse' or 'hemistich'
+
+        Returns:
+            Number of tafāʿīl to generate
+        """
+        if verse_type == 'hemistich':
+            # Hemistich is typically half the full verse
+            # For odd counts, round down (e.g., 3 tafāʿīl → 1-2 for hemistich)
+            return max(1, self.meter.tafail_count // 2)
+        else:  # 'full_verse'
+            return self.meter.tafail_count
+
+    def _generate_position_variations(self, tafail_count: Optional[int] = None) -> List[List[Tafila]]:
         """
         Generate all possible tafila variations for each position.
+
+        Args:
+            tafail_count: Number of tafāʿīl to generate. If None, uses meter's tafail_count.
 
         Returns:
             List of lists, where each inner list contains all possible
             tafa'il for that position (base + with zihafat/ilal applied)
         """
+        if tafail_count is None:
+            tafail_count = self.meter.tafail_count
+
         variations = []
 
-        for position in range(1, self.meter.tafail_count + 1):
+        for position in range(1, tafail_count + 1):
             base_tafila = self.meter.get_tafila_at_position(position)
             position_vars = [base_tafila]  # Start with base form
 
@@ -88,7 +138,9 @@ class PatternGenerator:
                     pass
 
             # Apply 'ilal (final position only)
-            if self.meter.is_final_position(position):
+            # For hemistich, the final position is the last tafīla in the hemistich count
+            is_final = (position == tafail_count)
+            if is_final:
                 allowed_ilal = self.meter.get_allowed_ilal(position)
 
                 # Apply 'ilal to base form
@@ -166,17 +218,23 @@ class PatternGenerator:
         return results
 
     def _generate_position_variations_with_names(
-        self,
+        self, tafail_count: Optional[int] = None
     ) -> List[List[Tuple[Tafila, str]]]:
         """
         Generate position variations with transformation names.
 
+        Args:
+            tafail_count: Number of tafāʿīl to generate. If None, uses meter's tafail_count.
+
         Returns:
             List of lists of (Tafila, transformation_name) tuples
         """
+        if tafail_count is None:
+            tafail_count = self.meter.tafail_count
+
         variations = []
 
-        for position in range(1, self.meter.tafail_count + 1):
+        for position in range(1, tafail_count + 1):
             base_tafila = self.meter.get_tafila_at_position(position)
             position_vars = [(base_tafila, "base")]
 
@@ -188,7 +246,9 @@ class PatternGenerator:
                 except Exception:
                     pass
 
-            if self.meter.is_final_position(position):
+            # Apply 'ilal (final position only)
+            is_final = (position == tafail_count)
+            if is_final:
                 allowed_ilal = self.meter.get_allowed_ilal(position)
 
                 for ilah in allowed_ilal:

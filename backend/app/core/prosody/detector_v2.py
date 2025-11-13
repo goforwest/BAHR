@@ -4,6 +4,8 @@ BahrDetectorV2 - Rule-based meter detection using Zihafat rules.
 This is the next-generation detector that replaces pattern memorization
 with rule-based understanding of Arabic prosody. It generates valid patterns
 from rules and validates against them.
+
+Version 2.1: Now includes fuzzy pattern matching and hemistich support.
 """
 
 from dataclasses import dataclass
@@ -13,6 +15,7 @@ from typing import Dict, List, Optional, Set, Tuple
 from .disambiguation import disambiguate_tied_results
 from .meters import METERS_REGISTRY, Meter
 from .pattern_generator import PatternGenerator
+from .pattern_similarity import PatternSimilarity
 from .tafila import Tafila
 
 
@@ -41,6 +44,8 @@ class DetectionResult:
         input_pattern: Original input pattern
         transformations: List of transformations applied at each position
         explanation: Human-readable explanation
+        match_type: Type of match ('full_verse' or 'hemistich')
+        similarity: Fuzzy matching similarity score (0.0-1.0)
     """
 
     meter_id: int
@@ -52,6 +57,8 @@ class DetectionResult:
     input_pattern: str
     transformations: List[str]
     explanation: str
+    match_type: str = 'full_verse'  # 'full_verse' or 'hemistich'
+    similarity: float = 1.0  # Similarity score from fuzzy matching
 
     def to_dict(self) -> dict:
         """Convert to dictionary representation."""
@@ -65,6 +72,8 @@ class DetectionResult:
             "input_pattern": self.input_pattern,
             "transformations": self.transformations,
             "explanation": self.explanation,
+            "match_type": self.match_type,
+            "similarity": round(self.similarity, 3),
         }
 
 
@@ -89,12 +98,18 @@ class BahrDetectorV2:
         self.meters = METERS_REGISTRY
         self.generators: Dict[int, PatternGenerator] = {}
         self.pattern_cache: Dict[int, Set[str]] = {}
+        self.hemistich_cache: Dict[int, Set[str]] = {}
 
-        # Initialize generators and cache patterns
+        # Initialize generators and cache both full-verse and hemistich patterns
         for meter_id, meter in self.meters.items():
             generator = PatternGenerator(meter)
             self.generators[meter_id] = generator
-            self.pattern_cache[meter_id] = generator.generate_all_patterns()
+
+            # Generate and cache full verse patterns
+            self.pattern_cache[meter_id] = generator.generate_all_patterns('full_verse')
+
+            # Generate and cache hemistich patterns
+            self.hemistich_cache[meter_id] = generator.generate_all_patterns('hemistich')
 
     def detect(
         self,
@@ -160,6 +175,8 @@ class BahrDetectorV2:
         """
         Try to match pattern against a specific meter.
 
+        Checks both full-verse and hemistich patterns.
+
         Args:
             phonetic_pattern: Input pattern
             meter: Meter to match against
@@ -167,21 +184,43 @@ class BahrDetectorV2:
         Returns:
             DetectionResult if match found, None otherwise
         """
-        # Get all valid patterns for this meter
-        valid_patterns = self.pattern_cache[meter.id]
+        # Try full-verse patterns first
+        full_verse_patterns = self.pattern_cache[meter.id]
 
-        # Check for exact match
-        if phonetic_pattern in valid_patterns:
-            return self._create_exact_match_result(phonetic_pattern, meter)
+        # Check for exact match in full verse
+        if phonetic_pattern in full_verse_patterns:
+            return self._create_exact_match_result(
+                phonetic_pattern, meter, match_type='full_verse'
+            )
 
-        # Check for close matches (allowing minor variations)
-        close_match = self._find_close_match(phonetic_pattern, valid_patterns, meter)
+        # Try hemistich patterns
+        hemistich_patterns = self.hemistich_cache[meter.id]
+
+        # Check for exact match in hemistich
+        if phonetic_pattern in hemistich_patterns:
+            return self._create_exact_match_result(
+                phonetic_pattern, meter, match_type='hemistich'
+            )
+
+        # Check for close matches in full verse (allowing minor variations)
+        close_match = self._find_close_match(
+            phonetic_pattern, full_verse_patterns, meter, match_type='full_verse'
+        )
         if close_match:
             return close_match
 
+        # Check for close matches in hemistich
+        close_match_hemistich = self._find_close_match(
+            phonetic_pattern, hemistich_patterns, meter, match_type='hemistich'
+        )
+        if close_match_hemistich:
+            return close_match_hemistich
+
         return None
 
-    def _create_exact_match_result(self, pattern: str, meter: Meter) -> DetectionResult:
+    def _create_exact_match_result(
+        self, pattern: str, meter: Meter, match_type: str = 'full_verse'
+    ) -> DetectionResult:
         """Create result for exact pattern match."""
         # Determine if it's the base pattern
         base_pattern = meter.base_pattern
@@ -219,13 +258,15 @@ class BahrDetectorV2:
             input_pattern=pattern,
             transformations=transformations,
             explanation=explanation,
+            match_type=match_type,
+            similarity=1.0,  # Exact match
         )
 
     def _find_close_match(
-        self, pattern: str, valid_patterns: Set[str], meter: Meter
+        self, pattern: str, valid_patterns: Set[str], meter: Meter, match_type: str = 'full_verse'
     ) -> Optional[DetectionResult]:
         """
-        Find close match allowing for minor variations.
+        Find close match allowing for minor variations using weighted edit distance.
 
         This handles cases where the scansion might be slightly off
         but the meter is still clearly identifiable.
@@ -236,13 +277,13 @@ class BahrDetectorV2:
         for valid_pattern in valid_patterns:
             similarity = self._calculate_similarity(pattern, valid_pattern)
 
-            # Require high similarity threshold (85%+ for real-world verses)
-            # Lowered from 90% to handle pronunciation variations in actual poetry
-            if similarity >= 0.85 and similarity > best_similarity:
+            # Use fuzzy matching threshold (60%+ for phonological variations)
+            # Lower than exact matching to handle real poetry variations
+            if similarity >= 0.60 and similarity > best_similarity:
                 best_similarity = similarity
                 best_match = valid_pattern
 
-        if best_match and best_similarity >= 0.85:
+        if best_match and best_similarity >= 0.60:
             # Create result with reduced confidence
             generator = self.generators[meter.id]
             tracked_patterns = generator.generate_with_tracking()
@@ -255,11 +296,13 @@ class BahrDetectorV2:
 
             match_quality = self._assess_match_quality(transformations, meter)
 
-            # Reduce confidence for approximate matches
+            # For fuzzy matches, similarity score is the primary confidence factor
+            # with a small adjustment based on match quality
             base_confidence = self._calculate_confidence(
                 match_quality, is_exact=False, meter_tier=meter.tier
             )
-            confidence = base_confidence * best_similarity
+            # Weight similarity heavily (90%) with match quality adjustment (10%)
+            confidence = (best_similarity * 0.9) + (base_confidence * best_similarity * 0.1)
 
             explanation = self._create_explanation(
                 meter,
@@ -279,6 +322,8 @@ class BahrDetectorV2:
                 input_pattern=pattern,
                 transformations=transformations,
                 explanation=explanation,
+                match_type=match_type,
+                similarity=best_similarity,
             )
 
         return None
@@ -368,9 +413,10 @@ class BahrDetectorV2:
 
     def _calculate_similarity(self, pattern1: str, pattern2: str) -> float:
         """
-        Calculate similarity between two phonetic patterns.
+        Calculate similarity between two phonetic patterns using weighted edit distance.
 
-        Uses SequenceMatcher for smarter similarity that handles insertions/deletions.
+        Uses prosody-aware weighted edit distance algorithm that accounts for
+        the relative importance of different phonological changes.
 
         Args:
             pattern1: First pattern
@@ -385,12 +431,9 @@ class BahrDetectorV2:
         if pattern1 == pattern2:
             return 1.0
 
-        # Use SequenceMatcher for smarter similarity calculation
-        # This handles insertions, deletions, and substitutions better than
-        # simple character-by-character matching
-        from difflib import SequenceMatcher
-
-        return SequenceMatcher(None, pattern1, pattern2).ratio()
+        # Use weighted edit distance from PatternSimilarity module
+        # This is prosody-aware: / ↔ o changes cost more than insertions/deletions
+        return PatternSimilarity.calculate_similarity(pattern1, pattern2)
 
     def _create_explanation(
         self,
