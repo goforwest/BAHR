@@ -123,7 +123,7 @@ def test_configuration_files() -> bool:
         "railway.toml",  # Must stay in root
         "src/backend/.env.example",
         "src/backend/alembic.ini",
-        "requirements/base.txt",
+        "src/backend/requirements.txt",
     ]
     
     all_passed = True
