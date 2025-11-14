@@ -58,22 +58,23 @@
 ### Frontend (Next.js 16)
 
 ```bash
-cd frontend
+cd src/frontend
 npm install
 npm run dev
 ```
 
 Visit: http://localhost:3000
 
-### Backend (FastAPI) - Coming Week 1
+### Backend (FastAPI)
 
 ```bash
-cd backend
-# Development environment (includes testing tools)
-pip install -r requirements/development.txt
+cd src/backend
 
-# Or for production
-pip install -r requirements/production.txt
+# Install as editable package (recommended)
+pip install -e .
+
+# Or install dependencies directly
+pip install -r requirements.txt
 
 # Start server
 uvicorn app.main:app --reload
@@ -112,70 +113,74 @@ Visit: http://localhost:8000/docs
 
 ```
 BAHR/
-├── frontend/              # Next.js 16 frontend
-│   ├── src/
-│   │   ├── app/          # App Router pages
-│   │   └── lib/          # Utilities
-│   └── components/        # React components
-├── backend/               # FastAPI backend
-│   ├── app/
-│   │   ├── api/          # API routes
-│   │   ├── models/       # Database models
-│   │   ├── prosody/      # Prosody engine
-│   │   └── nlp/          # NLP utilities
-│   ├── database/
-│   │   └── migrations/   # Alembic migrations
-│   ├── scripts/          # Database seeding
-│   └── tests/            # Backend tests
-├── dataset/               # Golden dataset & scripts
-│   ├── evaluation/       # Test verses
-│   └── scripts/          # Data processing
-├── infrastructure/        # Deployment & DevOps
-│   ├── docker/           # Docker configs
-│   └── railway/          # Railway configs
-├── docs/                  # Complete documentation
-│   ├── architecture/     # Architecture decisions
-│   ├── features/         # Implementation guides
-│   ├── technical/        # API specs
-│   └── planning/         # Timeline, roadmap
-└── scripts/               # Development scripts
-    ├── setup/            # Environment setup
-    ├── health/           # Health checks
-    └── testing/          # Test utilities
+├── src/
+│   ├── backend/           # FastAPI backend
+│   │   ├── app/          # Application code
+│   │   │   ├── api/      # API routes
+│   │   │   ├── core/     # Core prosody engine
+│   │   │   ├── ml/       # ML models & training
+│   │   │   └── db/       # Database models
+│   │   ├── alembic/      # Database migrations
+│   │   └── tests/        # Backend unit tests
+│   └── frontend/          # Next.js 16 frontend
+│       ├── src/
+│       │   ├── app/      # App Router pages
+│       │   └── components/ # React components
+│       └── public/        # Static assets
+├── data/
+│   ├── raw/              # Raw ML datasets (158 JSONL files)
+│   ├── processed/        # Processed datasets & golden set
+│   └── interim/          # Intermediate processing files
+├── docs/
+│   ├── api/              # API documentation
+│   ├── research/         # Research documentation
+│   ├── technical/        # Technical specs
+│   ├── deployment/       # Deployment guides
+│   ├── refactor/         # Refactoring documentation
+│   └── releases/         # Release notes
+├── results/
+│   ├── ml/               # ML training results
+│   ├── evaluations/      # Model evaluations
+│   └── diagnostics/      # Analysis outputs
+├── tests/
+│   └── integration/      # Integration tests
+├── scripts/
+│   ├── ml/               # ML training scripts
+│   ├── data_processing/  # Data processing scripts
+│   ├── setup/            # Environment setup
+│   └── refactor/         # Migration scripts
+├── models/                # Trained ML models
+├── infrastructure/        # Docker & deployment
+├── archive/               # Historical documentation
+│   ├── phases/           # Phase reports
+│   └── sessions/         # Session summaries
+├── backend -> src/backend/  # Backward compatibility symlink
+└── frontend -> src/frontend/ # Backward compatibility symlink
 ```
+
+> **Note:** Repository was refactored on November 14, 2025 for production readiness. See [docs/refactor/](docs/refactor/) for details.
 
 ---
 
 ## 📖 Documentation
 
-> **Note:** Documentation was reorganized on November 10, 2025 for better organization. See [Documentation Guide](docs/README.md) for the complete structure.
+### 🎯 Essential Guides
+- 🚀 **[Quick Start Guide](QUICK_START.md)** - Get up and running in 5 minutes
+- 📖 **[API Documentation](docs/api/)** - Complete API reference and guides
+- 🏗️ **[Technical Specifications](docs/technical/)** - Architecture and implementation details
+- 🚢 **[Deployment Guide](docs/deployment/)** - Railway deployment instructions
+- 🔧 **[Refactoring Docs](docs/refactor/)** - Repository structure and migration details
 
-### 🎯 Quick Links
-- 🌟 **Vision & Strategy:** [Master Plan](docs/vision/MASTER_PLAN.md) - Long-term vision and product roadmap
-- 🚀 **Get Started:** [Developer Onboarding](docs/onboarding/docs/onboarding/GETTING_STARTED.md) - **START HERE!** Complete setup guide
-- 📋 **Current Progress:** [Progress Log](docs/project-management/PROGRESS_LOG_CURRENT.md) - Recent updates and achievements
-- 🎯 **Implementation Plan:** [Roadmap](docs/planning/IMPLEMENTATION_ROADMAP.md) - Current implementation plan (v2.0)
-- �️ **Architecture:** [Technical Docs](docs/technical/) - API specs, database schema, architecture decisions
-- 📖 **Feature Guides:** [Implementation Guides](docs/features/) - Step-by-step feature implementation
+### 📂 Documentation Structure
+- **[/docs/api/](docs/api/)** - API guides and specifications
+- **[/docs/research/](docs/research/)** - Research documentation and datasets
+- **[/docs/technical/](docs/technical/)** - Technical implementation details
+- **[/docs/deployment/](docs/deployment/)** - Deployment and DevOps guides
+- **[/docs/refactor/](docs/refactor/)** - Refactoring documentation
+- **[/archive/](archive/)** - Historical documentation and phase reports
 
-### 📂 Documentation Categories
-- **Vision:** Long-term goals, product strategy ([/docs/vision/](docs/vision/))
-- **Onboarding:** Getting started, development setup ([/docs/onboarding/](docs/onboarding/))
-- **Guides:** Quick reference, how-to guides ([/docs/guides/](docs/guides/))
-- **Planning:** Timeline, roadmap, assumptions ([/docs/planning/](docs/planning/))
-- **Technical:** Architecture, API, database ([/docs/technical/](docs/technical/))
-- **Checklists:** Week/phase task lists ([/docs/checklists/](docs/checklists/))
-- **DevOps:** CI/CD, deployment guides ([/docs/devops/](docs/devops/))
-- **Archive:** Historical milestones, reviews ([/archive/](archive/))
-
-> **📋 November 10, 2025 Update:** Documentation reorganized for better structure.  
-> See [DOCUMENTATION_REORGANIZATION_CHANGELOG.md](docs/DOCUMENTATION_REORGANIZATION_CHANGELOG.md) for file migration map.
-
-### 📚 Key Resources
-- [📖 Complete Documentation Index](docs/README.md) - Full navigation guide
-- [🔍 Quick Start: Analyze Endpoint](docs/guides/ANALYZE_ENDPOINT_QUICKSTART.md) - API usage guide
-- [✅ Week 1 Critical Checklist](docs/checklists/WEEK_1_CRITICAL.md) - Week 1 tasks
-- [🗂️ Historical Archive](archive/README.md) - Past milestones and reports
+> **📋 November 14, 2025 Update:** Repository refactored for production readiness.  
+> See [docs/refactor/Repo_Refactor_Plan.md](docs/refactor/Repo_Refactor_Plan.md) for complete details.
 
 ---
 
