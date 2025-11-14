@@ -1,14 +1,36 @@
 # Railway deployment configuration for BAHR Platform
 # 
 # IMPORTANT: Railway deploys each service separately from its root directory.
-# This file is for reference only. Configure each service in Railway dashboard:
+# This file is for reference only. Configure each service in Railway dashboard.
+#
+# =============================================================================
+# QUICK SETUP GUIDE
+# =============================================================================
 #
 # 1. Create TWO separate services in your Railway project
 # 2. Both services should use the SAME GitHub repository
 # 3. Configure Root Directory for each service:
-#    - Backend service: Set Root Directory = "backend"
-#    - Frontend service: Set Root Directory = "frontend"
-
+#    - Backend service: Set Root Directory = "src/backend"
+#    - Frontend service: Set Root Directory = "src/frontend"
+#
+# 4. Railway will auto-detect:
+#    - Backend: Uses .railway.json + Dockerfile in src/backend/
+#    - Frontend: Uses nixpacks.toml in src/frontend/
+#
+# =============================================================================
+# BACKEND SERVICE CONFIGURATION
+# =============================================================================
+#
+# Service Name: bahr-backend
+# Root Directory: src/backend
+# Build Method: Dockerfile (configured in .railway.json)
+# Port: $PORT (Railway auto-assigns)
+#
+# The backend service uses:
+# - .railway.json for Railway-specific config
+# - Dockerfile for container build
+# - nixpacks.toml as fallback if Dockerfile build fails
+#
 # Environment Variables Configuration
 # Set these in Railway dashboard for each service:
 #
@@ -27,6 +49,50 @@
 # - RATE_LIMIT_PERIOD=3600
 # - MAINTENANCE_MODE=false
 #
+# =============================================================================
+# FRONTEND SERVICE CONFIGURATION
+# =============================================================================
+#
+# Service Name: bahr-frontend
+# Root Directory: src/frontend
+# Build Method: Nixpacks (configured in nixpacks.toml)
+# Port: 3000 (Next.js default)
+#
+# The frontend service uses:
+# - nixpacks.toml for build configuration
+# - Next.js automatic production optimization
+#
 # Frontend Service Environment Variables:
 # - NEXT_PUBLIC_API_URL=<backend-url>/api/v1
 # - NODE_ENV=production
+#
+# =============================================================================
+# DEPLOYMENT CHECKLIST
+# =============================================================================
+#
+# Before deploying, ensure:
+# ✅ Both services point to correct root directories (src/backend, src/frontend)
+# ✅ Backend has Postgres and Redis services attached
+# ✅ All environment variables are set
+# ✅ CORS_ORIGINS includes both frontend and backend URLs
+# ✅ NEXT_PUBLIC_API_URL points to deployed backend URL
+# ✅ SECRET_KEY is generated with: openssl rand -hex 32
+#
+# =============================================================================
+# TROUBLESHOOTING
+# =============================================================================
+#
+# If backend build fails:
+# - Check Root Directory is "src/backend" not "backend"
+# - Verify Dockerfile exists in src/backend/
+# - Check build logs for missing dependencies
+#
+# If frontend build fails:
+# - Check Root Directory is "src/frontend" not "frontend"
+# - Verify nixpacks.toml exists in src/frontend/
+# - Check Node version (should be 20+)
+#
+# Health check failures:
+# - Backend: Check /health endpoint returns 200
+# - Verify DATABASE_URL and REDIS_URL are set
+# - Check logs for startup errors
