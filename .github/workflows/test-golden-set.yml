@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'dataset/**'
+      - 'data/processed/datasets/**'
       - '.github/workflows/test-golden-set.yml'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'dataset/**'
+      - 'data/processed/datasets/**'
   workflow_dispatch:  # Allow manual triggers
 
 jobs:
@@ -45,15 +45,15 @@ jobs:
       
       - name: Run unit tests
         run: |
-          python -m pytest dataset/tests/test_golden_set_loader.py -v --tb=short
+          python -m pytest data/processed/datasets/tests/test_golden_set_loader.py -v --tb=short
       
       - name: Run schema validation tests
         run: |
-          python -m pytest dataset/tests/test_schema_validation.py -v --tb=short
+          python -m pytest data/processed/datasets/tests/test_schema_validation.py -v --tb=short
       
       - name: Run all tests with coverage
         run: |
-          python -m pytest dataset/tests/ \
+          python -m pytest data/processed/datasets/tests/ \
             -v \
             --cov=dataset \
             --cov-report=term-missing \
@@ -70,20 +70,20 @@ jobs:
       
       - name: Validate schema compliance
         run: |
-          python dataset/scripts/validate_schema.py
+          python data/processed/datasets/scripts/validate_schema.py
       
       - name: Run quality checks
         run: |
-          python dataset/scripts/validate_golden_set.py
+          python data/processed/datasets/scripts/validate_golden_set.py
       
       - name: Test statistics
         run: |
           echo "=== Test Results Summary ==="
-          python -m pytest dataset/tests/ --collect-only -q
+          python -m pytest data/processed/datasets/tests/ --collect-only -q
           echo "=== Dataset Statistics ==="
           python -c "
           import json
-          with open('dataset/evaluation/golden_set_metadata.json') as f:
+          with open('data/processed/datasets/evaluation/golden_set_metadata.json') as f:
               meta = json.load(f)
           print(f\"Total verses: {meta['total_verses']}\")
           print(f\"Meters covered: {len(meta['meter_distribution'])}\")
@@ -109,7 +109,7 @@ jobs:
       
       - name: Validate all verses against schema
         run: |
-          python dataset/scripts/validate_schema.py
+          python data/processed/datasets/scripts/validate_schema.py
       
       - name: Check schema is valid JSON Schema Draft 7
         run: |
@@ -117,7 +117,7 @@ jobs:
           import json
           from jsonschema import Draft7Validator
           
-          with open('dataset/evaluation/golden_set_schema.json') as f:
+          with open('data/processed/datasets/evaluation/golden_set_schema.json') as f:
               schema = json.load(f)
           
           Draft7Validator.check_schema(schema)
@@ -139,7 +139,7 @@ jobs:
       
       - name: Run data quality validation
         run: |
-          python dataset/scripts/validate_golden_set.py
+          python data/processed/datasets/scripts/validate_golden_set.py
       
       - name: Check for duplicate verse IDs
         run: |
@@ -147,7 +147,7 @@ jobs:
           import json
           
           verses = []
-          with open('dataset/evaluation/golden_set_v0_20_complete.jsonl') as f:
+          with open('data/processed/datasets/evaluation/golden_set_v0_20_complete.jsonl') as f:
               for line in f:
                   verses.append(json.loads(line))
           
@@ -167,12 +167,12 @@ jobs:
           import json
           
           # Load metadata
-          with open('dataset/evaluation/golden_set_metadata.json') as f:
+          with open('data/processed/datasets/evaluation/golden_set_metadata.json') as f:
               metadata = json.load(f)
           
           # Load actual verses
           verses = []
-          with open('dataset/evaluation/golden_set_v0_20_complete.jsonl') as f:
+          with open('data/processed/datasets/evaluation/golden_set_v0_20_complete.jsonl') as f:
               for line in f:
                   verses.append(json.loads(line))
           

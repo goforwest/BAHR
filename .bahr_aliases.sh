@@ -44,7 +44,7 @@ bahr-logs() {
 # ================================
 
 bahr-alembic() {
-    (cd "$BAHR_ROOT/backend" && alembic -c database/migrations/alembic.ini "$@")
+    (cd "$BAHR_ROOT/src/backend" && alembic -c database/migrations/alembic.ini "$@")
 }
 
 bahr-migrate() {
@@ -75,7 +75,7 @@ bahr-migrate-create() {
 
 bahr-db-seed() {
     echo "🌱 Seeding database..."
-    (cd "$BAHR_ROOT/backend" && python scripts/seed_database.py)
+    (cd "$BAHR_ROOT/src/backend" && python scripts/seed_database.py)
 }
 
 bahr-db-shell() {
@@ -104,18 +104,18 @@ bahr-db-reset() {
 
 bahr-test() {
     echo "🧪 Running backend tests..."
-    (cd "$BAHR_ROOT/backend" && pytest tests/ -v "$@")
+    (cd "$BAHR_ROOT/src/backend" && pytest tests/ -v "$@")
 }
 
 bahr-test-coverage() {
     echo "📊 Running tests with coverage..."
-    (cd "$BAHR_ROOT/backend" && pytest tests/ -v --cov=app --cov-report=term-missing --cov-report=html)
+    (cd "$BAHR_ROOT/src/backend" && pytest tests/ -v --cov=app --cov-report=term-missing --cov-report=html)
     echo "📄 Coverage report: backend/htmlcov/index.html"
 }
 
 bahr-test-watch() {
     echo "👀 Running tests in watch mode..."
-    (cd "$BAHR_ROOT/backend" && pytest-watch tests/ -- -v)
+    (cd "$BAHR_ROOT/src/backend" && pytest-watch tests/ -- -v)
 }
 
 bahr-test-golden() {
@@ -129,7 +129,7 @@ bahr-test-golden() {
 
 bahr-backend() {
     echo "🖥️  Starting backend server..."
-    cd "$BAHR_ROOT/backend"
+    cd "$BAHR_ROOT/src/backend"
     source venv/bin/activate 2>/dev/null || echo "⚠️  Virtual env not found, using global Python"
     uvicorn app.main:app --reload --port 8000
 }
@@ -188,10 +188,10 @@ bahr-health() {
     docker exec bahr_redis redis-cli PING 2>/dev/null && echo "  ✅ Redis OK" || echo "  ❌ Redis not accessible"
     
     echo "\n🐍 Backend:"
-    (cd "$BAHR_ROOT/backend" && python -c "from app.main import app; print('  ✅ Backend imports OK')" 2>/dev/null || echo "  ❌ Backend imports failed")
+    (cd "$BAHR_ROOT/src/backend" && python -c "from app.main import app; print('  ✅ Backend imports OK')" 2>/dev/null || echo "  ❌ Backend imports failed")
     
     echo "\n🧪 Tests:"
-    (cd "$BAHR_ROOT/backend" && pytest tests/ --collect-only -q 2>/dev/null | tail -1)
+    (cd "$BAHR_ROOT/src/backend" && pytest tests/ --collect-only -q 2>/dev/null | tail -1)
 }
 
 # ================================
