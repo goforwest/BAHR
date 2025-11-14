@@ -98,6 +98,41 @@ Requirements Before Implementation:
 
 ### 2. Advanced Literary Analysis
 
+#### ❌ Multi-Meter Poetry (MVP)
+```yaml
+Out of Scope (All Phases):
+  - Muwashshaḥāt (الموشحات) - Andalusian strophic poetry
+  - Muzdawij (المزدوج) - Couplets with meter changes
+  - Mixed-meter compositions
+  - Non-classical prosodic structures
+
+Rationale:
+  - Different prosodic paradigm (strophic vs mono-metric)
+  - Requires stanza-level analysis (not verse-level)
+  - BAHR supports 16 classical meters (single-meter verses)
+  - Complex implementation: meter-switching logic, context awareness
+  - Low user demand (< 5% of poetry corpus)
+
+Usage of Muwashshaḥāt in BAHR:
+  - We mine Andalusian muwashshaḥāt corpora for rare meter examples
+  - Extract individual verses (e.g., للمتدارك examples)
+  - NOT analyzing muwashshaḥ structure itself
+  - Treated as source of classical meter data only
+
+User Request Response:
+  "BAHR analyzes classical Arabic meters in single-meter verses.
+   Muwashshaḥāt and muzdawij require different prosodic analysis
+   (stanza-level, meter-switching) which is out of scope."
+
+Deferred To: Never (fundamentally different problem domain)
+Priority: VERY LOW
+
+Technical Notes:
+  - Classical prosody: One meter per verse (الطويل، الكامل، etc.)
+  - Muwashshaḥ: Multiple meters per poem + stanza structure
+  - Would require: State machine, context window, stanza detection
+```
+
 #### ❌ Rhyme Scheme Analysis (MVP)
 ```yaml
 Out of Scope (Phase 1):

@@ -5,9 +5,10 @@ This is the next-generation detector that replaces pattern memorization
 with rule-based understanding of Arabic prosody. It generates valid patterns
 from rules and validates against them.
 
-Version 2.1: Now includes fuzzy pattern matching and hemistich support.
+Version 2.2: Now includes vowel inference for undiacritized text support.
 """
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional, Set, Tuple
@@ -17,6 +18,8 @@ from .meters import METERS_REGISTRY, Meter
 from .pattern_generator import PatternGenerator
 from .pattern_similarity import PatternSimilarity
 from .tafila import Tafila
+
+logger = logging.getLogger(__name__)
 
 
 class MatchQuality(Enum):
@@ -93,12 +96,27 @@ class BahrDetectorV2:
         0.95
     """
 
-    def __init__(self):
-        """Initialize detector with pattern generators for all meters."""
+    def __init__(self, enable_vowel_inference: bool = True):
+        """
+        Initialize detector with pattern generators for all meters.
+        
+        Args:
+            enable_vowel_inference: Enable automatic vowel restoration for undiacritized text
+        """
         self.meters = METERS_REGISTRY
         self.generators: Dict[int, PatternGenerator] = {}
         self.pattern_cache: Dict[int, Set[str]] = {}
         self.hemistich_cache: Dict[int, Set[str]] = {}
+
+        # Initialize vowel inference (handles 90% of production input)
+        self.vowel_inferencer = None
+        if enable_vowel_inference:
+            try:
+                from app.core.vowel_inference import VowelInferencer
+                self.vowel_inferencer = VowelInferencer(use_camel_tools=True)
+                logger.info("✅ Vowel inference enabled (handles undiacritized text)")
+            except ImportError as e:
+                logger.warning(f"⚠️  Vowel inference disabled: {e}")
 
         # Initialize generators and cache both full-verse and hemistich patterns
         for meter_id, meter in self.meters.items():
@@ -113,26 +131,95 @@ class BahrDetectorV2:
 
     def detect(
         self,
-        phonetic_pattern: str,
+        phonetic_pattern: Optional[str] = None,
+        text: Optional[str] = None,
         top_k: int = 3,
         expected_meter_ar: Optional[str] = None,
     ) -> List[DetectionResult]:
         """
-        Detect meter(s) for a phonetic pattern.
+        Detect meter(s) from phonetic pattern OR raw Arabic text.
 
         Args:
-            phonetic_pattern: Input phonetic pattern (e.g., "/o//o//o/o/o")
+            phonetic_pattern: Pre-computed phonetic pattern (legacy API)
+            text: Raw Arabic text (NEW - handles undiacritized input automatically)
             top_k: Return top K matches (default: 3)
             expected_meter_ar: Optional expected meter (for disambiguation in evaluation)
 
         Returns:
             List of DetectionResult objects, sorted by confidence (highest first)
+            
+        Note:
+            - If both phonetic_pattern and text provided, phonetic_pattern takes precedence
+            - If text provided without diacritics, vowel inference is applied automatically
+            - Confidence scores reflect vowel inference quality for undiacritized input
 
-        Example:
+        Example (with phonetic pattern):
             >>> detector = BahrDetectorV2()
-            >>> results = detector.detect("/o//o//o/o/o/o//o//o/o")
+            >>> results = detector.detect(phonetic_pattern="/o//o//o/o/o/o//o//o/o")
             >>> print(f"{results[0].meter_name_ar}: {results[0].confidence:.2f}")
             الطويل: 1.00
+            
+        Example (with undiacritized text - NEW):
+            >>> results = detector.detect(text="قفا نبك من ذكرى حبيب ومنزل")
+            >>> print(f"{results[0].meter_name_ar}: {results[0].confidence:.2f}")
+            الطويل: 0.89  # Confidence adjusted for vowel inference
+        """
+        # NEW: Handle raw text input with vowel inference
+        if text and not phonetic_pattern:
+            if not self.vowel_inferencer:
+                raise ValueError(
+                    "Vowel inference not available. Either provide phonetic_pattern "
+                    "or initialize detector with enable_vowel_inference=True"
+                )
+            
+            # Restore vowels if needed
+            vocalized, vowel_confidence = self.vowel_inferencer.restore_vowels(text)
+            
+            logger.debug(f"Vowel inference applied (confidence: {vowel_confidence:.2f})")
+            logger.debug(f"Vocalized text: {vocalized}")
+            
+            # Convert to phonetic pattern
+            from app.core.prosody_phonetics import prosodic_text_to_pattern
+            phonetic_pattern = prosodic_text_to_pattern(vocalized, has_tashkeel=True)
+            
+            logger.debug(f"Generated pattern: {phonetic_pattern}")
+            
+            # Detect meter from pattern
+            candidates = self._detect_from_pattern(
+                phonetic_pattern, expected_meter_ar
+            )
+            
+            # CRITICAL: Adjust confidence based on vowel inference quality
+            # If vowel inference is uncertain, meter detection is also uncertain
+            for candidate in candidates:
+                original_confidence = candidate.confidence
+                candidate.confidence *= vowel_confidence
+                
+                # Add vowel inference note to explanation
+                candidate.explanation += (
+                    f"\n\nNote: Vowel inference applied (confidence: {vowel_confidence:.1%}). "
+                    f"Original meter confidence: {original_confidence:.1%}, "
+                    f"Adjusted: {candidate.confidence:.1%}"
+                )
+            
+            return candidates[:top_k]
+        
+        # Original pattern-based detection
+        elif phonetic_pattern:
+            return self._detect_from_pattern(phonetic_pattern, expected_meter_ar)[:top_k]
+        else:
+            raise ValueError("Must provide either 'phonetic_pattern' or 'text'")
+    
+    def _detect_from_pattern(
+        self,
+        phonetic_pattern: str,
+        expected_meter_ar: Optional[str] = None,
+    ) -> List[DetectionResult]:
+        """
+        Internal method for pattern-based detection.
+        
+        Separated from detect() to support both direct pattern input
+        and text input with vowel inference.
         """
         candidates = []
 
@@ -153,8 +240,7 @@ class BahrDetectorV2:
             candidates, phonetic_pattern, expected_meter_ar
         )
 
-        # Return top K
-        return candidates[:top_k]
+        return candidates
 
     def detect_best(self, phonetic_pattern: str) -> Optional[DetectionResult]:
         """
