@@ -32,6 +32,9 @@ fi
 # Handle empty files - review and remove
 echo "  Reviewing empty files..."
 
+# Create directory for empty files
+mkdir -p archive/duplicates/empty_files
+
 EMPTY_FILES=(
     "backend/requirements/minimal-production.txt"
     "backend/tests/core/prosody/__init__.py"
