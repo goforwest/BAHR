@@ -45,12 +45,24 @@ app.add_middleware(RequestIDMiddleware)
 # Startup and shutdown events
 @app.on_event("startup")
 async def startup_event():
-    """Initialize Redis connection on startup."""
+    """Initialize Redis connection and ML models on startup."""
+    # Initialize Redis
     try:
         await get_redis()
         print("✓ Redis connection initialized")
     except Exception as e:
         print(f"✗ Redis connection failed: {e}")
+    
+    # Load ML models
+    try:
+        from app.ml.model_loader import ml_service
+        models_loaded = ml_service.load_models()
+        if models_loaded:
+            print("✓ ML models loaded successfully (RandomForest ensemble ready)")
+        else:
+            print("⚠ ML models failed to load - using rule-based detection only")
+    except Exception as e:
+        print(f"⚠ ML model loading error: {e} - using rule-based detection only")
 
 
 @app.on_event("shutdown")

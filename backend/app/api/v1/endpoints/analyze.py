@@ -3,6 +3,7 @@ Analyze endpoint for prosodic analysis of Arabic poetry.
 """
 
 import logging
+import numpy as np
 
 from fastapi import APIRouter, HTTPException, status
 
@@ -14,6 +15,7 @@ from app.core.rhyme import analyze_verse_rhyme
 from app.core.taqti3 import perform_taqti3
 from app.db.redis import cache_get, cache_set, generate_cache_key
 from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, BahrInfo, RhymeInfo
+from app.ml.model_loader import ml_service
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +23,9 @@ router = APIRouter()
 
 # Initialize bahr detector (singleton)
 bahr_detector = BahrDetector()
+
+# Hybrid detection threshold
+RULE_BASED_CONFIDENCE_THRESHOLD = 0.85  # Use rule-based if above this
 
 
 @router.post(
@@ -143,14 +148,18 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             # Provide graceful fallback
             taqti3_result = "خطأ في التحليل"  # "Analysis error"
 
-        # Step d: Detect bahr (meter) with error handling
+        # Step d: Hybrid bahr detection (Rule-based + ML fallback)
         bahr_info = None
         confidence = 0.0
+        detection_method = "none"
 
         if request.detect_bahr:
             try:
+                # Try rule-based detection first
                 detected_bahr = bahr_detector.analyze_verse(normalized_text)
-                if detected_bahr:
+                
+                if detected_bahr and detected_bahr.confidence >= RULE_BASED_CONFIDENCE_THRESHOLD:
+                    # High confidence rule-based detection - use it
                     bahr_info = BahrInfo(
                         id=detected_bahr.id,
                         name_ar=detected_bahr.name_ar,
@@ -158,13 +167,94 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
                         confidence=detected_bahr.confidence,
                     )
                     confidence = detected_bahr.confidence
+                    detection_method = "rule_based"
                     logger.info(
-                        f"Detected bahr: {bahr_info.name_ar} (confidence: {confidence:.2f})"
+                        f"✓ Rule-based detection: {bahr_info.name_ar} (confidence: {confidence:.2f})"
                     )
+                    
+                elif ml_service.is_loaded():
+                    # Low confidence or no rule-based match - try ML fallback
+                    try:
+                        # Extract features for ML prediction
+                        from app.ml.feature_extractor import BAHRFeatureExtractor
+                        extractor = BAHRFeatureExtractor()
+                        features = extractor.extract_features(normalized_text)
+                        
+                        # Get ML prediction
+                        ml_result = ml_service.predict(features)
+                        
+                        # Compare with rule-based if it exists
+                        if detected_bahr and ml_result['confidence'] > detected_bahr.confidence:
+                            # ML is more confident
+                            bahr_info = BahrInfo(
+                                id=None,  # ML doesn't have IDs yet
+                                name_ar=ml_result['meter'],
+                                name_en=ml_result['meter'],  # TODO: Add translation mapping
+                                confidence=ml_result['confidence'],
+                            )
+                            confidence = ml_result['confidence']
+                            detection_method = "ml_override"
+                            logger.info(
+                                f"✓ ML override: {bahr_info.name_ar} (confidence: {confidence:.2f}, "
+                                f"top-3: {ml_result['top_k'][:3]})"
+                            )
+                        elif not detected_bahr:
+                            # Pure ML detection (rule-based found nothing)
+                            bahr_info = BahrInfo(
+                                id=None,
+                                name_ar=ml_result['meter'],
+                                name_en=ml_result['meter'],
+                                confidence=ml_result['confidence'],
+                            )
+                            confidence = ml_result['confidence']
+                            detection_method = "ml_only"
+                            logger.info(
+                                f"✓ ML detection: {bahr_info.name_ar} (confidence: {confidence:.2f})"
+                            )
+                        else:
+                            # Use rule-based despite low confidence
+                            bahr_info = BahrInfo(
+                                id=detected_bahr.id,
+                                name_ar=detected_bahr.name_ar,
+                                name_en=detected_bahr.name_en,
+                                confidence=detected_bahr.confidence,
+                            )
+                            confidence = detected_bahr.confidence
+                            detection_method = "rule_based_low"
+                            logger.info(
+                                f"✓ Rule-based (low conf): {bahr_info.name_ar} "
+                                f"(rb: {confidence:.2f} vs ml: {ml_result['confidence']:.2f})"
+                            )
+                            
+                    except Exception as ml_error:
+                        logger.warning(f"ML prediction failed, falling back to rule-based: {ml_error}")
+                        if detected_bahr:
+                            bahr_info = BahrInfo(
+                                id=detected_bahr.id,
+                                name_ar=detected_bahr.name_ar,
+                                name_en=detected_bahr.name_en,
+                                confidence=detected_bahr.confidence,
+                            )
+                            confidence = detected_bahr.confidence
+                            detection_method = "rule_based_fallback"
                 else:
-                    logger.info("No bahr detected with sufficient confidence")
+                    # No ML model available, use rule-based result
+                    if detected_bahr:
+                        bahr_info = BahrInfo(
+                            id=detected_bahr.id,
+                            name_ar=detected_bahr.name_ar,
+                            name_en=detected_bahr.name_en,
+                            confidence=detected_bahr.confidence,
+                        )
+                        confidence = detected_bahr.confidence
+                        detection_method = "rule_based_only"
+                    else:
+                        logger.info("No bahr detected with sufficient confidence")
+                        detection_method = "none"
+                        
             except Exception as e:
                 logger.error(f"Bahr detection failed: {e}", exc_info=True)
+                detection_method = "error"
                 # Continue without bahr detection - don't fail the whole request
 
         # Step e: Advanced quality analysis using quality module

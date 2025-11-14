@@ -80,3 +80,9 @@ email-validator==2.1.0
 # CUDA version: ~2.6 GB | CPU version: ~800 MB
 # See backend/Dockerfile line 36 for PyTorch installation
 
+# ============================================================================
+# Machine Learning (Traditional ML for meter detection)
+# ============================================================================
+scikit-learn==1.4.0
+joblib==1.3.2
+numpy==1.26.3
