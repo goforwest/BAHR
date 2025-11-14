@@ -146,19 +146,19 @@ BAHR/
 │   └── integration/      # Integration tests
 ├── scripts/
 │   ├── ml/               # ML training scripts
+│   ├── ml_pipeline/      # ML pipeline & training
+│   ├── tools/            # Development tools
 │   ├── data_processing/  # Data processing scripts
 │   ├── setup/            # Environment setup
 │   └── refactor/         # Migration scripts
 ├── models/                # Trained ML models
 ├── infrastructure/        # Docker & deployment
-├── archive/               # Historical documentation
-│   ├── phases/           # Phase reports
-│   └── sessions/         # Session summaries
-├── backend -> src/backend/  # Backward compatibility symlink
-└── frontend -> src/frontend/ # Backward compatibility symlink
+└── archive/               # Historical documentation
+    ├── phases/           # Phase reports
+    └── sessions/         # Session summaries
 ```
 
-> **Note:** Repository was refactored on November 14, 2025 for production readiness. See [docs/refactor/](docs/refactor/) for details.
+> **Note:** Repository was refactored on November 14, 2025 for production readiness. Backward compatibility symlinks removed after successful migration. See [docs/refactor/](docs/refactor/) for details.
 
 ---
 

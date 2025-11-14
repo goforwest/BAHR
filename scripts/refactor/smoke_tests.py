@@ -138,40 +138,28 @@ def test_configuration_files() -> bool:
 
 
 def test_backward_compatibility() -> bool:
-    """Verify backward compatibility symlinks if they exist"""
-    print("\n[5/6] Testing Backward Compatibility...")
+    """Verify clean migration (symlinks removed after transition complete)"""
+    print("\n[5/6] Testing Clean Migration...")
     
-    # Check if symlinks exist (they should during transition period)
-    symlinks = {
-        "backend": "src/backend",
-        "frontend": "src/frontend",
-        "dataset": "data/processed/datasets",
-        "ml_dataset": "data/raw/ml_dataset",
-    }
+    # Verify old symlinks are removed
+    old_symlinks = ["backend", "frontend", "dataset", "ml_dataset"]
     
-    symlink_count = 0
-    for link_name, target in symlinks.items():
+    all_clean = True
+    for link_name in old_symlinks:
         link_path = Path(link_name)
-        if link_path.exists() and link_path.is_symlink():
-            actual_target = link_path.resolve()
-            expected_target = Path(target).resolve()
-            
-            if actual_target == expected_target:
-                print_test(f"Symlink {link_name} → {target}", True)
-                symlink_count += 1
+        if link_path.exists():
+            if link_path.is_symlink():
+                print_test(f"Symlink {link_name} removed", False, "Symlink still exists - should be removed")
+                all_clean = False
             else:
-                print_test(
-                    f"Symlink {link_name}", 
-                    False, 
-                    f"Points to {actual_target}, expected {expected_target}"
-                )
+                print_test(f"Old path {link_name} exists", False, f"Directory/file {link_name} conflicts with old structure")
+                all_clean = False
     
-    if symlink_count > 0:
-        print(f"  ℹ️  Found {symlink_count} backward compatibility symlinks")
-        return True
-    else:
-        print("  ℹ️  No backward compatibility symlinks (expected after transition)")
-        return True
+    if all_clean:
+        print_test("Migration complete", True, "All backward compatibility paths cleaned up")
+    
+    return all_clean
+
 
 
 def test_integration_tests_discoverable() -> bool:
@@ -218,7 +206,7 @@ def main():
         ("Python Imports", test_python_imports),
         ("Dataset Accessibility", test_dataset_accessibility),
         ("Configuration Files", test_configuration_files),
-        ("Backward Compatibility", test_backward_compatibility),
+        ("Clean Migration", test_backward_compatibility),
         ("Integration Tests", test_integration_tests_discoverable),
     ]
     
