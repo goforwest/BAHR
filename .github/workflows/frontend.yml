@@ -32,25 +32,25 @@ jobs:
           cache-dependency-path: src/frontend/package-lock.json
 
       - name: Install dependencies
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: npm ci
 
       - name: Lint with ESLint
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: npm run lint
 
       - name: Type check with TypeScript
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: npx tsc --noEmit
 
       - name: Build Next.js application
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: npm run build
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'http://localhost:8000' }}
 
       - name: Run tests (if available)
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: |
           if [ -f "package.json" ] && grep -q "\"test\"" package.json; then
             npm test -- --passWithNoTests
@@ -72,11 +72,11 @@ jobs:
           cache-dependency-path: src/frontend/package-lock.json
 
       - name: Install dependencies
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: npm ci
 
       - name: Check formatting with Prettier
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: |
           npx prettier --check "src/**/*.{ts,tsx,js,jsx,json,css,md}"
 
