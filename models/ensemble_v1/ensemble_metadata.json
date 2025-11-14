@@ -1,0 +1,25 @@
+{
+  "ensemble_weights": {
+    "random_forest": 0.3503653364672219,
+    "xgboost": 0.32614582801083236,
+    "lightgbm": 0.32348883552194574
+  },
+  "model_cv_scores": {
+    "random_forest": {
+      "accuracy": 0.6676728334956182,
+      "std": 0.04142400135230411
+    },
+    "xgboost": {
+      "accuracy": 0.6215189873417721,
+      "std": 0.023094331902021422
+    },
+    "lightgbm": {
+      "accuracy": 0.6164556962025316,
+      "std": 0.027872905823173214
+    }
+  },
+  "ensemble_cv_accuracy": 0.629156010230179,
+  "n_features": 45,
+  "n_samples": 391,
+  "n_classes": 16
+}

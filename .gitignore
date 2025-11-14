@@ -546,3 +546,12 @@ profile_results/
 # END OF .gitignore
 # =============================================================================
 dummy.db
+
+# Large model files
+models/arabert_v1/
+models/*/checkpoint-*/
+*.safetensors
+*.bin
+*.pt
+*.pth
+

@@ -1,0 +1,16 @@
+{
+  "random_forest": {
+    "best_params": {
+      "class_weight": null,
+      "max_depth": 10,
+      "max_features": "log2",
+      "min_samples_leaf": 2,
+      "min_samples_split": 10,
+      "n_estimators": 100
+    },
+    "best_score": 0.6727685816293412,
+    "best_score_std": 0.04212220175686029,
+    "search_time_seconds": 862.8233489990234,
+    "total_fits": 4320
+  }
+}

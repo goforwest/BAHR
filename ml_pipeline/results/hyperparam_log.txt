@@ -1,0 +1,27 @@
+================================================================================
+BAHR Hyperparameter Optimization Pipeline
+================================================================================
+Loading data from data/ml/X_train.npy and data/ml/y_train.npy
+Applying feature selection from ml_pipeline/results/optimized_feature_indices.npy
+✅ Reduced features: 45 features selected
+✅ Loaded: X shape=(391, 45), y shape=(391,)
+   Classes: [ 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16]
+   Class distribution: [ 0 45 30 21 20 25 20 20 34 20 20 20 20 20 30 25 21]
+
+================================================================================
+Optimizing RandomForest Hyperparameters
+================================================================================
+
+Parameter grid:
+  n_estimators: [100, 200, 300, 500]
+  max_depth: [10, 20, 30, None]
+  min_samples_split: [2, 5, 10]
+  min_samples_leaf: [1, 2, 4]
+  max_features: ['sqrt', 'log2', None]
+  class_weight: ['balanced', None]
+
+Total combinations: 864
+Total CV fits: 4320
+
+Starting grid search...
+Fitting 5 folds for each of 864 candidates, totalling 4320 fits

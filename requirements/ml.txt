@@ -1,0 +1,42 @@
+# BAHR ML Pipeline - Python Dependencies
+# Phase 5-8 implementation requirements
+
+# Core ML libraries (Required)
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# Feature importance and model interpretation
+shap>=0.42.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Model serialization
+joblib>=1.3.0
+
+# Progress bars
+tqdm>=4.66.0
+
+# Optional: Gradient Boosting (Phase 5.2-5.3)
+# Uncomment if you want full ensemble capability
+# xgboost>=2.0.0
+# lightgbm>=4.0.0
+
+# Optional: Deep Learning (Phase 6-7)
+# Uncomment for BiLSTM-CRF and AraBERT
+# torch>=2.0.0
+# torchvision>=0.15.0
+# torchaudio>=2.0.0
+# torchcrf>=1.1.0
+# transformers>=4.30.0
+# datasets>=2.14.0
+
+# JSON handling
+# (built-in, no need to install)
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0

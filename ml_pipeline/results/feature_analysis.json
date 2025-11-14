@@ -1,0 +1,772 @@
+{
+  "correlation_analysis": {
+    "threshold": 0.95,
+    "high_corr_pairs": [
+      {
+        "feature1": "pattern_complexity",
+        "feature2": "sakin_ratio",
+        "correlation": 0.9604304486404456
+      },
+      {
+        "feature1": "similarity_ratio",
+        "feature2": "similarity_spread",
+        "correlation": 0.9956348344337198
+      },
+      {
+        "feature1": "rule_match_meter_2",
+        "feature2": "pattern_length",
+        "correlation": 0.9536633488578267
+      },
+      {
+        "feature1": "rule_match_meter_2",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9978588493886745
+      },
+      {
+        "feature1": "rule_match_meter_3",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9984273720197495
+      },
+      {
+        "feature1": "rule_match_meter_3",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.9995650836651481
+      },
+      {
+        "feature1": "rule_match_meter_4",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9943964151380288
+      },
+      {
+        "feature1": "rule_match_meter_4",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.9894230163612917
+      },
+      {
+        "feature1": "rule_match_meter_4",
+        "feature2": "rule_match_meter_3",
+        "correlation": 0.988767985207475
+      },
+      {
+        "feature1": "rule_match_meter_5",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9950512980602173
+      },
+      {
+        "feature1": "rule_match_meter_5",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.9939897680620217
+      },
+      {
+        "feature1": "rule_match_meter_5",
+        "feature2": "rule_match_meter_3",
+        "correlation": 0.9960646673892908
+      },
+      {
+        "feature1": "rule_match_meter_5",
+        "feature2": "rule_match_meter_4",
+        "correlation": 0.9834997751725462
+      },
+      {
+        "feature1": "rule_match_meter_6",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9913037996279519
+      },
+      {
+        "feature1": "rule_match_meter_6",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.993307239135931
+      },
+      {
+        "feature1": "rule_match_meter_6",
+        "feature2": "rule_match_meter_3",
+        "correlation": 0.9951706554655408
+      },
+      {
+        "feature1": "rule_match_meter_6",
+        "feature2": "rule_match_meter_4",
+        "correlation": 0.9761850445644658
+      },
+      {
+        "feature1": "rule_match_meter_6",
+        "feature2": "rule_match_meter_5",
+        "correlation": 0.9981175704659812
+      },
+      {
+        "feature1": "rule_match_meter_7",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9913037996279519
+      },
+      {
+        "feature1": "rule_match_meter_7",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.993307239135931
+      },
+      {
+        "feature1": "rule_match_meter_7",
+        "feature2": "rule_match_meter_3",
+        "correlation": 0.9951706554655408
+      },
+      {
+        "feature1": "rule_match_meter_7",
+        "feature2": "rule_match_meter_4",
+        "correlation": 0.9761850445644658
+      },
+      {
+        "feature1": "rule_match_meter_7",
+        "feature2": "rule_match_meter_5",
+        "correlation": 0.9981175704659812
+      },
+      {
+        "feature1": "rule_match_meter_7",
+        "feature2": "rule_match_meter_6",
+        "correlation": 1.0
+      },
+      {
+        "feature1": "rule_match_meter_8",
+        "feature2": "pattern_length",
+        "correlation": 0.9614547283412421
+      },
+      {
+        "feature1": "rule_match_meter_8",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9923278118711053
+      },
+      {
+        "feature1": "rule_match_meter_8",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.9979010639279163
+      },
+      {
+        "feature1": "rule_match_meter_8",
+        "feature2": "rule_match_meter_3",
+        "correlation": 0.9969141513215607
+      },
+      {
+        "feature1": "rule_match_meter_8",
+        "feature2": "rule_match_meter_4",
+        "correlation": 0.9810759950034735
+      },
+      {
+        "feature1": "rule_match_meter_8",
+        "feature2": "rule_match_meter_5",
+        "correlation": 0.9898656297558538
+      },
+      {
+        "feature1": "rule_match_meter_8",
+        "feature2": "rule_match_meter_6",
+        "correlation": 0.9929891688216103
+      },
+      {
+        "feature1": "rule_match_meter_8",
+        "feature2": "rule_match_meter_7",
+        "correlation": 0.9929891688216103
+      },
+      {
+        "feature1": "rule_match_meter_9",
+        "feature2": "pattern_length",
+        "correlation": 0.9527053652762499
+      },
+      {
+        "feature1": "rule_match_meter_9",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9858538987332037
+      },
+      {
+        "feature1": "rule_match_meter_9",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.9916509612484701
+      },
+      {
+        "feature1": "rule_match_meter_9",
+        "feature2": "rule_match_meter_3",
+        "correlation": 0.992496141494623
+      },
+      {
+        "feature1": "rule_match_meter_9",
+        "feature2": "rule_match_meter_4",
+        "correlation": 0.9685605714303903
+      },
+      {
+        "feature1": "rule_match_meter_9",
+        "feature2": "rule_match_meter_5",
+        "correlation": 0.9897691841701663
+      },
+      {
+        "feature1": "rule_match_meter_9",
+        "feature2": "rule_match_meter_6",
+        "correlation": 0.9954565023937079
+      },
+      {
+        "feature1": "rule_match_meter_9",
+        "feature2": "rule_match_meter_7",
+        "correlation": 0.9954565023937079
+      },
+      {
+        "feature1": "rule_match_meter_9",
+        "feature2": "rule_match_meter_8",
+        "correlation": 0.9953990545559477
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "pattern_length",
+        "correlation": 0.9589245159121778
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9931003836386407
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.998179237207943
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "rule_match_meter_3",
+        "correlation": 0.997612752983389
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "rule_match_meter_4",
+        "correlation": 0.9810392796605075
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "rule_match_meter_5",
+        "correlation": 0.9913572013101051
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "rule_match_meter_6",
+        "correlation": 0.9943710207631578
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "rule_match_meter_7",
+        "correlation": 0.9943710207631578
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "rule_match_meter_8",
+        "correlation": 0.9997933148189123
+      },
+      {
+        "feature1": "rule_match_meter_10",
+        "feature2": "rule_match_meter_9",
+        "correlation": 0.9962816831374768
+      },
+      {
+        "feature1": "rule_match_meter_12",
+        "feature2": "rule_match_meter_11",
+        "correlation": 0.9938552273548565
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "pattern_length",
+        "correlation": 0.9573524293167138
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9967272493406686
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.9995580837698181
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_3",
+        "correlation": 0.9985438653532884
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_4",
+        "correlation": 0.9893858222913771
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_5",
+        "correlation": 0.9918743935037541
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_6",
+        "correlation": 0.9913514547986773
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_7",
+        "correlation": 0.9913514547986773
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_8",
+        "correlation": 0.9981353764036811
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_9",
+        "correlation": 0.9903906777295762
+      },
+      {
+        "feature1": "rule_match_meter_13",
+        "feature2": "rule_match_meter_10",
+        "correlation": 0.9978441696937919
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_1",
+        "correlation": 0.9900803871161039
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_2",
+        "correlation": 0.9813746916513391
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_3",
+        "correlation": 0.9823610461155925
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_4",
+        "correlation": 0.997127756279644
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_5",
+        "correlation": 0.9803844806903491
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_6",
+        "correlation": 0.9709857635682367
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_7",
+        "correlation": 0.9709857635682367
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_8",
+        "correlation": 0.9700611052798626
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_9",
+        "correlation": 0.9598576924144039
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_10",
+        "correlation": 0.9710851202220205
+      },
+      {
+        "feature1": "rule_match_meter_15",
+        "feature2": "rule_match_meter_13",
+        "correlation": 0.9798636109558574
+      }
+    ]
+  },
+  "rfecv": {
+    "n_features_optimal": 68,
+    "best_cv_accuracy": 0.6416423239208049,
+    "selected_features": [
+      "pattern_length",
+      "sakin_count",
+      "mutaharrik_count",
+      "sakin_ratio",
+      "pattern_complexity",
+      "consecutive_sakin_max",
+      "consecutive_mutaharrik_max",
+      "rhythm_alternation",
+      "similarity_to_meter_1",
+      "similarity_to_meter_2",
+      "similarity_to_meter_3",
+      "similarity_to_meter_4",
+      "similarity_to_meter_5",
+      "similarity_to_meter_6",
+      "similarity_to_meter_7",
+      "similarity_to_meter_8",
+      "similarity_to_meter_9",
+      "similarity_to_meter_10",
+      "similarity_to_meter_11",
+      "similarity_to_meter_12",
+      "similarity_to_meter_13",
+      "similarity_to_meter_14",
+      "similarity_to_meter_15",
+      "similarity_to_meter_16",
+      "similarity_spread",
+      "similarity_ratio",
+      "similarity_std",
+      "similarity_mean",
+      "relative_similarity_meter_1",
+      "relative_similarity_meter_2",
+      "relative_similarity_meter_3",
+      "relative_similarity_meter_4",
+      "relative_similarity_meter_5",
+      "relative_similarity_meter_6",
+      "relative_similarity_meter_7",
+      "relative_similarity_meter_8",
+      "relative_similarity_meter_9",
+      "relative_similarity_meter_10",
+      "relative_similarity_meter_11",
+      "relative_similarity_meter_12",
+      "relative_similarity_meter_13",
+      "relative_similarity_meter_14",
+      "relative_similarity_meter_15",
+      "relative_similarity_meter_16",
+      "rule_match_meter_1",
+      "rule_match_meter_2",
+      "rule_match_meter_3",
+      "rule_match_meter_4",
+      "rule_match_meter_5",
+      "rule_match_meter_6",
+      "rule_match_meter_7",
+      "rule_match_meter_8",
+      "rule_match_meter_9",
+      "rule_match_meter_10",
+      "rule_match_meter_11",
+      "rule_match_meter_12",
+      "rule_match_meter_13",
+      "rule_match_meter_15",
+      "word_count",
+      "avg_word_length",
+      "unique_letters",
+      "letter_diversity",
+      "has_tanween",
+      "has_shadda",
+      "vowel_density",
+      "long_vowel_count",
+      "verse_length_chars",
+      "hamza_count"
+    ],
+    "feature_ranking": {
+      "pattern_length": 1,
+      "sakin_count": 1,
+      "mutaharrik_count": 1,
+      "sakin_ratio": 1,
+      "pattern_complexity": 1,
+      "consecutive_sakin_max": 1,
+      "consecutive_mutaharrik_max": 1,
+      "rhythm_alternation": 1,
+      "similarity_to_meter_1": 1,
+      "similarity_to_meter_2": 1,
+      "similarity_to_meter_3": 1,
+      "similarity_to_meter_4": 1,
+      "similarity_to_meter_5": 1,
+      "similarity_to_meter_6": 1,
+      "similarity_to_meter_7": 1,
+      "similarity_to_meter_8": 1,
+      "similarity_to_meter_9": 1,
+      "similarity_to_meter_10": 1,
+      "similarity_to_meter_11": 1,
+      "similarity_to_meter_12": 1,
+      "similarity_to_meter_13": 1,
+      "similarity_to_meter_14": 1,
+      "similarity_to_meter_15": 1,
+      "similarity_to_meter_16": 1,
+      "similarity_spread": 1,
+      "similarity_ratio": 1,
+      "similarity_std": 1,
+      "similarity_mean": 1,
+      "is_clear_winner": 2,
+      "relative_similarity_meter_1": 1,
+      "relative_similarity_meter_2": 1,
+      "relative_similarity_meter_3": 1,
+      "relative_similarity_meter_4": 1,
+      "relative_similarity_meter_5": 1,
+      "relative_similarity_meter_6": 1,
+      "relative_similarity_meter_7": 1,
+      "relative_similarity_meter_8": 1,
+      "relative_similarity_meter_9": 1,
+      "relative_similarity_meter_10": 1,
+      "relative_similarity_meter_11": 1,
+      "relative_similarity_meter_12": 1,
+      "relative_similarity_meter_13": 1,
+      "relative_similarity_meter_14": 1,
+      "relative_similarity_meter_15": 1,
+      "relative_similarity_meter_16": 1,
+      "rule_match_meter_1": 1,
+      "rule_match_meter_2": 1,
+      "rule_match_meter_3": 1,
+      "rule_match_meter_4": 1,
+      "rule_match_meter_5": 1,
+      "rule_match_meter_6": 1,
+      "rule_match_meter_7": 1,
+      "rule_match_meter_8": 1,
+      "rule_match_meter_9": 1,
+      "rule_match_meter_10": 1,
+      "rule_match_meter_11": 1,
+      "rule_match_meter_12": 1,
+      "rule_match_meter_13": 1,
+      "rule_match_meter_14": 4,
+      "rule_match_meter_15": 1,
+      "rule_match_meter_16": 3,
+      "word_count": 1,
+      "avg_word_length": 1,
+      "unique_letters": 1,
+      "letter_diversity": 1,
+      "has_tanween": 1,
+      "has_shadda": 1,
+      "vowel_density": 1,
+      "long_vowel_count": 1,
+      "verse_length_chars": 1,
+      "hamza_count": 1
+    }
+  },
+  "shap_analysis": {
+    "top_20_features": [
+      {
+        "feature": "similarity_to_meter_14",
+        "mean_abs_shap": 0.008337889457468559
+      },
+      {
+        "feature": "similarity_to_meter_15",
+        "mean_abs_shap": 0.006553735598277315
+      },
+      {
+        "feature": "relative_similarity_meter_15",
+        "mean_abs_shap": 0.006363711074248898
+      },
+      {
+        "feature": "relative_similarity_meter_14",
+        "mean_abs_shap": 0.006083106362240551
+      },
+      {
+        "feature": "relative_similarity_meter_1",
+        "mean_abs_shap": 0.0060103346923920465
+      },
+      {
+        "feature": "similarity_to_meter_1",
+        "mean_abs_shap": 0.00600789117795945
+      },
+      {
+        "feature": "similarity_to_meter_13",
+        "mean_abs_shap": 0.004964254723004914
+      },
+      {
+        "feature": "similarity_to_meter_16",
+        "mean_abs_shap": 0.004829037438874566
+      },
+      {
+        "feature": "relative_similarity_meter_5",
+        "mean_abs_shap": 0.004689694741830511
+      },
+      {
+        "feature": "similarity_spread",
+        "mean_abs_shap": 0.004592014214451848
+      },
+      {
+        "feature": "relative_similarity_meter_2",
+        "mean_abs_shap": 0.004150557991380293
+      },
+      {
+        "feature": "relative_similarity_meter_4",
+        "mean_abs_shap": 0.004140407617924632
+      },
+      {
+        "feature": "similarity_ratio",
+        "mean_abs_shap": 0.0040263830500507
+      },
+      {
+        "feature": "similarity_to_meter_2",
+        "mean_abs_shap": 0.003942509368638214
+      },
+      {
+        "feature": "relative_similarity_meter_13",
+        "mean_abs_shap": 0.003726350775708776
+      },
+      {
+        "feature": "relative_similarity_meter_3",
+        "mean_abs_shap": 0.0036860533957888586
+      },
+      {
+        "feature": "similarity_to_meter_5",
+        "mean_abs_shap": 0.003557999103212191
+      },
+      {
+        "feature": "similarity_std",
+        "mean_abs_shap": 0.003485940941072644
+      },
+      {
+        "feature": "similarity_to_meter_10",
+        "mean_abs_shap": 0.0032883293460991485
+      },
+      {
+        "feature": "relative_similarity_meter_16",
+        "mean_abs_shap": 0.00328509382651798
+      }
+    ]
+  },
+  "ablation_study": {
+    "baseline": 0.6237260629665692,
+    "without_pattern": {
+      "accuracy": 0.6288218111002921,
+      "delta": 0.005095748133722933,
+      "n_features": 8,
+      "features_removed": [
+        "pattern_length",
+        "sakin_count",
+        "mutaharrik_count",
+        "sakin_ratio",
+        "pattern_complexity",
+        "consecutive_sakin_max",
+        "consecutive_mutaharrik_max",
+        "rhythm_alternation"
+      ]
+    },
+    "without_similarity": {
+      "accuracy": 0.5880882830249919,
+      "delta": -0.03563777994157724,
+      "n_features": 16,
+      "features_removed": [
+        "similarity_to_meter_1",
+        "similarity_to_meter_2",
+        "similarity_to_meter_3",
+        "similarity_to_meter_4",
+        "similarity_to_meter_5",
+        "similarity_to_meter_6",
+        "similarity_to_meter_7",
+        "similarity_to_meter_8",
+        "similarity_to_meter_9",
+        "similarity_to_meter_10",
+        "similarity_to_meter_11",
+        "similarity_to_meter_12",
+        "similarity_to_meter_13",
+        "similarity_to_meter_14",
+        "similarity_to_meter_15",
+        "similarity_to_meter_16"
+      ]
+    },
+    "without_discriminative": {
+      "accuracy": 0.6237909769555339,
+      "delta": 6.49139889646877e-05,
+      "n_features": 5,
+      "features_removed": [
+        "similarity_spread",
+        "similarity_ratio",
+        "similarity_std",
+        "similarity_mean",
+        "is_clear_winner"
+      ]
+    },
+    "without_relative": {
+      "accuracy": 0.6008114248620577,
+      "delta": -0.022914638104511442,
+      "n_features": 16,
+      "features_removed": [
+        "relative_similarity_meter_1",
+        "relative_similarity_meter_2",
+        "relative_similarity_meter_3",
+        "relative_similarity_meter_4",
+        "relative_similarity_meter_5",
+        "relative_similarity_meter_6",
+        "relative_similarity_meter_7",
+        "relative_similarity_meter_8",
+        "relative_similarity_meter_9",
+        "relative_similarity_meter_10",
+        "relative_similarity_meter_11",
+        "relative_similarity_meter_12",
+        "relative_similarity_meter_13",
+        "relative_similarity_meter_14",
+        "relative_similarity_meter_15",
+        "relative_similarity_meter_16"
+      ]
+    },
+    "without_rule": {
+      "accuracy": 0.6262901655306717,
+      "delta": 0.002564102564102555,
+      "n_features": 16,
+      "features_removed": [
+        "rule_match_meter_1",
+        "rule_match_meter_2",
+        "rule_match_meter_3",
+        "rule_match_meter_4",
+        "rule_match_meter_5",
+        "rule_match_meter_6",
+        "rule_match_meter_7",
+        "rule_match_meter_8",
+        "rule_match_meter_9",
+        "rule_match_meter_10",
+        "rule_match_meter_11",
+        "rule_match_meter_12",
+        "rule_match_meter_13",
+        "rule_match_meter_14",
+        "rule_match_meter_15",
+        "rule_match_meter_16"
+      ]
+    },
+    "without_linguistic": {
+      "accuracy": 0.621194417396949,
+      "delta": -0.0025316455696201556,
+      "n_features": 3,
+      "features_removed": [
+        "word_count",
+        "avg_word_length",
+        "letter_diversity"
+      ]
+    }
+  },
+  "optimized_feature_set": {
+    "n_features": 45,
+    "features": [
+      "similarity_to_meter_14",
+      "similarity_to_meter_15",
+      "relative_similarity_meter_15",
+      "relative_similarity_meter_14",
+      "relative_similarity_meter_1",
+      "similarity_to_meter_1",
+      "similarity_to_meter_13",
+      "similarity_to_meter_16",
+      "relative_similarity_meter_5",
+      "similarity_spread",
+      "relative_similarity_meter_2",
+      "relative_similarity_meter_4",
+      "similarity_ratio",
+      "similarity_to_meter_2",
+      "relative_similarity_meter_13",
+      "relative_similarity_meter_3",
+      "similarity_to_meter_5",
+      "similarity_std",
+      "similarity_to_meter_10",
+      "relative_similarity_meter_16",
+      "pattern_length",
+      "sakin_count",
+      "mutaharrik_count",
+      "sakin_ratio",
+      "pattern_complexity",
+      "consecutive_sakin_max",
+      "consecutive_mutaharrik_max",
+      "rhythm_alternation",
+      "similarity_to_meter_3",
+      "similarity_to_meter_4",
+      "similarity_to_meter_6",
+      "similarity_to_meter_7",
+      "similarity_to_meter_8",
+      "similarity_to_meter_9",
+      "similarity_to_meter_11",
+      "similarity_to_meter_12",
+      "similarity_mean",
+      "relative_similarity_meter_6",
+      "relative_similarity_meter_7",
+      "relative_similarity_meter_8",
+      "relative_similarity_meter_9",
+      "relative_similarity_meter_10",
+      "relative_similarity_meter_11",
+      "relative_similarity_meter_12",
+      "rule_match_meter_1"
+    ],
+    "accuracy": 0.5981174943200259,
+    "accuracy_std": 0.13817463667807256,
+    "baseline_accuracy": 0.6237260629665692,
+    "delta": -0.02560856864654326,
+    "feature_reduction_pct": 36.61971830985916
+  }
+}
